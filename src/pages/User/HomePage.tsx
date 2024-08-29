@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
-
+import api from "../../services/apiService";
+interface Categories {
+  _id: string;
+  categoryName: string;
+  categoryImage: string;
+}
 const HomePage = () => {
-  const goToAllProductsPage = () => {};
+  const[categories,setCategories]=useState<Categories[]>([])
+  const getCategories = async () => {
+    try {
+      const response = await api.get("/api/admin/categories");
+      if (response.data.success) {
+        setCategories(response.data.categories);
+        console.log(categories);
+      }
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
   return (
     <>
       <div className="w-full h-screen ">
@@ -18,7 +39,7 @@ const HomePage = () => {
         <Link to="/products">
         <Button
           text="Discover All"
-          ButtonHandler={goToAllProductsPage}
+          // ButtonHandler={goToAllProductsPage}
           paddingVal={3}
         />
         </Link>
@@ -30,22 +51,20 @@ const HomePage = () => {
         <p className="font-gilroy text-center mb-5">
           Explore our premium range of products
         </p>
-        <div className="card-container flex gap-10 justify-center">
-          <Link to="#" className=" w-1/4 h-96">
-            <div className="category-card w-full h-full bg-pink-200 rounded-xl bg-[url('/assets/CategoryImage/Attars.jpg')] bg-center bg-cover flex items-end justify-center text-2xl font-gilroy  text-slate-100">
-              Attars
-            </div>
-          </Link>
-          <Link to="#" className=" w-1/4 h-96">
-            <div className="category-card w-full h-full bg-pink-200 rounded-xl bg-[url('/assets/CategoryImage/Perfume.png')] bg-center bg-cover  flex items-end justify-center text-2xl font-gilroytext-slate-100">
-              Perfumes
-            </div>
-          </Link>
-          <Link to="#" className=" w-1/4 h-96">
-            <div className="category-card w-full h-full bg-pink-200 rounded-xl bg-[url('/assets/CategoryImage/BodyPerfume.png')] bg-center bg-contain  flex items-end justify-center text-2xl font-gilroy  text-slate-100">
-              Body Perfumes
-            </div>
-          </Link>
+        <div className="card-container flex gap-10 justify-center flex-wrap">
+         {
+          categories.map(category => (
+            <Link to="#" className="w-1/4 h-96">
+              <div 
+                className={category.categoryName==='Body perfumes'?"category-card w-full h-full bg-pink-200 rounded-xl bg-center bg-contain flex items-end justify-center text-2xl font-gilroy text-slate-100":"category-card w-full h-full bg-pink-200 rounded-xl bg-center bg-cover flex items-end justify-center text-2xl font-gilroy text-slate-100"}
+                style={{ backgroundImage: `url(${category.categoryImage})` }}
+              >
+                {category.categoryName}
+              </div>
+            </Link>
+          ))
+         }
+
         </div>
       </div>
       <div className="New-arraivals-container text-center  mt-10">

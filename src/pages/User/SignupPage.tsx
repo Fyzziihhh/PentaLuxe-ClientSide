@@ -58,10 +58,10 @@ const SignupPage = () => {
       let response = await api.post<User>("/api/user/register", { email, username, password });
      let data=response.data
       
-        alert(response.data.message)
+        alert(data.message)
       console.log("inside the try catch");
       Navigate(`/otp-verify/${email}`);
-      
+
     } catch (error:any) {
       if (error.response) {
         console.error('Error:', error.response.data.message);

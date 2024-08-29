@@ -7,6 +7,12 @@ const AllProductsPage =lazy(()=>import('./pages/User/AllProductsPage'))
 const LoginPage = lazy(()=>import('./pages/User/LoginPage'))
 import MinimalLayout from './layout/MinimalLayout'
 import OtpVerifyPage from './pages/User/OtpVerifyPage'
+import AdminLoginPage from './pages/Admin/AdminLoginPage'
+import AdminDashboard from './pages/Admin/AdminDashboardPage'
+import AdminProductPage from './pages/Admin/AdminProductPage'
+import AdminCategoryPage from './pages/Admin/AdminCategoryPage'
+import AdminSideBar from './components/AdminSideBar/AdminSideBar'
+import AdminLayout from './layout/AdminLayout'
 const SignupPage =lazy(()=> import( './pages/User/SignupPage') ) 
 const App = () => {
 
@@ -16,6 +22,7 @@ const App = () => {
   <Suspense fallback='Loading'>
   <Routes>
     <Route path='/' element={<MainLayout/>}>
+    
     <Route index element={<HomePage/>}/>
     <Route path='about' element={<AboutPage/>}/>
     <Route path='products' element={<AllProductsPage/>}/>
@@ -25,7 +32,22 @@ const App = () => {
     <Route path='login' element={<LoginPage/>}/>
     <Route path='register' element={<SignupPage/>}/>
     <Route path="otp-verify/:id" element={<OtpVerifyPage/>}/>
+   
 
+    </Route>
+
+    {/* admin */}
+    <Route path="admin" >
+      <Route index element={<AdminLoginPage/>}/>
+      {/* AdminLayout */}
+      <Route element={<AdminLayout/>}>
+
+      <Route path='dashboard'element={<AdminDashboard/>}/>
+      <Route path='products' element={<AdminProductPage/>}/>
+      <Route path='categories' element={<AdminCategoryPage/>}/>
+      <Route path='banner' element={<AdminProductPage/>}/>
+      </Route>
+      
     </Route>
   </Routes>
   </Suspense>
