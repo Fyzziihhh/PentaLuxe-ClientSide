@@ -4,7 +4,7 @@ import style from './Button.module.css';
 
 interface ButtonProp {
   text: string;
-  ButtonHandler:(event:React.MouseEvent<HTMLButtonElement>)=>void
+  ButtonHandler?:(event:React.MouseEvent<HTMLButtonElement>)=>void
   paddingVal?:number
 }
 

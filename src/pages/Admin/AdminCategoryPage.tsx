@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import api from "../../services/apiService";
+import { AxiosError } from "axios";
 
 interface categories {
   _id: string;
@@ -40,7 +41,7 @@ const AdminCategoryPage = () => {
       }
     } catch (error) {
       console.error("Error uploading category:", error);
-      alert(error.response.status);
+      if(error instanceof AxiosError) alert(error.response?.data.message || "Something Went Wrong")
     }
   };
   const onHandleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +65,7 @@ const AdminCategoryPage = () => {
         console.log(categories);
       }
     } catch (error) {
-      alert(error.response.data.message);
+      if(error instanceof AxiosError) alert(error.response?.data.message);
     }
   };
 

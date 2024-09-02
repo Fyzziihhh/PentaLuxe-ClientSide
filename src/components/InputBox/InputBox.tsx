@@ -4,8 +4,8 @@ interface InputProps {
   placeholder: string;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
-  textColor:string;
-  borderColor:string;
+  textColor?:string;
+  borderColor?:string;
 }
 const InputBox: React.FC<InputProps> = ({
   Type,

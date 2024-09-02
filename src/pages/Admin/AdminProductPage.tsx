@@ -1,12 +1,10 @@
 import React from 'react'
-import AdminSideBar from '../../components/AdminSideBar/AdminSideBar'
 
 const AdminProductPage = () => {
   return (
-    <div className='bg-white w-full h-screen flex'>
-     <AdminSideBar/>
+    <div className='bg-yellow-700 w-full h-full'>
         <div className='products-details w-full'>
-          
+          this is the product page
         </div>
     </div>
   )

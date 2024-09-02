@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 import InputBox from "../../components/InputBox/InputBox";
 import Button from "../../components/Button/Button";
 import {  useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
   import { AxiosError } from "axios";
-  interface AxiosError extends Error {
-    response?: {
-      data: {
-        message: string;
-      };
-    };
-  }
+  // interface AxiosError extends Error {
+  //   response?: {
+  //     data: {
+  //       message: string;
+  //     };
+  //   };
+  // }
 const AdminLoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +25,7 @@ const AdminLoginPage = () => {
         navigate("/admin/dashboard");
       }
     } catch (error) {
-    const axiosError=error as AxiosError
-        alert(axiosError.response?.data.message || "Something Went Wrong");
+    if(error instanceof AxiosError) alert(error.response?.data.message || "Something Went Wrong");
       
     }
   };

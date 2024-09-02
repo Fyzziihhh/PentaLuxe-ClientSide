@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import api from "../../services/apiService";
+import { AxiosError } from "axios";
 interface Categories {
   _id: string;
   categoryName: string;
   categoryImage: string;
 }
+
 const HomePage = () => {
   const[categories,setCategories]=useState<Categories[]>([])
   const getCategories = async () => {
@@ -18,7 +20,7 @@ const HomePage = () => {
         console.log(categories);
       }
     } catch (error) {
-      alert(error.response.data.message);
+      if(error instanceof AxiosError)  alert(error.response?.data.message);
     }
   };
 
