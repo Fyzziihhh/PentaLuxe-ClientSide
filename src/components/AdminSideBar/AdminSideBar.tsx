@@ -1,9 +1,33 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../services/apiService";
+import { adminLoggOut } from "../../utils/endpoints";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 const AdminSideBar = () => {
+  const navigate=useNavigate()
+  const onAdminLoggOutHandler=async()=>{
+    try {
+      
+      const res=await api.post(adminLoggOut);
+      if(res.status===200){
+        toast.success(res.data.message || "something went wrong")
+          navigate('/admin')
+      }
+    } catch (error) {
+       if(error instanceof AxiosError){
+        toast.error(error.response?.data.message)
+       }
+    }
+
+  }
+
+
+
+
   return (
-    <div className="w-[17%] h-full fixed top-0 left-0 bg-[#0043F4]  ">
+    <div className="w-[17%] h-full fixed top-0 left-0 bg-[#040841e5]  ">
       <div className="-mt-10">
         <img
           className="w-90 h-30 object-cover "
@@ -165,8 +189,7 @@ const AdminSideBar = () => {
         </li>
        </Link>
 
-       <Link to='/admin/logout'>
-       <li className="flex gap-2 px-3 py-2 text-white items-center font-gilroy font-bold text-xl hover:bg-white rounded-md  hover:text-blue-500">
+       <li onClick={onAdminLoggOutHandler} className="cursor-pointer flex gap-2 px-3 py-2 text-white items-center font-gilroy font-bold text-xl hover:bg-white rounded-md  hover:text-blue-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="40"
@@ -184,7 +207,7 @@ const AdminSideBar = () => {
           </svg>
           <p>Logout </p>
         </li>
-       </Link>
+  
       </ul>
     </div>
   );

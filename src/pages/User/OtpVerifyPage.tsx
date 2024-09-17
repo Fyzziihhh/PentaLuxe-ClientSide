@@ -1,25 +1,27 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { MdOutlineMarkEmailUnread } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button/Button";
 import api from "../../services/apiService";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 const OtpVerifyPage = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const navigate = useNavigate();
-
+  const [seconds, setSeconds] = useState(120);
   const { id } = useParams();
   const resendOTP = async () => {
     try {
       const response = await api.post("/api/user/resend-otp", { email: id });
       if (response.data.success) {
-        alert("OTP has been resent. Please check your email.");
-        setOtp(['','','',''])
+        toast.success("OTP has been resent. Please check your email.");
+        setOtp(["", "", "", ""]);
       } else {
-        alert("Failed to resend OTP. Please try again.");
+        toast.error("Failed to resend OTP. Please try again.");
       }
     } catch (error) {
       console.error("Error resending OTP:", error);
-      alert(
+      toast.error(
         `An error occurred while resending the OTP. Please try again later`
       );
     }
@@ -28,23 +30,26 @@ const OtpVerifyPage = () => {
   const otpVerification = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-alert(otp)
     event.preventDefault();
     try {
-        let otpCode=otp.join('')
-        alert(otpCode)
-      let response = await api.post("/api/user/otp-verify", { otp:otpCode, email: id });
-
+      let otpCode = otp.join("");
+      toast.success(otpCode);
+      let response = await api.post("/api/user/otp-verify", {
+        otp: otpCode,
+        email: id,
+      });
       if (response.data.success) {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
-        alert("OTP verified successfully");
+        toast.success(response.data.message);
         navigate("/");
       }
     } catch (error: any) {
-      const errorMsg =
-        error?.response?.data?.message || "An Unexpected error Occurs";
-      alert(errorMsg);
+      if (error instanceof AxiosError) {
+        const errorMsg =
+          error?.response?.data?.message || "An Unexpected error Occurs";
+        toast.error(errorMsg);
+      }
     }
   };
   const cancelHandler = () => {
@@ -61,6 +66,12 @@ alert(otp)
       setOtp(newOtp);
     }
   }
+
+  useEffect(() => {
+    if (seconds === 0) return;
+    const interval = setInterval(() => setSeconds((prev) => prev - 1), 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
 
   return (
     <>
@@ -84,14 +95,19 @@ alert(otp)
               />
             ))}
           </div>
-          <p className="mt-5">
-            Didn’t Get The Code?
-            <span
-              className="text-blue-700 underline cursor-pointer "
+          <p className="mt-5 text-center ">
+            {!(seconds > 0) ? " Didn’t Get The Code? " : ""}
+            <button
+              className={`text-blue-700 bg-white rounded-lg p-2 cursor-pointer ${
+                seconds > 0 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={resendOTP}
+              disabled={seconds > 0}
             >
-              Click to Resend
-            </span>
+              {seconds > 0
+                ? `Resend in ${Math.floor(seconds / 60)}:${seconds % 60}`
+                : "Click to Resend OTP"}
+            </button>
           </p>
           <div className="buttons flex gap-5">
             <Button

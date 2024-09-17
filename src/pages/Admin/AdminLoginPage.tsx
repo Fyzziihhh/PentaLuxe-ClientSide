@@ -1,10 +1,11 @@
 import  { useState } from "react";
-
+import { adminLogin } from "../../utils/endpoints";
 import InputBox from "../../components/InputBox/InputBox";
 import Button from "../../components/Button/Button";
 import {  useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
   import { AxiosError } from "axios";
+import { toast } from "sonner";
   // interface AxiosError extends Error {
   //   response?: {
   //     data: {
@@ -18,14 +19,14 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
   const AdminLoginHandler = async () => {
     try {
-      const response = await api.post("/api/admin/login", { email, password });
+      const response = await api.post(adminLogin, { email, password });
       if (response.data.success) {
         localStorage.setItem("adminToken", response.data.adminToken);
-        alert("admin LoggedIn SuccessFully");
+        toast.success("admin LoggedIn SuccessFully");
         navigate("/admin/dashboard");
       }
     } catch (error) {
-    if(error instanceof AxiosError) alert(error.response?.data.message || "Something Went Wrong");
+    if(error instanceof AxiosError) toast.error(error.response?.data.message || "Something Went Wrong");
       
     }
   };

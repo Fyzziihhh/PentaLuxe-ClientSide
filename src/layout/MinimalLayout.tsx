@@ -1,9 +1,9 @@
-import React from "react";
+
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 
 const MinimalLayout = () => {
-  const ImgUrl = "/assets/Screenshot_2024-07-31_111544-removebg-preview.png";
+  const ImgUrl = "/assets/PentaLuxeLogo.png";
   return (
     <>
     <div className="h-screen">

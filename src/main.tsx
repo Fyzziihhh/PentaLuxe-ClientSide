@@ -1,15 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { Provider } from 'react-redux'
-import { store } from './store/store.ts'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import './index.css'; // Your custom styles
+import { Provider } from 'react-redux';
+import { store } from './store/store.ts';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider store={store}>
 
-    <App />
-    </Provider>
-  </StrictMode>,
-)
+
+// Custom theme with dark background and white text color
+
+const rootElement = document.getElementById('root');
+
+if (rootElement) {
+  const root = createRoot(rootElement);
+
+  root.render(
+    <StrictMode>
+      <Provider store={store}>
+          <App />
+      </Provider>
+    </StrictMode>
+  );
+}

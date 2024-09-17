@@ -20,20 +20,21 @@ const Header = () => {
   };
 
   const logoutHandler = async () => {
-    try {
-      let response = await api.post("/api/user/logout");
+    localStorage.clear()
+    setAccessToken(null)
+    // try {
+    //   localStorage.clear()
+    //   let response = await api.post("/api/user/logout");
 
-      if (response.data.success) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        setAccessToken(null); // Force state update after logout
-        alert("Logout Successful");
-      } else {
-        alert("Something went wrong while logout");
-      }
-    } catch (error) {
-      if(error instanceof AxiosError) alert(error.response?.data.message);
-    }
+    //   if (response.data.success) {
+    //     setAccessToken(null); // Force state update after logout
+    //     alert("Logout Successful");
+    //   } else {
+    //     alert("Something went wrong while logout");
+    //   }
+    // } catch (error) {
+    //   if(error instanceof AxiosError) alert(error.response?.data.message);
+    // }
   };
 
   useEffect(() => {

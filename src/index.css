@@ -1,19 +1,37 @@
 
+
+
+/* Tailwind CSS imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Font */
 @font-face {
   font-family: "Gilroy";
-  src: url('./components/InputBox/Gilroy-Medium.ttf');
+  src: url('/assets/fonts/Gilroy-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-body{
-    background-color:#0E101C ;
-    color :#ffff;
+
+body {
+  background-color: #0E101C;
+  color: #ffff;
+  font-family: "Gilroy", sans-serif;
+}
+
+.side-images{
+  @apply  w-[80px] h-[70px] overflow-hidden  bg-white rounded-sm cursor-pointer ;
+
+}
+
+.side-images img{
+  @apply w-full h-full object-contain
 }

@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import api from "../../services/apiService";
 import { AxiosError } from "axios";
+import { adminCategory } from "../../utils/endpoints";
+import {  toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import DeleteModal from "../../components/DeleteModal/DeleteModal";
+interface ItemToDelete{
+  id:string;
+  name:string
+}
 
 interface categories {
   _id: string;
@@ -9,16 +17,23 @@ interface categories {
   categoryImage: string;
 }
 const AdminCategoryPage = () => {
+  const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const [isModal, setIsModal] = useState(false);
   const isModalOpen = () => setIsModal(true);
-  const isModelClose = () => setIsModal(false);
+  const isModelClose = () => {
+    setCategoryName("");
+    setCategoryImage(null);
+    setIsModal(false);
+  };
   const [categoryName, setCategoryName] = useState("");
   const [categoryImage, setCategoryImage] = useState<File | null>(null);
   const [categories, setCategories] = useState<categories[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [itemToDelete,setItemToDelete] = useState<ItemToDelete | null>(null)
   const onCategoryAdd = async () => {
     if (!categoryImage || categoryName.trim() === "") {
-      alert("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
@@ -26,22 +41,23 @@ const AdminCategoryPage = () => {
       const formData = new FormData();
       formData.append("categoryImage", categoryImage);
       formData.append("categoryName", categoryName);
-      alert(categoryImage.name);
-      const response = await api.post("/api/admin/upload-category", formData, {
+
+      const response = await api.post(adminCategory, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response.data.success) {
         setRefresh((prev) => !prev);
-        alert("Category added successfully");
+        toast.success("The category has been created and is now available.");
         setCategoryName("");
         setCategoryImage(null);
         setIsModal(false);
       }
     } catch (error) {
       console.error("Error uploading category:", error);
-      if(error instanceof AxiosError) alert(error.response?.data.message || "Something Went Wrong")
+      if (error instanceof AxiosError)
+        toast.error(error.response?.data.message || "Something Went Wrong");
     }
   };
   const onHandleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,10 +66,22 @@ const AdminCategoryPage = () => {
     }
   };
 
+  const openModal=(id:string,name:string)=>{
+     setModalIsOpen(true)
+     setItemToDelete({
+      id,
+      name
+     })
+  }
+  const closeModal=()=>{
+    setModalIsOpen(false)
+  }
+
   const onDeleteCategory = async (_id: string) => {
+    
     const response = await api.delete(`/api/admin/categories/${_id}`);
     if (response.data.success) {
-      setRefresh((prev) => !prev);
+      setRefresh(prev => !prev);
     }
   };
 
@@ -62,19 +90,46 @@ const AdminCategoryPage = () => {
       const response = await api.get("/api/admin/categories");
       if (response.data.success) {
         setCategories(response.data.categories);
+
         console.log(categories);
       }
     } catch (error) {
-      if(error instanceof AxiosError) alert(error.response?.data.message);
+      if (error instanceof AxiosError) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 403) {
+            navigate("/admin");
+          }
+        }
+      }
     }
   };
+
+  const onEditCategory = (id: string) => {
+    const category = categories.find((category) => id === category._id);
+    if (category) {
+      setCategoryName(category.categoryName);
+      setIsModal(true);
+      // setCategoryImage(category.categoryImage)
+    }
+  };
+
+
+
 
   useEffect(() => {
     getCategories();
   }, [refresh]);
   return (
-    <div className="category-container  bg-zinc-100 ">
-      <h1 className="text-4xl font-Bowly text-black text-center ">
+    <div className="category-container text-white  h-full">
+      
+    
+      <DeleteModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        item={itemToDelete}
+        onDelete={onDeleteCategory}
+      />
+      <h1 className="text-4xl font-Bowly text-white text-center ">
         Category Management
       </h1>
       <button
@@ -128,13 +183,19 @@ const AdminCategoryPage = () => {
             <input
               type="text"
               placeholder="Category Name"
-              className="w-full px-5 py-3 rounded-lg border border-gray-300 outline-none placeholder-gray-500 text-gray-800 font-bold font-gilroy focus:ring-2 focus:ring-indigo-500"
+              value={categoryName}
+              className="w-full px-5 py-3 rounded-lg border border-gray-300 outline-none placeholder-gray-500 text-gray-600 font-bold font-gilroy focus:ring-2 focus:ring-indigo-500"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 setCategoryName(event.target.value)
               }
             />
             //category Image File
-            <input type="file" name="categoryImage" onChange={onHandleFile} className=" text-black"  />
+            <input
+              type="file"
+              name="categoryImage"
+              onChange={onHandleFile}
+              className=" text-black"
+            />
             <button
               onClick={onCategoryAdd}
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold font-gilroy transition"
@@ -145,7 +206,7 @@ const AdminCategoryPage = () => {
         </div>
       </Modal>
 
-      <table className="text-black font-gilroy font-bold mt-5 border-4 w-[80%] mx-auto ">
+      <table className="text-white font-gilroy font-bold mt-5 border-4 w-[80%] mx-auto h-auto mb-6">
         <thead className="flex justify-between items-center px-16 py-5">
           <tr className="text-xl flex gap-10 items-center justify-between w-full">
             <th className="w-32 text-center">Category Image</th>
@@ -168,12 +229,15 @@ const AdminCategoryPage = () => {
               </td>
               <td className="flex-1 text-center">{category.categoryName}</td>
               <td className="flex gap-5 justify-center flex-1">
-                <button className="px-5 py-3 bg-green-700 rounded-xl text-white">
+                <button
+                  onClick={() => onEditCategory(category._id)}
+                  className="px-5 py-3 bg-green-700 rounded-xl text-white "
+                >
                   Edit
                 </button>
                 <button
                   className="px-5 py-3 bg-red-700 rounded-xl text-white "
-                  onClick={() => onDeleteCategory(category._id)}
+                  onClick={() => openModal(category._id,category.categoryName)}
                 >
                   Delete
                 </button>

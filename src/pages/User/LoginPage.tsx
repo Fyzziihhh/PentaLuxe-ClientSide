@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import InputBox from "../../components/InputBox/InputBox";
 import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
-import SignIn from "../../components/GoogleAuthentication/SignIn";
+import GoogleAuth from "../../components/GoogleAuthentication/GoogleAuth";
+import {toast} from 'sonner'
 
 const LoginPage = () => {
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
  const navigate= useNavigate()
@@ -18,14 +20,16 @@ try {
       if(data.success){
          localStorage.setItem('accessToken',data.accessToken)
          localStorage.setItem('refreshToken',data.refreshToken)
+         toast.success(response.data.message);
         navigate('/')
       }
 } catch (error:any) {
-  alert(error?.response.data.message)
+  toast.error(error?.response.data.message)
 }
   };
   return (
     <>
+   
       <div className="container w-full flex px-10 gap-3 h-[470px] mb-3 ">
         <div
           style={{
@@ -44,12 +48,12 @@ try {
               src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
               alt=""
             /> */}
-            <SignIn/>
-            <img
+            <GoogleAuth text="SignIn with Google"/>
+            {/* <img
               className="w-10 h-10 object-cover"
               src="https://1000logos.net/wp-content/uploads/2017/02/Facebook-Logosu.png"
               alt=""
-            />
+            /> */}
           </div>
       <div className="flex flex-col gap-10 mt-10">
 
