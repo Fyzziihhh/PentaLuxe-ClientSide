@@ -1,6 +1,6 @@
 import  { useState } from "react";
 import { adminLogin } from "../../utils/endpoints";
-import InputBox from "../../components/InputBox/InputBox";
+import InputBox from "../../components/InputBox";
 import Button from "../../components/Button/Button";
 import {  useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
@@ -21,7 +21,7 @@ const AdminLoginPage = () => {
     try {
       const response = await api.post(adminLogin, { email, password });
       if (response.data.success) {
-        localStorage.setItem("adminToken", response.data.adminToken);
+        // localStorage.setItem("adminToken", response.data.adminToken);
         toast.success("admin LoggedIn SuccessFully");
         navigate("/admin/dashboard");
       }

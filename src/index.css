@@ -35,3 +35,16 @@ body {
 .side-images img{
   @apply w-full h-full object-contain
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+

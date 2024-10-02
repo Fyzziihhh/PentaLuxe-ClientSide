@@ -64,7 +64,7 @@ const AdminUserManagement = () => {
     getAllUsers();
   }, []);
   return (
-    <div className=" w-full h-auto border ">
+    <div className=" w-full mb-5 border h-full">
       <h1 className="font-Bowly text-4xl m-11">User ManageMent</h1>
 
       <input

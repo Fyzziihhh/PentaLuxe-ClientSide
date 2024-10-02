@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
 
 import api from '../../services/apiService';
-import ProductCard from '../../components/ProductCard/ProductCard';
+import ProductCard from '../../components/ProductCard';
 
 interface IProduct {
   _id:string;

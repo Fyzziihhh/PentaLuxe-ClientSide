@@ -1,11 +1,12 @@
 import { useState } from "react";
 
-import InputBox from "../../components/InputBox/InputBox";
+import InputBox from "../../components/InputBox";
 import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
 import GoogleAuth from "../../components/GoogleAuthentication/GoogleAuth";
 import {toast} from 'sonner'
+import { AxiosError} from "axios";
 
 const LoginPage = () => {
   
@@ -23,8 +24,9 @@ try {
          toast.success(response.data.message);
         navigate('/')
       }
-} catch (error:any) {
-  toast.error(error?.response.data.message)
+} catch (error) {
+  if(error instanceof AxiosError)
+  toast.error(error.response?.data.message)
 }
   };
   return (

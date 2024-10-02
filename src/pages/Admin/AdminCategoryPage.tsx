@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { adminCategory } from "../../utils/endpoints";
 import {  toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import DeleteModal from "../../components/DeleteModal";
 interface ItemToDelete{
   id:string;
   name:string

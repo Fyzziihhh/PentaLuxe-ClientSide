@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../services/apiService'
-import ProductCard from '../../components/ProductCard/ProductCard';
+import ProductCard from '../../components/ProductCard';
 interface IProduct {
     _id:string;
     // CategoryId:{
@@ -11,11 +11,11 @@ interface IProduct {
     productImages: string[];     // Array of product image URLs
     productDescription: string;
     productStockQuantity: number;
-    gender?: 'Men' | 'Women' | 'Unisex';  // Optional since enum is provided
+    gender?: 'Men' | 'Women' | 'Unisex'; 
     productScentType: string;
     productDiscountPrice: number;
-    productVolumes?: {[key:string]:string};  // Optional since it's not marked as required
-    isBlocked?: boolean;  // Optional with a default value
+    productVolumes?: {[key:string]:string}; 
+    isBlocked?: boolean;  
   }
   
 const CategoryPage = () => {

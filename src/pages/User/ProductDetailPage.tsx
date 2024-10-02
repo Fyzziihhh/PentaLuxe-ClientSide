@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/apiService";
-import { userProductListing } from "../../utils/endpoints";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
-interface IProduct {
-  _id: string;
-  productName: string;
-  productImages: string[]; // Array of product image URLs
-  productDescription: string;
-  productStockQuantity: number;
-  gender?: "Men" | "Women" | "Unisex"; // Optional since enum is provided
-  productScentType: string;
-  productDiscountPrice: number;
-  productVolumes: { [key: string]: string }; // Optional since it's not marked as required
-  isBlocked?: boolean; // Optional with a default value
-}
+import { AppHttpStatusCodes } from "../../types/statusCode";
+import { IProduct } from "@/types/productTypes";
+import { useDispatch} from "react-redux";
+import { addToCart } from "@/store/slices/cartSlice";
 const ProductDetailPage = () => {
+  const dispatch=useDispatch();
   const { id } = useParams();
-  const [productPrice, setProductPrice] = useState("");
-  const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
+  const [productPrice, setProductPrice] = useState<number|null>(null);
+  // const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [product, setProduct] = useState<IProduct | undefined>(undefined);
   const [selectedVolume, setSelectedVolume] = useState<string | null>(null);
@@ -30,6 +22,9 @@ const ProductDetailPage = () => {
       const response = await api.get(`/api/user/products/${id}`);
       if (response.data.success) {
         setProduct(response.data.product);
+       
+
+      
       }
     } catch (error) {
       if (error instanceof AxiosError)
@@ -40,23 +35,45 @@ const ProductDetailPage = () => {
     setImageUrl(url);
   };
 
-  const productPriceHandler = (price: string) => {
+  const productPriceHandler = (price: number) => {
     setProductPrice(price);
   };
 
-  const getRelatedProducts = () => {};
+  // const getRelatedProducts = () => {};
 
+  
   useEffect(() => {
     getProducts();
   }, []);
-
+  
   // Set the first key as selected after product data is fetched
   useEffect(() => {
-    if (product && product.productVolumes) {
-      const firstKey = Object.keys(product.productVolumes)[0];
-      setSelectedVolume(firstKey);
+    if(product&&product.productPriceStockQuantity[0].volume){
+      setSelectedVolume(product.productPriceStockQuantity[0].volume)
+      setProductPrice(product.productPriceStockQuantity[0].price)
+      
+      
     }
   }, [product]);
+  let stockQuantity = null;
+  if (selectedVolume) {
+    const selectedProduct = product?.productPriceStockQuantity.find(product => product.volume === selectedVolume);
+    stockQuantity = selectedProduct ? selectedProduct.stock : null;
+  }
+  const AddToCart=async()=>{
+  try {
+    const res=await api.post('/api/user/cart',{productId:product?._id,price:Number(productPrice),volume:selectedVolume,stock:stockQuantity})
+    if(res.status===AppHttpStatusCodes.OK){
+      toast.success(res.data.message)
+      dispatch(addToCart(res.data.product));
+    }
+  } catch (error) {
+    if(error instanceof AxiosError){
+      toast.error(error.response?.data.message)
+    }
+  }
+  }
+
 
   return (
     <div className="text-white w-full p-5 ">
@@ -105,53 +122,44 @@ const ProductDetailPage = () => {
             <p className="w-[75%] mt-3 font-">{product?.productDescription}</p>
 
             <h1 className="price font-Bowly text-2xl mt-5">
-              $ {productPrice || product?.productVolumes["20ml"]}
+              $ {productPrice}
             </h1>
             <div className="sizes mt-7">
-              {product &&
-                Object.entries(product.productVolumes || {}).map(([key]) => (
-                  <span
-                    onClick={() => {
-                      productPriceHandler(product.productVolumes[key]);
-                      setSelectedVolume(key);
-                    }}
-                    className={`bg-white text-black p-2 py-3 rounded-md ml-2 font-Bowly cursor-pointer
-                      ${
-                        selectedVolume === key
-                          ? "border-2 border-yellow-400"
-                          : ""
-                      }
-                      `}
-                    key={key}
-                  >
-                    {key}
-                  </span>
-                ))}
+            {product &&
+  product.productPriceStockQuantity.map((val) => (
+    <span
+      onClick={() => {
+        productPriceHandler(val.price);
+        setSelectedVolume(val.volume);
+      }}
+      className={`bg-white text-black p-2 py-3 rounded-md ml-2 font-Bowly cursor-pointer
+        ${selectedVolume === val.volume ? "border-2 border-yellow-400" : ""}
+      `}
+      key={val._id}
+    >
+      {val.volume}
+    </span>
+  ))
+}
             </div>
           </div>
           <p className="mt-6 font-bold">
-            Availability :
-            <span
-              className={
-                product &&
-                (product?.productStockQuantity == 0 ||
-                  product?.productStockQuantity <= 10)
-                  ? "text-red-700"
-                  : "text-white"
-              }
-            >
-              {product
-                ? product.productStockQuantity == 0
-                  ? "Out of Stock"
-                  : product?.productStockQuantity <= 10
-                  ? ` Only ${product.productStockQuantity} are left !!`
-                  : "In Stock"
-                : "Loading.."}
-            </span>
-          </p>
+                Availability: 
+                {stockQuantity !== null ? (
+                    stockQuantity > 0 &&stockQuantity<=10? (
+                        <span className="text-red-700">{` Only ${stockQuantity} stocks are left !!`}</span>
+                    ) : (
+                        stockQuantity===0?(
+                          <span className="text-red-700">Out of Stock</span>
+                        ):(<span > In Stock</span>)
+                    )
+                ) : (
+                    <span>Please select a volume</span>
+                )}
+            </p>
 
           <div className="buttons flex gap-7 mt-6">
-            <button className="flex font-Lilita bg-white text-black px-3 py-2 text-xl rounded-xl gap-2 items-center">
+            <button onClick={AddToCart} className="flex font-Lilita bg-white text-black px-3 py-2 text-xl rounded-xl gap-2 items-center">
               ADD TO CART
               <img
                 className="w-10 h-10"

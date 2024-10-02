@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import { Link } from "react-router-dom";
-import ProductCard from "../../components/ProductCard/ProductCard";
+import ProductCard from "../../components/ProductCard";
 import api from "../../services/apiService";
 import { AxiosError } from "axios";
 import { userProductListing } from "../../utils/endpoints";
 import { toast } from "sonner";
+import { setCartProducts } from "@/store/slices/cartSlice";
+import { useDispatch } from "react-redux";
+import { AppHttpStatusCodes } from "@/types/statusCode";
 interface Categories {
   _id: string;
   categoryName: string;
@@ -17,44 +20,66 @@ interface IProduct {
   productName: string;
   productImages: string[];
   productDescription: string;
-  productStockQuantity: number;
   gender?: "Men" | "Women" | "Unisex";
   productScentType: string;
   productDiscountPrice: number;
-  productVolumes?: { [key: string]: string };
+  productPriceStockQuantity: {
+    volume: string;
+    price: number;
+    stock: number;
+  }[];
   isBlocked?: boolean;
 }
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+  const getCartProducts = async () => {
+    try {
+      const res = await api.get("/api/user/cart");
+      if (res.status === AppHttpStatusCodes.OK) {
+        dispatch(setCartProducts(res.data.cart.products));
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
   const [categories, setCategories] = useState<Categories[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
 
-  const getCategories = async () => {
+  const getCategories = useCallback(async () => {
     try {
       const response = await api.get("/api/user/categories");
       if (response.data.success) {
         setCategories(response.data.categories);
-        console.log(categories);
+        console.log(response.data.categories);
       }
     } catch (error) {
-      if (error instanceof AxiosError) toast.error(error.response?.data.message|| 'something went wrong');
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Something went wrong");
+      }
     }
-  };
-  const getProducts = async () => {
+  }, []); // Empty array ensures this function doesn't change
+
+  const getProducts = useCallback(async () => {
     try {
       const response = await api.get(userProductListing);
       if (response.data.success) {
         setProducts(response.data.products);
       }
     } catch (error) {
-      if (error instanceof AxiosError) toast.error(error.response?.data.message);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message || "Something went wrong");
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
     getCategories();
     getProducts();
-  }, []);
+    getCartProducts();
+  }, [getCategories, getProducts]);
 
   return (
     <>
@@ -83,7 +108,11 @@ const HomePage = () => {
         </p>
         <div className="card-container flex gap-10 justify-center flex-wrap">
           {categories.map((category) => (
-            <Link to={`/categories/${category._id}`} className="w-1/4 h-96">
+            <Link
+              key={category._id}
+              to={`/categories/${category._id}`}
+              className="w-1/4 h-96"
+            >
               <div
                 className={
                   category.categoryName === "Body Perfumes"

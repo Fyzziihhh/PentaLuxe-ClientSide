@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button/Button";
-import InputBox from "../../components/InputBox/InputBox";
+import InputBox from "../../components/InputBox";
 import { Link } from "react-router-dom";
 import api from "../../services/apiService";
 import { useNavigate } from "react-router-dom";

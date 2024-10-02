@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css'; // Your custom styles
 import { Provider } from 'react-redux';
-import { store } from './store/store.ts';
+import store from './store/store.ts';
 
 
 
