@@ -6,6 +6,7 @@ import Button from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { PulseLoader } from "react-spinners";
 
 type SizeInfo = {
   price: string; // Quantity as string
@@ -20,6 +21,7 @@ interface Category {
 }
 
 const AdminAddProduct = () => {
+  const [loading,setLoading]=useState(false)
   const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
 
@@ -172,6 +174,7 @@ const AdminAddProduct = () => {
         formData.append(`productVolumes[${key}][price]`, value.price);
         formData.append(`productVolumes[${key}][stock]`, value.stock);
       });
+  setLoading(true)
 
       const response = await api.post("/api/admin/products", formData, {
         headers: {
@@ -181,6 +184,7 @@ const AdminAddProduct = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
+        setLoading(false)
         navigate("/admin/products");
       }
     } catch (error) {
@@ -206,9 +210,13 @@ const AdminAddProduct = () => {
   }, []);
 
   return (
-    <div className="w-full pb-5 text-gray-200">
-      <h1 className="font-Bowly ml-10 text-4xl pt-7">Add New Product</h1>
-      <div className="flex flex-wrap gap-4 ml-9 mt-5 justify-center">
+    <div className="container mx-auto p-5 text-black">
+    <h1 className="text-3xl font-bold mb-5">Add New Product</h1>
+  
+    <div className="grid grid-cols-2 gap-4">
+      {/* Product Name */}
+      <div className="col-span-1">
+        <label className="block mb-2 text-sm font-bold">Product Name</label>
         <input
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setProductName(event.target.value)
@@ -216,8 +224,13 @@ const AdminAddProduct = () => {
           value={productName}
           placeholder="Product Name"
           type="text"
-          className="w-[45%] h-12 border-2 px-3 py-3 rounded-xl text-gray-600 placeholder:text-gray-600 font-bold font-gilroy"
+          className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-500"
         />
+      </div>
+  
+      {/* Description */}
+      <div className="col-span-1">
+        <label className="block mb-2 text-sm font-bold">Description</label>
         <textarea
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
             setDescription(event.target.value)
@@ -225,161 +238,187 @@ const AdminAddProduct = () => {
           value={description}
           name="product-description"
           placeholder="Description"
-          className="w-[45%] h-36 p-3 rounded-xl resize-none border-2 text-gray-600 placeholder:text-gray-600 font-bold font-gilroy"
+          className="w-full h-36 p-3 pl-10 text-sm text-gray-700 resize-none border-gray-400 border"
         ></textarea>
-
-        <div className="px-5 w-[45%] -mt-10 py-3 shadow-2xl rounded-3xl border-2">
-          <h1 className="font-gilroy font-bold text-2xl mb-5">
-            Product Price And Stock Configuration
-          </h1>
-          <div className="price-container flex flex-col gap-2 font-gilroy font-bold text-xl">
-            {Object.keys(quantities).map((size) => (
-              <div key={size} className="flex gap-4 items-center">
-                <span>{size} :</span>
-                <input
-                  type="number"
-                  name={size}
-                  value={quantities[size].price}
-                  onChange={handlePriceQuantityChange}
-                  className="ml-3 w-28 border-2 text-gray-500 rounded-xl py-1 px-2"
-                  placeholder="Price"
-                />
-                <span>Stock:</span>
-                <input
-                  type="number"
-                  name={size}
-                  value={quantities[size].stock}
-                  onChange={handleStockChange}
-                  className="ml-3 w-28 border-2 text-gray-500 rounded-xl py-1 px-2"
-                  placeholder="Stock"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="add-size-container flex gap-2 mt-4">
-            <input
-              type="text"
-              value={newSize}
-              onChange={(e) => setNewSize(e.target.value)}
-              placeholder="Enter new size (e.g., 20ml, 100ml)"
-              className="border-2 rounded-xl py-1 px-2 text-gray-600"
-            />
-            <button
-              onClick={handleAddSize}
-              className="border-2 rounded-xl py-1 px-2"
-            >
-              Add Size
-            </button>
-          </div>
-        </div>
-
-        <div className="category w-[45%]">
-          <select
-            className="block w-full text-gray-600 font-gilroy font-bold px-4 py-2 pr-8 border-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mt-2"
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              console.log(e.target.value);
-            }}
-          >
-            <option value="" disabled>
-              Select Category
-            </option>
-            {categories.map((category) => (
-              <option key={category._id} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="gender w-[45%]">
-          <select
-            value={selectedGender}
-            id="gender"
-            onChange={handleGenderChange}
-            className="block w-full font-gilroy text-gray-600 font-bold px-4 py-2 pr-8 border-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mt-2"
-          >
-            <option value="" disabled>
-              Select Gender
-            </option>
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Unisex">Unisex</option>
-          </select>
-        </div>
-
-        <div className="flex items-center justify-around w-full ml-9">
-          <div className="scentType w-[45%]">
-            <select
-              onChange={handleScentTypeChange}
-              value={selectedScentType}
-              className="w-full text-gray-600 font-gilroy font-bold px-4 py-2 pr-8 border-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mt-2"
-            >
-              <option value="" disabled>
-                Select Scent Type
-              </option>
-              <option value="Woody">Woody</option>
-              <option value="Fruity">Fruity</option>
-              <option value="Floral">Floral</option>
-              <option value="Citrus">Citrus</option>
-              <option value="Spicy">Spicy</option>
-            </select>
-          </div>
-          <input
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const value = event.target.value;
-              setDiscountPercentage(value === "" ? "" : parseFloat(value));
-            }}
-            value={discountPercentage}
-            placeholder="Discount Percentage"
-            type="number"
-            className="h-12 border-2 text-gray-600 px-3 py-3 rounded-xl placeholder:text-gray-600 font-bold font-gilroy"
-          />
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-            className="border-2 rounded-xl py-1 px-2 text-gray-600"
-          />
-        </div>
-
-        <div className="w-[45%]">
-          {showCropper && selectedImages[currentImageIndex] && (
-            <ImageCropper
-              imageSrc={selectedImages[currentImageIndex]}
-              onClose={handleCloseCropper}
-              onCropComplete={handleCropComplete}
-            />
-          )}
-        </div>
-
-        <div className="cropped-images-preview w-full flex gap-6 items-center justify-center flex-wrap">
-          {croppedImages.map((img, idx) => (
-            <div key={idx} className="relative w-44">
-              <img className="w-full" src={img} alt={`Cropped ${idx}`} />
-              <button
-                className="absolute top-0 right-0 bg-white shadow-md hover:bg-gray-200"
-                onClick={() => {
-                  setCurrentImageIndex(idx);
-                  setShowCropper(true);
-                }}
-              >
-                <i className="fas fa-edit text-gray-300 hover:text-black w-5"></i>
-              </button>
+      </div>
+  
+      {/* Product Price And Stock Configuration */}
+      <div className="col-span-2">
+        <h2 className="text-2xl font-bold mb-5">
+          Product Price And Stock Configuration
+        </h2>
+        <div className="price-container flex flex-col gap-2 font-gilroy font-bold text-xl ">
+          {Object.keys(quantities).map((size) => (
+            <div key={size} className="flex gap-2 items-center">
+              <span>{size} :</span>
+              <input
+                type="number"
+                name={size}
+                value={quantities[size].price}
+                onChange={handlePriceQuantityChange}
+                className="ml-3 w-1/3 p-3  text-sm text-gray-700 border border-gray-600"
+                placeholder="Price"
+              />
+           
+              <input
+                type="number"
+                name={size}
+                value={quantities[size].stock}
+                onChange={handleStockChange}
+                className="ml-3 w-1/3 p-3 pl-10 text-sm text-gray-700"
+                placeholder="Stock"
+              />
             </div>
           ))}
         </div>
+        <div className="add-size-container flex gap-2 mt-4">
+          <input
+            type="text"
+            value={newSize}
+            onChange={(e) => setNewSize(e.target.value)}
+            placeholder="Enter new size (e.g., 20ml, 100ml)"
+            className="w-1/2 p-3 pl-10 text-sm text-gray-700"
+          />
+          <button
+            onClick={handleAddSize}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Add Size
+          </button>
+        </div>
       </div>
-      <div className="w-full flex justify-center">
-        <Button
-          ButtonHandler={sendProductsToServer}
-          text="Add Product"
-          paddingVal={10}
+  
+      {/* Category */}
+      <div className="col-span-1 ">
+        <label className="block mb-2 text-sm font-bold">Category</label>
+        <select
+          className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
+          value={selectedCategory}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            console.log(e.target.value);
+          }}
+        >
+          <option value="" disabled>
+            Select Category
+          </option>
+          {categories.map((category) => (
+            <option key={category._id} value={category.categoryName}>
+              {category.categoryName}
+            </option>
+          ))}
+        </select>
+      </div>
+  
+      {/* Gender */}
+      <div className="col-span-1">
+        <label className="block mb-2 text-sm font-bold">Gender</label>
+        <select
+          value={selectedGender}
+          id="gender"
+          onChange={handleGenderChange}
+          className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
+        >
+          <option value="" disabled>
+            Select Gender
+          </option>
+          <option value="Men">Men</option>
+          <option value="Women">Women</option>
+          <option value="Unisex">Unisex</option>
+        </select>
+      </div>
+  
+      {/* Scent Type and Discount */}
+      <div className="col-span-2 flex gap-4">
+        {/* Scent Type */}
+        <div className="w-1/2">
+          <label className="block mb-2 text-sm font-bold">Scent Type</label>
+          <select
+            onChange={handleScentTypeChange}
+            value={selectedScentType}
+            className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
+          >
+                 <option value="" disabled>
+            Select Scent Type
+          </option>
+          <option value="Woody">Woody</option>
+          <option value="Fruity">Fruity</option>
+          <option value="Floral">Floral</option>
+          <option value="Citrus">Citrus</option>
+          <option value="Spicy">Spicy</option>
+        </select>
+      </div>
+
+      {/* Discount Percentage */}
+      <div className="w-1/2">
+        <label className="block mb-2 text-sm font-bold">Discount Percentage</label>
+        <input
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            const value = event.target.value;
+            setDiscountPercentage(value === "" ? "" : parseFloat(value));
+          }}
+          value={discountPercentage}
+          placeholder="Discount Percentage"
+          type="number"
+          className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
         />
       </div>
     </div>
+
+    {/* Image Upload */}
+    <div className="col-span-2">
+      <label className="block mb-2 text-sm font-bold">Image Upload</label>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleFileChange}
+        className="w-full p-3 pl-10 text-sm text-gray-700"
+      />
+    </div>
+
+    {/* Image Cropper */}
+    {showCropper && selectedImages[currentImageIndex] && (
+      <div className="col-span-2">
+        <ImageCropper
+          imageSrc={selectedImages[currentImageIndex]}
+          onClose={handleCloseCropper}
+          onCropComplete={handleCropComplete}
+        />
+      </div>
+    )}
+
+    {/* Cropped Images Preview */}
+    <div className="col-span-2">
+      <h2 className="text-2xl font-bold mb-5">{croppedImages.length>0&&"Cropped Images"}</h2>
+      <div className="flex gap-6 flex-wrap">
+        {croppedImages.map((img, idx) => (
+          <div key={idx} className="relative w-44">
+            <img className="w-full" src={img} alt={`Cropped ${idx}`} />
+            <button
+              className="absolute top-0 right-0 bg-white shadow-md hover:bg-gray-200"
+              onClick={() => {
+                setCurrentImageIndex(idx);
+                setShowCropper(true);
+              }}
+            >
+              <i className="fas fa-edit text-gray-300 hover:text-black w-5"></i>
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Submit Button */}
+    <div className="w-full flex justify-center mt-5">
+      <Button
+        ButtonHandler={sendProductsToServer}
+        text={loading?<PulseLoader color="#ffff" />:"Add Product"}
+        paddingVal={10}
+      />
+    </div>
+  </div>
+</div>
   );
 };
 

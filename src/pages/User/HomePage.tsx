@@ -6,52 +6,26 @@ import api from "../../services/apiService";
 import { AxiosError } from "axios";
 import { userProductListing } from "../../utils/endpoints";
 import { toast } from "sonner";
-import { setCartProducts } from "@/store/slices/cartSlice";
-import { useDispatch } from "react-redux";
+
 import { AppHttpStatusCodes } from "@/types/statusCode";
+import { IProduct } from "@/types/productTypes";
 interface Categories {
   _id: string;
   categoryName: string;
   categoryImage: string;
 }
 
-interface IProduct {
-  _id: string;
-  productName: string;
-  productImages: string[];
-  productDescription: string;
-  gender?: "Men" | "Women" | "Unisex";
-  productScentType: string;
-  productDiscountPrice: number;
-  productPriceStockQuantity: {
-    volume: string;
-    price: number;
-    stock: number;
-  }[];
-  isBlocked?: boolean;
-}
+
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const getCartProducts = async () => {
-    try {
-      const res = await api.get("/api/user/cart");
-      if (res.status === AppHttpStatusCodes.OK) {
-        dispatch(setCartProducts(res.data.cart.products));
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-      }
-    }
-  };
   const [categories, setCategories] = useState<Categories[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
 
   const getCategories = useCallback(async () => {
     try {
       const response = await api.get("/api/user/categories");
-      if (response.data.success) {
+      if (response.status===AppHttpStatusCodes.OK) {
+        console.log("category",response)
         setCategories(response.data.categories);
         console.log(response.data.categories);
       }
@@ -65,8 +39,10 @@ const HomePage = () => {
   const getProducts = useCallback(async () => {
     try {
       const response = await api.get(userProductListing);
+      console.log(response)
+      const products=response.data.data
       if (response.data.success) {
-        setProducts(response.data.products);
+        setProducts(products);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -78,7 +54,6 @@ const HomePage = () => {
   useEffect(() => {
     getCategories();
     getProducts();
-    getCartProducts();
   }, [getCategories, getProducts]);
 
   return (
@@ -131,7 +106,7 @@ const HomePage = () => {
         <h1 className="font-Quando text-4xl mb-2">New Arraivals</h1>
         <p className="font-gilroy ">Find Your New Favorite Fragrance!</p>
         <div className="New-arraivals-card-container flex justify-center gap-5 px-10 mb-10 mt-5 flex-wrap">
-          {products.map((product) => (
+          {products?.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
@@ -140,7 +115,7 @@ const HomePage = () => {
         <img src="/assets/bg.png" alt="" />
       </div>
 
-      <div className="services w-full h-[300px] mb-5">
+      <div className="services w-full h-[300px] pb-5">
         <h1 className="font-Quando text-center text-4xl">Why Trust Us</h1>
         <div className="services-container w-full flex justify-center items-center gap-5 mt-10">
           <div className="service-card w-[170px] h-40 bg-slate-200 rounded-xl flex flex-col justify-center items-center pt-2">

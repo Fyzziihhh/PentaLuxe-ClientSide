@@ -1,24 +1,20 @@
-
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 
 const MainLayout = () => {
   return (
-  <>
-  <div className="h-screen">
-      <Header />
-      
-    
+    <>
+      <div className="h-screen bg-[#0E101C]">
+        <Header />
 
-      <Outlet />
-      
-    
+        <div className="bg-[#0E101C]">
+          <Outlet />
+        </div>
 
-      <Footer />
+        <Footer />
       </div>
-  </>
-  
+    </>
   );
 };
 

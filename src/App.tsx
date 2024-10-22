@@ -7,6 +7,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import UserRoutes from "./routes/UserRoutes";
 
 const App: React.FC = () => {
+  
   return (
     <Router>
   <Toaster

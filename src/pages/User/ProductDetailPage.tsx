@@ -5,12 +5,12 @@ import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "../../types/statusCode";
 import { IProduct } from "@/types/productTypes";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slices/cartSlice";
 const ProductDetailPage = () => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const [productPrice, setProductPrice] = useState<number|null>(null);
+  const [productPrice, setProductPrice] = useState<number | null>(null);
   // const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [product, setProduct] = useState<IProduct | undefined>(undefined);
@@ -21,10 +21,8 @@ const ProductDetailPage = () => {
     try {
       const response = await api.get(`/api/user/products/${id}`);
       if (response.data.success) {
-        setProduct(response.data.product);
-       
-
-      
+        const {data:product}=response.data
+        setProduct(product);
       }
     } catch (error) {
       if (error instanceof AxiosError)
@@ -41,46 +39,48 @@ const ProductDetailPage = () => {
 
   // const getRelatedProducts = () => {};
 
-  
   useEffect(() => {
     getProducts();
   }, []);
-  
+
   // Set the first key as selected after product data is fetched
   useEffect(() => {
-    if(product&&product.productPriceStockQuantity[0].volume){
-      setSelectedVolume(product.productPriceStockQuantity[0].volume)
-      setProductPrice(product.productPriceStockQuantity[0].price)
-      
-      
+    if (product && product.Variants[0].volume) {
+      setSelectedVolume(product.Variants[0].volume);
+      setProductPrice(product.Variants[0].price);
     }
   }, [product]);
   let stockQuantity = null;
   if (selectedVolume) {
-    const selectedProduct = product?.productPriceStockQuantity.find(product => product.volume === selectedVolume);
+    const selectedProduct = product?.Variants.find(
+      (product) => product.volume === selectedVolume
+    );
     stockQuantity = selectedProduct ? selectedProduct.stock : null;
   }
-  const AddToCart=async()=>{
-  try {
-    const res=await api.post('/api/user/cart',{productId:product?._id,price:Number(productPrice),volume:selectedVolume,stock:stockQuantity})
-    if(res.status===AppHttpStatusCodes.OK){
-      toast.success(res.data.message)
-      dispatch(addToCart(res.data.product));
+  const AddToCart = async () => {
+    try {
+      const res = await api.post("/api/user/cart", {
+        productId: product?._id,
+        volume: selectedVolume,
+        stock: stockQuantity,
+      });
+      if (res.status === AppHttpStatusCodes.OK) {
+        toast.success(res.data.message);
+        dispatch(addToCart(res.data.data));
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      }
     }
-  } catch (error) {
-    if(error instanceof AxiosError){
-      toast.error(error.response?.data.message)
-    }
-  }
-  }
-
+  };
 
   return (
     <div className="text-white w-full p-5 ">
       <div className="product-detail-container h-full w-full flex justify-center items-center  py-2">
         <div className="product-image-section w-1/2 h-full flex items-center gap-5 justify-evenly">
           <div className="side-images-container flex flex-col gap-4">
-            {product?.productImages.map((url, index) => (
+            {product?.Images.map((url, index) => (
               <div
                 onClick={() => {
                   ImageHandler(url);
@@ -100,7 +100,7 @@ const ProductDetailPage = () => {
           <div className="product-main-image w-[70%] h-5/6  rounded-lg overflow-hidden cursor-pointer px-4">
             <img
               className="w-full h-full object-cover border-2 rounded-xl"
-              src={imageUrl ?? product?.productImages[0]}
+              src={imageUrl ?? product?.Images[0]}
               alt=""
             />
           </div>
@@ -108,9 +108,7 @@ const ProductDetailPage = () => {
 
         <div className="product-info-section w-1/2 -mt-10   h-full ml-10">
           <div className="proudct-details w-full h-full  ">
-            <h1 className="bold text-4xl font-Quando">
-              {product?.productName}
-            </h1>
+            <h1 className="bold text-4xl font-Quando">{product?.Name}</h1>
             <div className="rating flex gap-2 mt-2">
               <img src="/assets/star.png" alt="" />
               <img src="/assets/star.png" alt="" />
@@ -119,47 +117,47 @@ const ProductDetailPage = () => {
               <img src="/assets/star.png" alt="" />
               <p className="font-bold">(5.0 rating | 200 reviews)</p>
             </div>
-            <p className="w-[75%] mt-3 font-">{product?.productDescription}</p>
+            <p className="w-[75%] mt-3 font-">{product?.Description}</p>
 
-            <h1 className="price font-Bowly text-2xl mt-5">
-              $ {productPrice}
-            </h1>
+            <h1 className="price font-Bowly text-2xl mt-5">₹{productPrice}</h1>
             <div className="sizes mt-7">
-            {product &&
-  product.productPriceStockQuantity.map((val) => (
-    <span
-      onClick={() => {
-        productPriceHandler(val.price);
-        setSelectedVolume(val.volume);
-      }}
-      className={`bg-white text-black p-2 py-3 rounded-md ml-2 font-Bowly cursor-pointer
+              {product &&
+                product.Variants.map((val) => (
+                  <span
+                    onClick={() => {
+                      productPriceHandler(val.price);
+                      setSelectedVolume(val.volume);
+                    }}
+                    className={`bg-white text-black p-2 py-3 rounded-md ml-2 font-Bowly cursor-pointer
         ${selectedVolume === val.volume ? "border-2 border-yellow-400" : ""}
       `}
-      key={val._id}
-    >
-      {val.volume}
-    </span>
-  ))
-}
+                    key={val._id}
+                  >
+                    {val.volume}
+                  </span>
+                ))}
             </div>
           </div>
           <p className="mt-6 font-bold">
-                Availability: 
-                {stockQuantity !== null ? (
-                    stockQuantity > 0 &&stockQuantity<=10? (
-                        <span className="text-red-700">{` Only ${stockQuantity} stocks are left !!`}</span>
-                    ) : (
-                        stockQuantity===0?(
-                          <span className="text-red-700">Out of Stock</span>
-                        ):(<span > In Stock</span>)
-                    )
-                ) : (
-                    <span>Please select a volume</span>
-                )}
-            </p>
+            Availability:
+            {stockQuantity !== null ? (
+              stockQuantity > 0 && stockQuantity <= 10 ? (
+                <span className="text-red-700">{` Only ${stockQuantity} stocks are left !!`}</span>
+              ) : stockQuantity === 0 ? (
+                <span className="text-red-700">Out of Stock</span>
+              ) : (
+                <span> In Stock</span>
+              )
+            ) : (
+              <span>Please select a volume</span>
+            )}
+          </p>
 
           <div className="buttons flex gap-7 mt-6">
-            <button onClick={AddToCart} className="flex font-Lilita bg-white text-black px-3 py-2 text-xl rounded-xl gap-2 items-center">
+            <button
+              onClick={AddToCart}
+              className="flex font-Lilita bg-white text-black px-3 py-2 text-xl rounded-xl gap-2 items-center"
+            >
               ADD TO CART
               <img
                 className="w-10 h-10"
@@ -182,6 +180,11 @@ const ProductDetailPage = () => {
                 />
               </svg>
             </button>
+           
+           <button>
+            
+           </button>
+
           </div>
         </div>
       </div>

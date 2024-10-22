@@ -1,22 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IProduct } from '@/types/productTypes'; // Import your product type definition
+// Import your product type definition
+import { Cart } from '@/types/cartProductTypes';
 
-interface CartProduct {
-  stock: number;
-  price: number;
-  quantity: number;
-  volume: string;
-  product: IProduct;
-  _id: string;
-}
+
 
 interface CartState {
-  products: CartProduct[];
+  products: Cart[];
 }
 
 const initialState: CartState = {
   products: [],
 };
+
+export interface RootState{
+  cart:CartState
+}
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -25,14 +23,14 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
         state.products.push(action.payload);
       },
-    setCartProducts:(state, action: PayloadAction<CartProduct[]>) =>{
+    setCartProducts:(state, action: PayloadAction<Cart[]>) =>{
       state.products = action.payload;
     },
 
     changeQuantity(state, action: PayloadAction<{ id: string; action:string; stock: number }>) {
       const product = state.products.find((item) => item._id === action.payload.id);
       if (product) {
-        if (action.payload.action === 'INC' && product.quantity < product.stock) {
+        if (action.payload.action === 'INC' && product.quantity < action.payload.stock) {
           product.quantity += 1;
         } else if (action.payload.action === 'DEC' && product.quantity > 1) {
           product.quantity -= 1;

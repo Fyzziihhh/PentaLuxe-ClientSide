@@ -2,21 +2,8 @@ import  { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../services/apiService'
 import ProductCard from '../../components/ProductCard';
-interface IProduct {
-    _id:string;
-    // CategoryId:{
-    //     categoryName:string;
-    // }
-    productName: string; 
-    productImages: string[];     // Array of product image URLs
-    productDescription: string;
-    productStockQuantity: number;
-    gender?: 'Men' | 'Women' | 'Unisex'; 
-    productScentType: string;
-    productDiscountPrice: number;
-    productVolumes?: {[key:string]:string}; 
-    isBlocked?: boolean;  
-  }
+import { IProduct } from '@/types/productTypes';
+
   
 const CategoryPage = () => {
     const [products,setProducts]=useState<IProduct[]>([])
@@ -27,7 +14,8 @@ const getAllProudctByCategory=async()=>{
 
         const res=await api.get(`/api/user/categories/${id}`)
         if(res.data.success){
-            setProducts(res.data.products)
+          const {data:products}=res.data
+            setProducts(products)
         }
     } catch (error) {
         

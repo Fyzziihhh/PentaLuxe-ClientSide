@@ -4,16 +4,64 @@ import SearchIcon from "../components/SearchIcon/SearchIcon";
 import { FaUserAlt } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { FaCartShopping } from "react-icons/fa6";
-import { useSelector, UseSelector } from "react-redux";
+import { useDispatch, useSelector, UseSelector } from "react-redux";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { setCartProducts } from "@/store/slices/cartSlice";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { AppHttpStatusCodes } from "@/types/statusCode";
+import api from "@/services/apiService";
+import { Heart } from "lucide-react";
 
 const Header = () => {
-  const cartLength=useSelector((state:any)=>state.cart.products?.length)
+  const dispatch = useDispatch();
+  const getCartProducts = async () => {
+    try {
+      const res = await api.get("/api/user/cart");
+      if (res.status === AppHttpStatusCodes.OK) {
+        if (res.data.cart.products) {
+          dispatch(setCartProducts(res.data.cart.products));
+        } else {
+          dispatch(setCartProducts([]));
+        }
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
+  const cartLength = useSelector((state: any) => state.cart.products?.length);
+
+  const activeHeartSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="45px"
+      height="45px"
+      className="fill-current text-red-700"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+  );
+
+  const inactiveHeartSVG = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="40px"
+      height="40px"
+      className="stroke-current text-white"
+      strokeWidth="2"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+  );
   const Navigate = useNavigate();
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("accessToken")
@@ -30,11 +78,16 @@ const Header = () => {
   const logoutHandler = async () => {
     localStorage.clear();
     setAccessToken(null);
+    dispatch(setCartProducts([]));
   };
 
   useEffect(() => {
     setAccessToken(localStorage.getItem("accessToken"));
   }, [accessToken]);
+
+  useEffect(() => {
+    getCartProducts();
+  }, []);
 
   return (
     <nav className="flex justify-between  items-center w-full h-[15%] p-10">
@@ -92,7 +145,7 @@ const Header = () => {
             />
 
             {isOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-lg">
+              <div className="absolute z-50 right-0 mt-2 w-48 bg-white border border-gray-300 shadow-lg rounded-lg">
                 <ul className="py-1">
                   <Link to="/profile">
                     <li
@@ -133,9 +186,17 @@ const Header = () => {
             </svg>
           </Link>
         )}
-        <Link to="/wishlist">
-          <FaRegHeart size={35} />
-        </Link>
+        <NavLink
+          to="/wishlist"
+          className={({ isActive }) => (isActive ? "active-link" : "")}
+        >
+          {({ isActive }) => (
+            // <div>{isActive ? activeHeartSVG : inactiveHeartSVG}</div>
+            <div className="bg-gray-200 p-2 rounded">
+            <Heart color="#b10b0b" strokeWidth={2.5} />
+          </div>
+          )}
+        </NavLink>
         <div className="relative">
           <TooltipProvider>
             <Tooltip>
@@ -152,7 +213,7 @@ const Header = () => {
           </TooltipProvider>
 
           <div className="w-5 h-5 bg-green-600 text-zinc-300 rounded-full absolute -top-2 -right-1 flex justify-center items-center">
-           {cartLength}
+            {cartLength || 0}
           </div>
         </div>
       </div>

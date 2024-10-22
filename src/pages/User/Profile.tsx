@@ -16,7 +16,8 @@ const Profile = () => {
   const getUserProfile = async () => {
     try {
       const res = await api.get("/api/user/profile");
-      if (res.status === AppHttpStatusCodes.OK) setUser(res.data.user);
+    
+      if (res.status === AppHttpStatusCodes.OK) setUser(res.data.data);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === AppHttpStatusCodes.NOT_FOUND)
@@ -118,3 +119,8 @@ const Profile = () => {
 };
 
 export default Profile;
+
+
+
+
+

@@ -3,8 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import MinimalLayout from "../layout/MinimalLayout";
 import { ROUTES } from "../constants/routes";
-import CartPage from "../pages/User/CartPage";
+// import CartPage from "../pages/User/CartPage";
 import WishListPage from "../pages/User/WishListPage";
+// import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
+
 
 // import Address from "../pages/User/Address";
 
@@ -20,6 +22,11 @@ const UserProfileLayout = lazy(() => import("../layout/UserProfileLayout"));
 const Profile = lazy(() => import("../pages/User/Profile"));
 const Address = lazy(() => import("../pages/User/Address"));
 const AddAndEditAddress = lazy(() => import("../pages/User/AddAndEditAddress"));
+const CheckOutPage = lazy(() => import("../pages/User/CheckOutPage"));
+const OrderPage = lazy(() => import("@/pages/User/OrdersPage"));
+const OrderSuccessPage = lazy(() => import("@/pages/User/OrderSuccessPage"));
+const CartPage = lazy(() => import("../pages/User/CartPage"));
+const OrderDetailsPage = lazy(() => import("@/pages/User/OrderDetailsPage"));
 
 const UserRoutes: React.FC = () => (
   <Routes>
@@ -33,6 +40,11 @@ const UserRoutes: React.FC = () => (
       <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryPage />} />
       <Route  path={ROUTES.PROFILE} element={<UserProfileLayout />}>
         <Route index element={<Profile />} />
+      <Route path={ROUTES.ORDERS}>
+      <Route index element={<OrderPage/>}/>
+      <Route path="view-details" element={<OrderDetailsPage/>}/>
+
+      </Route>
         <Route path="address-book">
           <Route index element={<Address/>}/>
           <Route  path=":id" element={<AddAndEditAddress />} />
@@ -41,6 +53,8 @@ const UserRoutes: React.FC = () => (
       </Route>
       <Route path={ROUTES.CART} element={<CartPage/>}/>
       <Route path={ROUTES.WISHLIST} element={<WishListPage/>}/>
+      <Route path={ROUTES.CHECK_OUT} element={<CheckOutPage/>}/>
+      <Route path="order/success" element={<OrderSuccessPage/>}/>
     </Route>
 
     <Route element={<MinimalLayout />}>

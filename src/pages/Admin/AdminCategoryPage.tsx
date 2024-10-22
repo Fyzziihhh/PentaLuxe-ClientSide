@@ -3,20 +3,22 @@ import Modal from "react-modal";
 import api from "../../services/apiService";
 import { AxiosError } from "axios";
 import { adminCategory } from "../../utils/endpoints";
-import {  toast } from "sonner";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import DeleteModal from "../../components/DeleteModal";
-interface ItemToDelete{
-  id:string;
-  name:string
-}
+import { FaPlus, FaEdit, FaTrash, FaUpload } from "react-icons/fa";
+import Pagination from "@/components/Pagination";
 
-interface categories {
+interface ICategories {
   _id: string;
   categoryName: string;
   categoryImage: string;
 }
 const AdminCategoryPage = () => {
+  const [paginatedCategories, setPaginatedCategories] = useState<ICategories[]>(
+    []
+  );
+
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const [isModal, setIsModal] = useState(false);
@@ -28,9 +30,9 @@ const AdminCategoryPage = () => {
   };
   const [categoryName, setCategoryName] = useState("");
   const [categoryImage, setCategoryImage] = useState<File | null>(null);
-  const [categories, setCategories] = useState<categories[]>([]);
+  const [categories, setCategories] = useState<ICategories[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [itemToDelete,setItemToDelete] = useState<ItemToDelete | null>(null)
+  const [itemId, setItemId] = useState("");
   const onCategoryAdd = async () => {
     if (!categoryImage || categoryName.trim() === "") {
       toast.error("All fields are required");
@@ -66,22 +68,25 @@ const AdminCategoryPage = () => {
     }
   };
 
-  const openModal=(id:string,name:string)=>{
-     setModalIsOpen(true)
-     setItemToDelete({
-      id,
-      name
-     })
-  }
-  const closeModal=()=>{
-    setModalIsOpen(false)
-  }
+  const openModal = (id: string) => {
+    setModalIsOpen(true);
+    setItemId(id);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   const onDeleteCategory = async (_id: string) => {
-    
-    const response = await api.delete(`/api/admin/categories/${_id}`);
-    if (response.data.success) {
-      setRefresh(prev => !prev);
+    try {
+      const response = await api.delete(`/api/admin/categories/${_id}`);
+      if (response.data.success) {
+        toast.success("Category deleted successfully");
+        setRefresh((prev) => !prev);
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      if (error instanceof AxiosError)
+        toast.error(error.response?.data.message || "Something Went Wrong");
     }
   };
 
@@ -90,15 +95,12 @@ const AdminCategoryPage = () => {
       const response = await api.get("/api/admin/categories");
       if (response.data.success) {
         setCategories(response.data.categories);
-
-        console.log(categories);
+        setPaginatedCategories(response.data.categories); // Set paginated categories here
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 403) {
-            navigate("/admin");
-          }
+        if (error.response?.status === 403) {
+          navigate("/admin");
         }
       }
     }
@@ -113,139 +115,144 @@ const AdminCategoryPage = () => {
     }
   };
 
-
-
+  const handlePagination = (items: ICategories[]) => {
+    setPaginatedCategories(items);
+  };
 
   useEffect(() => {
     getCategories();
   }, [refresh]);
   return (
-    <div className="category-container text-white  h-full">
-      
-    
+    <div className="bg-gradient-to-r from-blue-100 to-purple-100 min-h-screen p-8">
+      {/* Delete Modal */}
       <DeleteModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        item={itemToDelete}
+        item={itemId}
         onDelete={onDeleteCategory}
+        text="Are you sure? All products belonging to this category will be deleted."
       />
-      <h1 className="text-4xl font-Bowly text-white text-center ">
-        Category Management
+
+      {/* Title */}
+      <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
+        Manage Categories
       </h1>
-      <button
-        onClick={isModalOpen}
-        className="bg-[#0043F4] flex items-center justify-center p-3 rounded-xl font-gilroy text-xl gap-3 font-bold ml-5 mt-5 "
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="2rem"
-          height="2rem"
-          viewBox="0 0 24 24"
+
+      {/* Add Category Button */}
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={isModalOpen}
+          className="bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg hover:bg-green-600 transition flex items-center gap-2"
         >
-          <path
-            fill="currentColor"
-            d="M2 2h9v9H2zm15.5 0C20 2 22 4 22 6.5S20 11 17.5 11S13 9 13 6.5S15 2 17.5 2m-11 12l4.5 8H2zM19 17h3v2h-3v3h-2v-3h-3v-2h3v-3h2z"
-          />
-        </svg>
-        Add Category
-      </button>
+          <FaPlus className="h-5 w-5" />
+          Add Category
+        </button>
+      </div>
+
+      {/* Add Category Modal */}
       <Modal
         isOpen={isModal}
         onRequestClose={isModelClose}
         contentLabel="Add New Category"
-        className="w-2/6 flex flex-col justify-center items-center m-auto mt-5 p-6 rounded-xl bg-white relative shadow-lg"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+        className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative text-gray-700"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center"
       >
-        {/* Close Button */}
         <button
           onClick={isModelClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none text-3xl"
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 focus:outline-none"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 512 512"
-          >
-            <path
-              fill="currentColor"
-              d="M105.367 18.328c23.14 15.444 46.098 31.27 68.55 47.572c-45.055-20.895-94.51-35.918-149.37-44.246c46.697 26.72 91.596 55.58 135.705 85.524c-37.203-18.033-77.48-32.22-121.602-41.37c58.218 34.322 109.368 72.465 154.71 114.206C136.02 227.227 86.295 284.717 45.79 354.18c27.11-24.29 54.91-47.545 82.868-70.68C81.942 339.36 45.05 405.01 20.2 482.135c20.36-24.62 40.988-48.203 61.905-70.817c44.7-67.485 89.567-147.11 148.856-170.418c-29.61 30.708-63.36 75.164-98.25 118.145c40.99-40.437 83.09-77.46 126.415-111.512c61.598 70.49 110.757 149.38 152.145 235.873c-6.738-44.794-16.796-87.384-30.03-127.666l46.444 65.53s-26.037-72.69-43.66-101.987c40.76 55.91 78.208 114.428 112.328 175.205c-18.674-89.454-50.512-169.772-98.893-238.224a1783 1783 0 0 1 100.93 109.045C465.048 288.827 423.58 221.82 372.214 167c40.224-25.887 81.48-49.73 123.863-71.783a757 757 0 0 0-92.006 21.934c21.836-16.173 44.41-32.124 67.024-47.523c-37.987 11.91-74.633 25.775-109.067 41.433c42.668-27.673 86.32-53.668 131.004-78.602h-.003c-67.47 18.055-130.83 42.19-188.998 73.548c-56.294-41.79-122.01-71.787-198.663-87.68z"
-            />
-          </svg>
+          <FaTrash className="h-6 w-6" />
         </button>
 
-        <div className="max-w-md bg-white mx-auto p-8 rounded-xl shadow-lg">
-          <h1 className="mb-6 text-2xl font-gilroy text-center text-gray-800">
-            Create New Category
-          </h1>
+        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-5">
+          Create New Category
+        </h2>
 
-          <div className="space-y-6">
+        <div className="space-y-5">
+          {/* Category Name Input */}
+          <div className="flex items-center border-b border-gray-300 py-2">
+            <FaEdit className="h-5 w-5 text-gray-400 mr-3" />
             <input
               type="text"
               placeholder="Category Name"
               value={categoryName}
-              className="w-full px-5 py-3 rounded-lg border border-gray-300 outline-none placeholder-gray-500 text-gray-600 font-bold font-gilroy focus:ring-2 focus:ring-indigo-500"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setCategoryName(event.target.value)
-              }
+              onChange={(event) => setCategoryName(event.target.value)}
+              className="w-full p-2 focus:outline-none"
             />
-            //category Image File
+          </div>
+
+          {/* Category Image Input */}
+          <div className="flex items-center border-b border-gray-300 py-2">
+            <FaUpload className="h-5 w-5 text-gray-400 mr-3" />
             <input
               type="file"
               name="categoryImage"
               onChange={onHandleFile}
-              className=" text-black"
+              className="w-full text-gray-600 focus:outline-none"
             />
-            <button
-              onClick={onCategoryAdd}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold font-gilroy transition"
-            >
-              Upload
-            </button>
           </div>
+
+          {/* Submit Button */}
+          <button
+            onClick={onCategoryAdd}
+            className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center justify-center gap-2"
+          >
+            <FaUpload className="h-5 w-5" />
+            Upload
+          </button>
         </div>
       </Modal>
 
-      <table className="text-white font-gilroy font-bold mt-5 border-4 w-[80%] mx-auto h-auto mb-6">
-        <thead className="flex justify-between items-center px-16 py-5">
-          <tr className="text-xl flex gap-10 items-center justify-between w-full">
-            <th className="w-32 text-center">Category Image</th>
-            <th className="flex-1 text-center">Category Name</th>
-            <th className="flex-1 text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="flex flex-col gap-5 w-full pb-5">
-          {categories.map((category) => (
-            <tr
-              key={category._id}
-              className="text-lg flex gap-10 items-center justify-between px-16 mt-5"
-            >
-              <td className="w-28  h-32 text-center">
-                <img
-                  className="h-full w-full object-cover rounded-lg"
-                  src={category.categoryImage}
-                  alt="Attars"
-                />
-              </td>
-              <td className="flex-1 text-center">{category.categoryName}</td>
-              <td className="flex gap-5 justify-center flex-1">
-                <button
-                  onClick={() => onEditCategory(category._id)}
-                  className="px-5 py-3 bg-green-700 rounded-xl text-white "
-                >
-                  Edit
-                </button>
-                <button
-                  className="px-5 py-3 bg-red-700 rounded-xl text-white "
-                  onClick={() => openModal(category._id,category.categoryName)}
-                >
-                  Delete
-                </button>
-              </td>
+      {/* Category List Table */}
+      <div className="overflow-x-auto mt-8">
+        <table className="min-w-full bg-white rounded-lg shadow-lg">
+          <thead className="bg-blue-500 text-white rounded-t-lg">
+            <tr>
+              <th className="p-4 text-left">Category Image</th>
+              <th className="p-4 text-left">Category Name</th>
+              <th className="p-4 text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedCategories.map((category) => (
+              <tr key={category._id} className="hover:bg-gray-100 transition">
+                <td className="p-4">
+                  <img
+                    src={category.categoryImage}
+                    alt={category.categoryName}
+                    className="h-16 w-16 object-cover rounded-lg shadow"
+                  />
+                </td>
+                <td className="p-4 text-gray-700">{category.categoryName}</td>
+                <td className="p-4 text-center flex justify-center space-x-3">
+                  {/* Edit Button */}
+                  <button
+                    onClick={() => onEditCategory(category._id)}
+                    className="bg-yellow-500 text-white py-2 px-4 rounded-lg shadow hover:bg-yellow-600 transition flex items-center gap-2"
+                  >
+                    <FaEdit className="h-5 w-5" />
+                    Edit
+                  </button>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => openModal(category._id)}
+                    className="bg-red-500 text-white py-2 px-4 rounded-lg shadow hover:bg-red-600 transition flex items-center gap-2"
+                  >
+                    <FaTrash className="h-5 w-5" />
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        items={categories}
+        itemsPerPage={2}
+        onPageChange={handlePagination}
+      />
     </div>
   );
 };

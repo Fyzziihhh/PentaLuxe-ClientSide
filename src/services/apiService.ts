@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
+import { useNavigate } from "react-router-dom";
 
 const api = axios.create({
   headers: {
@@ -37,19 +38,28 @@ api.interceptors.request.use(
   }
 );
 
+// const navigate=useNavigate()
 // api.interceptors.response.use(
 //   (response) => response,
 //   async (error) => {
 //     const originalRequest = error.config;
-//     if (error.response.status === AppHttpStatusCodes.UNAUTHORIZED && !originalRequest._retry) {
+
+//     // Check for FORBIDDEN error
+//     if (error.response && error.response.status === AppHttpStatusCodes.FORBIDDEN && !originalRequest._retry) {
 //       originalRequest._retry = true;
-//       const newToken = await refreshAccessToken();
-//       if (newToken) {
-//         originalRequest.headers.authorization = `Bearer ${newToken}`;
-//         return api(originalRequest);
-//       }
+
+//       // Redirect to login
+//       navigate('/login');
+
+//       // Uncomment this block if you implement token refreshing
+//       // const newToken = await refreshAccessToken();
+//       // if (newToken) {
+//       //   originalRequest.headers.authorization = `Bearer ${newToken}`;
+//       //   return api(originalRequest);
+//       // }
 //     }
-//     return Promise.reject(error)
+
+//     return Promise.reject(error);
 //   }
 // );
 

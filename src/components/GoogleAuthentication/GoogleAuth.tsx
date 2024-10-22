@@ -4,6 +4,7 @@ import { auth, provider } from "./Config";
 import { signInWithPopup } from "firebase/auth";
 import api from "../../services/apiService";
 import { Toaster, toast } from "sonner";
+import { AppHttpStatusCodes } from "@/types/statusCode";
 type GoogleAuthProps = {
   text: string;
 };
@@ -18,9 +19,10 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ text }) => {
             username: data.user.displayName,
             email: data.user.email,
           });
-          if (response.data.success) {
-            localStorage.setItem("accessToken", response.data.accessToken);
-            localStorage.setItem("refreshToken", response.data.refreshToken);
+          if (response.status===AppHttpStatusCodes.OK) {
+            const data=response.data.data
+            localStorage.setItem("accessToken",data.accessToken);
+            localStorage.setItem("refreshToken", data.refreshToken);
        
             const promise = () =>
               new Promise((resolve) =>

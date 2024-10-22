@@ -1,15 +1,19 @@
  export interface IProduct {
     _id: string;
-    productName: string;
-    productImages: string[]; 
-    productDescription: string;
-    gender?: "Men" | "Women" | "Unisex"; 
-    productScentType: string;
-    productDiscountPrice: number;
-    productPriceStockQuantity: {
+    CategoryId:{
+      categoryName:string;
+    }
+    Name: string;
+    Images: string[]; 
+    Description: string;
+    Gender?: "Men" | "Women" | "Unisex"; 
+    ScentType: string;
+    DiscountPercentage: number;
+    Variants: {
       _id: string;
       volume: string;
       price: number;
       stock: number;
     }[];
+    isBlocked:boolean;
   }

@@ -33,7 +33,7 @@ const OtpVerifyPage = () => {
     event.preventDefault();
     try {
       let otpCode = otp.join("");
-      toast.success(otpCode);
+     
       let response = await api.post("/api/user/otp-verify", {
         otp: otpCode,
         email: id,

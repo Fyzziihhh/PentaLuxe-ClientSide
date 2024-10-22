@@ -49,7 +49,7 @@ const UserProfileLayout = () => {
   const getUserProfile = async () => {
     try {
       const res = await api.get("/api/user/profile");
-      if (res.status === AppHttpStatusCodes.OK) setUser(res.data.user);
+      if (res.status === AppHttpStatusCodes.OK) setUser(res.data.data);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === AppHttpStatusCodes.NOT_FOUND)
@@ -64,14 +64,14 @@ const UserProfileLayout = () => {
   }, []);
 
   return (
-    <div className=" w-full container  h-auto flex gap-9 p-10 text-black px-20">
-      <div className="sidebar w-[25%] rounded-lg bg-white px-3 py-4">
+    <div className=" w-full container  h-auto flex gap-9 p-10 text-black px-20 text-white">
+      <div className="sidebar w-[25%] rounded-lg bg-secondary px-3 py-4  h-[500px]">
         <div className="user-details flex flex-col items-center gap-1">
           <div className="user-avatar w-20 h-20 bg-gray-200 rounded-full text-center content-center font-bold text-4xl text-gray-400">
             {user?.username.slice(0, 2).toUpperCase()}
           </div>
           <h1 className="text-base font-bold">{user?.username}</h1>
-          <p className="text-gray-600 -mt-2 font-bold text-sm mb-2">{user?.email}</p>
+          <p className="text-gray-500 -mt-2 font-bold text-sm mb-2">{user?.email}</p>
         </div>
         <div className="sections flex flex-col gap-2 ">
           {sideBarLinks.map((link) => (
@@ -81,7 +81,7 @@ const UserProfileLayout = () => {
            end={link.name!=='Address Book'}
            className={({ isActive }) =>
              `rounded-md p-3 font-bold transition duration-300  ${
-               isActive ? 'text-blue-600 bg-gray-200' : 'text-gray-800 hover:bg-gray-100'
+               isActive ? 'text-blue-600 bg-gray-200' : 'text-gray-500 hover:bg-gray-100'
              }`
            }
          >
@@ -90,7 +90,7 @@ const UserProfileLayout = () => {
           ))}
         </div>
       </div>
-      <div className="content px-10 py-5 w-[90%] bg-white rounded-lg">
+      <div className="content px-10 py-5 w-[90%]  rounded-lg">
         <Outlet />
       </div>
     </div>

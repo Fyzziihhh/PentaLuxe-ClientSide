@@ -1,22 +1,25 @@
+import { title } from 'process';
 import React from 'react';
 import Modal from 'react-modal';
 interface IDeleteModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
-    item: {
-      id: string;
-      name: string;
-    } | null;  // The item can be null if no item is selected
-    onDelete: (id: string) => void;  // Pass the id to the delete handler
+  item?:string
+    onDelete: (id: string) => void; 
+    text:string; 
+    title?:string
   }
-// Bind modal to your appElement (important for accessibility)
+
+
 Modal.setAppElement('#root');
 
 const DeleteModal:React.FC<IDeleteModalProps> = ({
   isOpen,
   onRequestClose,
   item,
-  onDelete
+  onDelete,
+  text,
+  title
 }) => {
   return (
     <Modal
@@ -27,9 +30,9 @@ const DeleteModal:React.FC<IDeleteModalProps> = ({
       overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-75"
     >
       <div className="bg-white rounded-lg shadow-md p-6 w-96 max-w-sm">
-        <h2 className="text-lg font-semibold mb-4">Delete Confirmation</h2>
+        <h2 className="text-lg font-bold mb-4 text-black font-montserrat">{!title?"Delete Confirmation":title}</h2>
         <p className="text-base text-black mb-6">
-          Are you sure you want to delete <strong>{item?.name}</strong>? This action cannot be undone.
+        {text}
         </p>
         <div className="flex justify-end gap-4">
           <button
@@ -41,7 +44,8 @@ const DeleteModal:React.FC<IDeleteModalProps> = ({
           <button
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm"
             onClick={() => {
-              if (item && item.id) onDelete(item?.id);
+             
+              item && onDelete(item);
               onRequestClose();
             }}
           >
