@@ -9,7 +9,7 @@ import DeleteModal from "../../components/DeleteModal";
 import { FaPlus, FaEdit, FaTrash, FaUpload } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
 
-interface ICategories {
+ export interface ICategories {
   _id: string;
   categoryName: string;
   categoryImage: string;

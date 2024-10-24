@@ -83,6 +83,8 @@ const CheckOutPage = () => {
 
   const products = useSelector((state: RootState) => state.cart.products);
   const totalPrice = location.state?.totalPrice || 0;
+  const couponDiscount=location.state?.discountAmount
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [formState, setFormState] = useState<Record<FormKeys, string>>({
@@ -242,6 +244,7 @@ const CheckOutPage = () => {
       items,
       paymentMethod: selectedPaymentMethod,
       totalAmount: totalPrice,
+      couponDiscount
     };
 
     try {
@@ -323,7 +326,7 @@ const CheckOutPage = () => {
       const response = await api.post("/api/user/place-order", orderDetails);
 
       if (response.status === AppHttpStatusCodes.CREATED) {
-        console.log("skljflslslflslflsl");
+      
         console.log("order success", response);
         handleOrderSuccess(response.data.data);
       }
@@ -460,7 +463,7 @@ const CheckOutPage = () => {
           <h1 className="font-bold text-xl">Order Summary</h1>
           <div className="cart-products mt-3 flex flex-col gap-2">
             {products.map((product) => (
-              <div className="product flex gap-5 items-center  w-full pb-5">
+              <div key={product.product._id} className="product flex gap-5 items-center  w-full pb-5">
                 <img
                   width="50"
                   height="50"
@@ -477,7 +480,7 @@ const CheckOutPage = () => {
                     </span>
                     -{" "}
                     <span className="font-bold">
-                      {product.variant.price * product.quantity}
+                      {product.variant.price-((product.variant.price*product.product.DiscountPercentage)/100) * product.quantity}
                     </span>
                   </h1>
                 </div>

@@ -1,28 +1,12 @@
 import DeleteModal from "@/components/DeleteModal";
 import api from "@/services/apiService";
-import { IAddress } from "@/types/AddressTypes";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export interface IOrder {
-  _id: string;
-  totalAmount: number;
-  orderDate: string;
-  paymentMethod: string;
-  status: string;
-  shippingAddress: IAddress;
-  items: {
-    productImage: string | undefined;
-    productId: string;
-    productName: string;
-    quantity: number;
-    price: number;
-    subtotal: number;
-  }[];
-}
+import { IOrder } from "@/types/orderTypes";
 
 const OrdersPage = () => {
 const [item,setItem]=useState('')

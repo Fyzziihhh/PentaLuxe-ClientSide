@@ -96,154 +96,153 @@ const AdminProductsPage = () => {
   }, [refresh]);
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 h-full">
-      <DeleteModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        item={itemId}
-        onDelete={onProductDelete}
-        text="Are you sure you want to delete this product? This action cannot be undone"
-      />
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 border-b pb-4">
-        Admin Product Management
-      </h1>
-
-      <div className="flex justify-between items-center mb-8">
-        <Link to="/admin/products/add">
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out flex items-center space-x-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-            <span>Add Product</span>
-          </button>
-        </Link>
-        <div className="flex gap-3">
-          <input
-            placeholder="Search for product"
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            className="w-64 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out text-gray-500 font-bold"
-          />
-          <button
-            onClick={onSearchProducts}
-            className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+    <div className="container mx-auto p-6 bg-gray-50 h-full w-full">
+    <DeleteModal
+      isOpen={isModalOpen}
+      onRequestClose={() => setModalIsOpen(false)}
+      item={itemId}
+      onDelete={onProductDelete}
+      text="Are you sure you want to delete this product? This action cannot be undone"
+    />
+    <h1 className="text-4xl font-bold text-gray-800 mb-8 border-b pb-4">
+      Admin Product Management
+    </h1>
+  
+    <div className="flex justify-between items-center mb-8 w-full">
+      <Link to="/admin/products/add">
+        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out flex items-center space-x-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            Search
-          </button>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Product Image
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Description
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {displayedProducts.map((product, index) => (
-              <tr key={index}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <img
-                    src={product.Images[0]}
-                    alt={product.Name}
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {product.Name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.CategoryId?.categoryName || "N/A"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.Variants[0]?.price || "N/A"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {product.Variants[0]?.stock || "N/A"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      !product.isBlocked
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {product.isBlocked ? "BLOCKED" : "ACTIVE"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <div className="max-w-xs overflow-hidden">
-                    <p className="truncate" title={product.Description}>
-                      {product.Description}
-                    </p>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap space-x-2">
-                  <button
-                    onClick={() =>
-                      navigate(`/admin/products/edit/${product._id}`)
-                    }
-                    className="text-indigo-600 hover:text-indigo-900 font-bold"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => openModal(product._id)}
-                    className="text-red-600 hover:text-red-900 font-bold"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-6">
-        <Pagination
-          items={searchedProducts.length > 0 ? searchedProducts : products}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePagination}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          <span>Add Product</span>
+        </button>
+      </Link>
+      <div className="flex gap-3">
+        <input
+          placeholder="Search for product"
+          type="text"
+          value={input}
+          onChange={handleInputChange}
+          className="w-64 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out text-gray-500 font-bold"
         />
+        <button
+          onClick={onSearchProducts}
+          className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Search
+        </button>
       </div>
     </div>
+  
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Product Image
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Name
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Category
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Price
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Discount Percentage
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Stock
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {displayedProducts.map((product, index) => (
+            <tr key={index} className={`hover:bg-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : ''}`}>
+              <td className="px-6 py-4 whitespace-nowrap text-center">
+                <img
+                  src={product.Images[0]}
+                  alt={product.Name}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-900">
+                {product.Name}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                {product.CategoryId?.categoryName || "N/A"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                {product.Variants[0]?.price || "N/A"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+               {product.DiscountPercentage} %
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                {product.Variants[0]?.stock === 0 ? "Out Of Stock" : product.Variants[0]?.stock || "N/A"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    !product.isBlocked
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {product.isBlocked ? "BLOCKED" : "ACTIVE"}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-center space-x-2">
+                <button
+                  onClick={() => navigate(`/admin/products/edit/${product._id}`)}
+                  className="text-indigo-600 hover:text-indigo-900 font-bold"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => openModal(product._id)}
+                  className="text-red-600 hover:text-red-900 font-bold"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div className="mt-6">
+      <Pagination
+        items={searchedProducts.length > 0 ? searchedProducts : products}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePagination}
+      />
+    </div>
+  </div>
+  
+  
+  
+  
+  
   );
 };
 

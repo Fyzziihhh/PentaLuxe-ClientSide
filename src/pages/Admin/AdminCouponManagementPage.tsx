@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 export interface ICoupon {
   _id?:string;
   couponName: string;
-  expiryDate: Date;
+  expiryDate: string;
   maxDiscountPrice: string;
   discountPercentage: number | string;
   minimumPurchasePrice: number | string;
@@ -71,7 +71,7 @@ getAllCoupons()
    },[])
   return (
     <div className="p-8 text-black h-screen">
-      <h2 className="text-2xl font-semibold mb-6">Coupon Management</h2>
+      <h2 className="text-4xl font-semibold mb-6">Coupon Management</h2>
 
       <button
      onClick={()=>setModalStatus(true)}

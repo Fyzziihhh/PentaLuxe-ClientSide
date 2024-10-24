@@ -93,7 +93,7 @@ const AdminUserManagement = () => {
   return (
     <div className="container mx-auto p-5 bg-gray-100">
       <div className="flex justify-between mb-5">
-        <h1 className="font-Bowly text-4xl text-purple-900">User Management</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8 border-b pb-4">User Management</h1>
         <div className="flex items-center">
           <input
             placeholder="Search for customer"

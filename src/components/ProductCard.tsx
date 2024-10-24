@@ -12,7 +12,7 @@ const ProductCard : React.FC<IProductCardProps> = ({product}) => {
     <>
   <Link to={`/products/${product._id}`}>
 
-     <div className="card-containaer h-[485px] bg-white   rounded-xl overflow-hidden">
+     <div className="card-containaer h-[485px] bg-white   rounded-xl transition-transform transform overflow-hidden hover:scale-105">
         <div className="product-image  h-[68%] w-[100%] relative ">
         {product.Variants[0]?.stock===0 ? (
       <p className='absolute w-full top-[95%] left-[50%] transform -translate-x-[50%] -translate-y-[50%] text-red-800 text-xl font-bold'>
@@ -37,7 +37,7 @@ const ProductCard : React.FC<IProductCardProps> = ({product}) => {
             </div>
              
             <h1 className='text-xl font-bold font-Quando text-left text-black mt-2'>
-      $ {product.Variants[0].price|| 'Volume not available'}
+            ₹{product.Variants[0].price|| 'Volume not available'}
     </h1>
 
 

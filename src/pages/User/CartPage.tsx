@@ -61,7 +61,7 @@ const CartPage = () => {
     try {
       const res = await api.patch("/api/user/cart-total", { totalPrice });
       if (res.status === AppHttpStatusCodes.OK) {
-        navigate("/checkout", { state: { totalPrice } });
+        navigate("/checkout", { state: { totalPrice,discountAmount } });
       }
     } catch (err) {}
   };
@@ -112,13 +112,19 @@ const CartPage = () => {
     getAllCoupons();
     getCartProducts();
   }, []);
-  let calculatedTotal;
-  useEffect(() => {
-    calculatedTotal = products.reduce((acc: number, product: Cart) => {
-      return acc + product.variant.price * product.quantity;
-    }, 0);
 
+  useEffect(() => {
+    const calculatedTotal = products.reduce((acc: number, product: Cart) => {
+      const discountedPrice =
+        product.product.DiscountPercentage > 0
+          ? product.variant.price *
+            (1 - product.product.DiscountPercentage / 100)
+          : product.variant.price;
+
+      return acc + discountedPrice * product.quantity;
+    }, 0);
     const deliveryCharge = 40;
+
     let finalPrice = deliveryCharge + calculatedTotal;
     if (discountRate > 0) {
       const selectedCoupon = availableCoupons.find(
@@ -128,10 +134,12 @@ const CartPage = () => {
         const calculatedDiscount = (calculatedTotal * discountRate) / 100;
         const maxDiscountPrice = selectedCoupon.maxDiscountPrice;
 
-        
-        const finalDiscount = Math.min(calculatedDiscount, Number(maxDiscountPrice));
-        setDiscountAmount(finalDiscount); 
-        finalPrice -= finalDiscount; 
+        const finalDiscount = Math.min(
+          calculatedDiscount,
+          Number(maxDiscountPrice)
+        );
+        setDiscountAmount(finalDiscount);
+        finalPrice -= finalDiscount;
       }
     }
 
@@ -148,26 +156,6 @@ const CartPage = () => {
 
     setAvailableCoupons(filteredCoupons);
   }, [OriginalPrice, coupons]);
-
-  // Then use `availableCoupons` in your select:
-  <select
-    ref={selectTagRef}
-    value={selectedRate}
-    onChange={(e) => setSelectedRate(Number(e.target.value))}
-    className="w-full px-4 font-bold h-full rounded focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    disabled={availableCoupons.length === 0}
-  >
-    <option value={0} disabled>
-      {availableCoupons.length === 0
-        ? "No Coupons Available"
-        : "Select a Coupon"}
-    </option>
-    {availableCoupons.map((coupon) => (
-      <option key={coupon._id} value={coupon.discountPercentage}>
-        {coupon.couponName}
-      </option>
-    ))}
-  </select>;
 
   return (
     <div className="w-full ">
@@ -198,7 +186,20 @@ const CartPage = () => {
                       <h1 className="font-mono">{product.product?.Name}</h1>
                       <h1 className="text-sm">{product?.variant.volume}</h1>
                       <h1 className="flex items-center gap-3">
-                        <p>${product.variant.price}</p>
+                        {/* Display the original price */}
+                        <p className="line-through text-gray-400">
+                          ${product.variant.price.toFixed(2)}
+                        </p>{" "}
+                        {/* Original Price */}
+                        {product.product.DiscountPercentage && (
+                          <p>
+                            $
+                            {(
+                              product.variant.price *
+                              (1 - product.product.DiscountPercentage / 100)
+                            ).toFixed(2)}
+                          </p>
+                        )}
                         <div className="w-[2px] h-4 bg-slate-500"></div>
                         <p className="text-green-700">
                           {product.variant.stock > 10 ? (
@@ -221,6 +222,7 @@ const CartPage = () => {
                         </button>
                       </div>
                     </div>
+
                     <div className="quantity">
                       <p className="flex items-center gap-3">
                         <button
@@ -257,7 +259,10 @@ const CartPage = () => {
                     </div>
                     <div className="total-price">
                       <h1 className="font-bold text-xl font-Quando ">
-                        ${product.variant.price * product.quantity}
+                        $
+                        {product.variant.price *
+                          (1 - product.product.DiscountPercentage / 100) *
+                          product.quantity}
                       </h1>
                     </div>
                   </div>

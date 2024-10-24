@@ -20,7 +20,9 @@ export const ADMIN_ROUTES = {
   CATEGORIES: "/categories",
   CUSTOMERS: "/customers",
   ORDERS:'/orders',
-  COUPON:'/coupons'
+  COUPON:'/coupons',
+  OFFER:'/offer',
+    SALES_REPORT:'sales-report'
 } as const;
 
 export default ADMIN_ROUTES;
