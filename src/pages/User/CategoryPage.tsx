@@ -1,11 +1,13 @@
 import  { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../services/apiService'
 import ProductCard from '../../components/ProductCard';
 import { IProduct } from '@/types/productTypes';
+import { AppHttpStatusCodes } from '@/types/statusCode';
 
   
 const CategoryPage = () => {
+  const navigate=useNavigate()
     const [products,setProducts]=useState<IProduct[]>([])
   const {id}=useParams()
   
@@ -13,7 +15,8 @@ const getAllProudctByCategory=async()=>{
     try {
 
         const res=await api.get(`/api/user/categories/${id}`)
-        if(res.data.success){
+     
+        if(res.status===AppHttpStatusCodes.OK){
           const {data:products}=res.data
             setProducts(products)
         }

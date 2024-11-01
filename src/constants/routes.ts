@@ -10,7 +10,9 @@ export const ROUTES = {
   CART: "/cart",
   WISHLIST: "/wishlist",
   CHECK_OUT: "/checkout",
-  ORDERS:"orders"
+  ORDERS:"orders",
+  WALLET:"wallet"
+  
 } as const;
 
 export const ADMIN_ROUTES = {

@@ -4,6 +4,7 @@ export interface IOrder {
     _id: string;
     user: {
       username: string;
+      email:string;
     };
     shippingAddress: IAddress;
     totalAmount: number;
@@ -16,7 +17,9 @@ export interface IOrder {
       productImage:string;
       quantity:number;
       price:number;
-      subtotal:number
+      subtotal:number;
+      discountPercentage:number;
     }[];
+    couponCode:string;
     couponDiscount:number;
   }

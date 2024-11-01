@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/apiService";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "../../types/statusCode";
 import { IProduct } from "@/types/productTypes";
@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slices/cartSlice";
 import { totalmem } from "os";
 const ProductDetailPage = () => {
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   const { id } = useParams();
   const [productPrice, setProductPrice] = useState<number | null>(null);
@@ -56,6 +57,9 @@ const ProductDetailPage = () => {
       }
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.response?.status === AppHttpStatusCodes.UNAUTHORIZED) {
+          navigate("/login");
+        }
         toast.error(error.response?.data.message);
       }
     }
@@ -69,11 +73,15 @@ const ProductDetailPage = () => {
         productId: product?._id,
         variant: selectedVolume,
       });
+     
       if (res.status == AppHttpStatusCodes.CREATED) {
         toast.success(res.data.message);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
+        if(error.response?.status===AppHttpStatusCodes.UNAUTHORIZED){
+          navigate('/login')
+        }
         toast.error(error.response?.data.message);
       }
     }

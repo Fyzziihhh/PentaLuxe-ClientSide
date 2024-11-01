@@ -4,9 +4,12 @@ import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import App from "@/App";
+
+import { PulseLoader } from "react-spinners";
+import { toast } from "sonner";
 
 const AdminSalesReport = () => {
+  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [totalOrderAmount, setTotalOrderAmount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -20,13 +23,16 @@ const AdminSalesReport = () => {
 
   const getAllSalesReport = async () => {
     try {
-      const res = await api.post("/api/admin/sales-report",{dateRange});
-
+      setLoading(true);
+      const res = await api.post("/api/admin/sales-report", { dateRange });
       if (res.status === AppHttpStatusCodes.OK) {
         setSalesReportData(res.data.data);
-        // setPaginatedOrders(res.data.orders)
       }
-    } catch (err) {}
+    } catch (err) {
+      toast("Failed to fetch sales report. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const downloadPDF = () => {
@@ -43,8 +49,8 @@ const AdminSalesReport = () => {
         "Status",
       ],
     ];
-    
-    const data =(salesReportData?salesReportData:orders).map((order) => [
+
+    const data = (salesReportData ? salesReportData : orders).map((order) => [
       order._id,
       order.user.username.toUpperCase(),
       order.totalAmount,
@@ -77,37 +83,44 @@ const AdminSalesReport = () => {
   };
 
   const generateSalesReport = async () => {
+    setLoading(true);
     const payload = {
       dateRange,
       startDate: customDates.startDate,
       endDate: customDates.endDate,
     };
-    const response = await api.post("/api/admin/sales-report", payload);
-    if (response.status === AppHttpStatusCodes.OK) {
-      setSalesReportData(response.data.data);
+    try {
+      const response = await api.post("/api/admin/sales-report", payload);
+      if (response.status === AppHttpStatusCodes.OK) {
+        setSalesReportData(response.data.data);
+      }
+    } catch (err) {
+      toast("Failed to generate sales report. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    console.log(dateRange);
-    customDates && console.log(customDates);
   };
+  
 
   useEffect(() => {
-  
-    const totalOrderPrice =salesReportData&& salesReportData.reduce((acc, order) => {
-      return acc + order.totalAmount;
-    }, 0);
+    const totalOrderPrice =
+      salesReportData &&
+      salesReportData.reduce((acc, order) => {
+        return acc + order.totalAmount;
+      }, 0);
 
-  totalOrderPrice&& setTotalOrderAmount(totalOrderPrice);
+    totalOrderPrice && setTotalOrderAmount(totalOrderPrice);
 
-    const totalCouponDiscount =salesReportData&& salesReportData.reduce((acc, order) => {
-      return acc + order.couponDiscount;
-    }, 0);
+    const totalCouponDiscount =
+      salesReportData &&
+      salesReportData.reduce((acc, order) => {
+        return acc + order.couponDiscount;
+      }, 0);
 
-  totalCouponDiscount&&  setTotalDiscount(totalCouponDiscount);
+    totalCouponDiscount && setTotalDiscount(totalCouponDiscount);
 
-  salesReportData&& setSalesCount(salesReportData.length);
+    salesReportData && setSalesCount(salesReportData.length);
   }, [salesReportData]);
-
 
   useEffect(() => {
     getAllSalesReport();
@@ -238,34 +251,51 @@ const AdminSalesReport = () => {
               </th>
             </tr>
           </thead>
+
           <tbody className="bg-white divide-y divide-gray-200">
-           {salesReportData?.length===0?<p>No Report Founded On that Paritcular Date Range</p>:( (salesReportData?salesReportData:orders).map((order) => (
-              <tr key={order._id} className="text-center">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
-                  {order._id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {order.user?.username.toUpperCase()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {order.totalAmount}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {order.paymentMethod.toUpperCase()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {order.couponDiscount > 0
-                    ? order.couponDiscount
-                    : "No Coupon"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {new Date(order.orderDate).toDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                  {order.status}
+            {loading ? (
+              <tr className="text-center">
+                <td colSpan={7} className="text-center px-6 py-4 text-gray-600">
+                  <p>
+                    <PulseLoader />
+                  </p>
                 </td>
               </tr>
-            )))}
+            ) : salesReportData?.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="text-center px-6 py-4 text-gray-600">
+                  No Report Found On that Particular Date Range
+                </td>
+              </tr>
+            ) : (
+              (salesReportData ? salesReportData : orders).map((order) => (
+                <tr key={order._id} className="text-center">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
+                    {order._id}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {order.user?.username.toUpperCase()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {order.totalAmount}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {order.paymentMethod.toUpperCase()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {order.couponDiscount > 0
+                      ? order.couponDiscount
+                      : "No Coupon"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {new Date(order.orderDate).toDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
+                    {order.status}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

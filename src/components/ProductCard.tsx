@@ -10,9 +10,10 @@ const ProductCard : React.FC<IProductCardProps> = ({product}) => {
 
   return (
     <>
-  <Link to={`/products/${product._id}`}>
+ 
 
      <div className="card-containaer h-[485px] bg-white   rounded-xl transition-transform transform overflow-hidden hover:scale-105">
+     <Link to={`/products/${product._id}`}>
         <div className="product-image  h-[68%] w-[100%] relative ">
         {product.Variants[0]?.stock===0 ? (
       <p className='absolute w-full top-[95%] left-[50%] transform -translate-x-[50%] -translate-y-[50%] text-red-800 text-xl font-bold'>
@@ -24,6 +25,7 @@ const ProductCard : React.FC<IProductCardProps> = ({product}) => {
    </p>}
         <img className='w-full h-full object-cover  object-center' src={product.Images[0]} alt="" />
         </div>
+        </Link>
         <div className="product-details ml-3">
             <h1 className='font-gilroy font-bold text-left  text-lg mt-2 text-black'>{product.Name}</h1>
             <div className="rating flex gap-2  items-center">
@@ -42,11 +44,11 @@ const ProductCard : React.FC<IProductCardProps> = ({product}) => {
 
 
         </div>
-        <button className='bg-black text-white w-[90%] h-10 mt-2 font-Lilita rounded-xl'>
+        <button onClick={()=>alert('helo')} className='bg-black text-white w-[90%] h-10 mt-2 font-Lilita rounded-xl'>
               ADD TO CART
         </button>
      </div>
-     </Link>
+   
     </>
   )
 }

@@ -38,14 +38,16 @@ const AdminUserManagement = () => {
 
   // Toggle Block/Unblock status
   const toggleBlock = async (id: string) => {
-    setUsers((prevUsers) =>
+    const updatedUsers = (prevUsers: IUser[]) =>
       prevUsers.map((user) =>
         user._id === id
           ? { ...user, status: user.status === "ACTIVE" ? "BLOCKED" : "ACTIVE" }
           : user
-      )
-    );
-
+      );
+  
+    setUsers((prevUsers) => updatedUsers(prevUsers));
+    setSearchedUsers((prevUsers) => updatedUsers(prevUsers)); // Update searchedUsers as well
+  
     try {
       await api.patch("/api/admin/statusUpdate", {
         id,
@@ -59,7 +61,7 @@ const AdminUserManagement = () => {
       }
     }
   };
-
+  
   const onSearchUser = async () => {
     if (input.length === 0) {
       setSearchedUsers(users); 

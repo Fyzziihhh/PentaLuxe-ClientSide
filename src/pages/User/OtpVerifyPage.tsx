@@ -39,8 +39,8 @@ const OtpVerifyPage = () => {
         email: id,
       });
       if (response.data.success) {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem("accessToken", response.data.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.data.refreshToken);
         toast.success(response.data.message);
         navigate("/");
       }

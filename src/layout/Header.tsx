@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import SearchIcon from "../components/SearchIcon/SearchIcon";
 import { FaUserAlt } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa6";
+
 import { FaCartShopping } from "react-icons/fa6";
-import { useDispatch, useSelector, UseSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Tooltip,
   TooltipContent,
@@ -16,13 +16,18 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
-import { Heart } from "lucide-react";
+
 
 const Header = () => {
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   const getCartProducts = async () => {
     try {
       const res = await api.get("/api/user/cart");
+      if(res.status===AppHttpStatusCodes.UNAUTHORIZED){
+     
+        navigate('/login')
+      }
       if (res.status === AppHttpStatusCodes.OK) {
         if (res.data.data) {
           dispatch(setCartProducts(res.data.data));

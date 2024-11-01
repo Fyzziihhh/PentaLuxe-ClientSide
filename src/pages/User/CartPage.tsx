@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Cart } from "@/types/cartProductTypes";
 import { ICoupon } from "../Admin/AdminCouponManagementPage";
+import App from "@/App";
 const CartPage = () => {
   const navigate = useNavigate();
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
@@ -28,6 +29,7 @@ const CartPage = () => {
   const [toggleButton, setToggleButton] = useState(false);
   const selectTagRef = useRef<HTMLSelectElement>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [selectedCoupon, setSelectedCoupon] = useState("");
   const handleChangeQuantity = async (
     itemId: string,
     action: string,
@@ -35,6 +37,7 @@ const CartPage = () => {
   ) => {
     try {
       const res = await api.patch("/api/user/cart", { itemId, action, stock });
+
       if (res.status === AppHttpStatusCodes.OK) {
         dispatch(changeQuantity({ id: itemId, action, stock }));
       }
@@ -61,7 +64,9 @@ const CartPage = () => {
     try {
       const res = await api.patch("/api/user/cart-total", { totalPrice });
       if (res.status === AppHttpStatusCodes.OK) {
-        navigate("/checkout", { state: { totalPrice,discountAmount } });
+        navigate("/checkout", {
+          state: { totalPrice, discountAmount, selectedCoupon },
+        });
       }
     } catch (err) {}
   };
@@ -69,6 +74,7 @@ const CartPage = () => {
   const getCartProducts = async () => {
     try {
       const res = await api.get("/api/user/cart");
+
       if (res.status === AppHttpStatusCodes.OK) {
         if (res.data.data) {
           dispatch(setCartProducts(res.data.data));
@@ -78,6 +84,9 @@ const CartPage = () => {
       }
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.response?.status === AppHttpStatusCodes.UNAUTHORIZED) {
+          navigate("/login");
+        }
         toast.error(error.response?.data.message);
       }
     }
@@ -108,6 +117,12 @@ const CartPage = () => {
     }
   };
 
+  const handleOnCouponChange = (couponRate: number, couponName: string) => {
+    setSelectedRate(couponRate);
+    setSelectedCoupon(couponName);
+  
+  };
+
   useEffect(() => {
     getAllCoupons();
     getCartProducts();
@@ -116,9 +131,9 @@ const CartPage = () => {
   useEffect(() => {
     const calculatedTotal = products.reduce((acc: number, product: Cart) => {
       const discountedPrice =
-        product.product.DiscountPercentage > 0
+        product.product?.DiscountPercentage > 0
           ? product.variant.price *
-            (1 - product.product.DiscountPercentage / 100)
+            (1 - product.product?.DiscountPercentage / 100)
           : product.variant.price;
 
       return acc + discountedPrice * product.quantity;
@@ -188,10 +203,10 @@ const CartPage = () => {
                       <h1 className="flex items-center gap-3">
                         {/* Display the original price */}
                         <p className="line-through text-gray-400">
-                          ${product.variant.price.toFixed(2)}
+                          ${product.variant.price}
                         </p>{" "}
                         {/* Original Price */}
-                        {product.product.DiscountPercentage && (
+                        {product.product?.DiscountPercentage && (
                           <p>
                             $
                             {(
@@ -261,7 +276,7 @@ const CartPage = () => {
                       <h1 className="font-bold text-xl font-Quando ">
                         $
                         {product.variant.price *
-                          (1 - product.product.DiscountPercentage / 100) *
+                          (1 - product.product?.DiscountPercentage / 100) *
                           product.quantity}
                       </h1>
                     </div>
@@ -276,7 +291,12 @@ const CartPage = () => {
                     <select
                       ref={selectTagRef}
                       value={selectedRate}
-                      onChange={(e) => setSelectedRate(Number(e.target.value))}
+                      onChange={(e) =>
+                        handleOnCouponChange(
+                          Number(e.target.value),
+                          e.target.options[e.target.selectedIndex].text
+                        )
+                      }
                       className="w-full px-4 font-bold h-full rounded focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={
                         availableCoupons.length === 0 || discountRate > 0
@@ -289,6 +309,8 @@ const CartPage = () => {
                       </option>
                       {availableCoupons.map((coupon) => (
                         <option
+                        
+                         
                           key={coupon._id}
                           value={coupon.discountPercentage}
                         >

@@ -5,6 +5,8 @@ import MinimalLayout from "../layout/MinimalLayout";
 import { ROUTES } from "../constants/routes";
 // import CartPage from "../pages/User/CartPage";
 import WishListPage from "../pages/User/WishListPage";
+import ChangePassword from "@/pages/User/ChangePassword";
+
 // import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
 
 
@@ -27,6 +29,7 @@ const OrderPage = lazy(() => import("@/pages/User/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("@/pages/User/OrderSuccessPage"));
 const CartPage = lazy(() => import("../pages/User/CartPage"));
 const OrderDetailsPage = lazy(() => import("@/pages/User/OrderDetailsPage"));
+const WalletPage = lazy(() => import("@/pages/User/Wallet"));
 
 const UserRoutes: React.FC = () => (
   <Routes>
@@ -40,6 +43,7 @@ const UserRoutes: React.FC = () => (
       <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryPage />} />
       <Route  path={ROUTES.PROFILE} element={<UserProfileLayout />}>
         <Route index element={<Profile />} />
+        <Route path={ROUTES.WALLET} element={<WalletPage/>}/>
       <Route path={ROUTES.ORDERS}>
       <Route index element={<OrderPage/>}/>
       <Route path="view-details" element={<OrderDetailsPage/>}/>
@@ -50,6 +54,7 @@ const UserRoutes: React.FC = () => (
           <Route  path=":id" element={<AddAndEditAddress />} />
           <Route  path="add" element={<AddAndEditAddress />} />
         </Route>
+        <Route path="change-password" element={<ChangePassword/>}/>
       </Route>
       <Route path={ROUTES.CART} element={<CartPage/>}/>
       <Route path={ROUTES.WISHLIST} element={<WishListPage/>}/>

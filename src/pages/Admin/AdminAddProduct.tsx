@@ -224,7 +224,7 @@ const AdminAddProduct = () => {
           value={productName}
           placeholder="Product Name"
           type="text"
-          className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-500"
+          className="w-full p-3 pl-10 outline-none rounded-md text-sm text-gray-700 border-2 transition focus:ring focus:ring-blue-500"
         />
       </div>
   
@@ -256,7 +256,7 @@ const AdminAddProduct = () => {
                 name={size}
                 value={quantities[size].price}
                 onChange={handlePriceQuantityChange}
-                className="ml-3 w-1/3 p-3  text-sm text-gray-700 border border-gray-600"
+                className="ml-3 w-1/3 p-3  text-sm text-gray-700 border-2 outline-none transition rounded-md focus:ring ring-blue-600"
                 placeholder="Price"
               />
            
@@ -265,7 +265,7 @@ const AdminAddProduct = () => {
                 name={size}
                 value={quantities[size].stock}
                 onChange={handleStockChange}
-                className="ml-3 w-1/3 p-3 pl-10 text-sm text-gray-700"
+                className="ml-3 w-1/3 p-3 pl-10 text-sm border-2 text-gray-700  outline-none transition rounded-md focus:ring ring-blue-600"
                 placeholder="Stock"
               />
             </div>
@@ -277,7 +277,7 @@ const AdminAddProduct = () => {
             value={newSize}
             onChange={(e) => setNewSize(e.target.value)}
             placeholder="Enter new size (e.g., 20ml, 100ml)"
-            className="w-1/2 p-3 pl-10 text-sm text-gray-700"
+            className="w-1/2 p-3 outline-none rounded-md transition pl-10 text-sm text-gray-700 border-2 focus:ring focus:ring-blue-500"
           />
           <button
             onClick={handleAddSize}

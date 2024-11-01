@@ -20,7 +20,7 @@ const LoginPage = () => {
       const data = response.data.data;
       console.log("data",data)
       if (response.status===AppHttpStatusCodes.OK) {
-        alert("kjsl")
+    
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         toast.success(response.data.message);

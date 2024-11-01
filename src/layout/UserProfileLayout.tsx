@@ -31,6 +31,7 @@ const sideBarLinks = [
     name: "PentaLuxe Wallet",
     path: "/profile/wallet",
   },
+
   {
     id: Math.random(),
     name: "Change Password",
@@ -64,7 +65,7 @@ const UserProfileLayout = () => {
   }, []);
 
   return (
-    <div className=" w-full container  h-auto flex gap-9 p-10 text-black px-20 text-white">
+    <div className=" w-full container   flex gap-9 p-10  px-20 text-white">
       <div className="sidebar w-[25%] rounded-lg bg-secondary px-3 py-4  h-[500px]">
         <div className="user-details flex flex-col items-center gap-1">
           <div className="user-avatar w-20 h-20 bg-gray-200 rounded-full text-center content-center font-bold text-4xl text-gray-400">

@@ -32,6 +32,7 @@ const WishlistPage = () => {
     const res = await api.get("/api/user/wishlist");
     console.log("wishlist", res.data);
     if (res.status === AppHttpStatusCodes.OK) {
+      
       setWishlistItems(res.data.data);
     }
   };
@@ -102,11 +103,11 @@ const WishlistPage = () => {
             key={item._id}
             className="bg-white border border-gray-300 rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
           >
-            <Link to={`/products/${item.product._id}`} className="w-full ">
+            <Link to={`/products/${item.product?._id}`} className="w-full ">
               {" "}
               <img
-                src={item.product.Images[0]}
-                alt={item.product.Name}
+                src={item.product?.Images[0]}
+                alt={item.product?.Name}
                 className="w-full h-56 object-contain border-b-2 border-gray-100"
               />
             </Link>
