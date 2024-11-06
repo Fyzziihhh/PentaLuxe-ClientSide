@@ -16,7 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Cart } from "@/types/cartProductTypes";
 import { ICoupon } from "../Admin/AdminCouponManagementPage";
-import App from "@/App";
+
 const CartPage = () => {
   const navigate = useNavigate();
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
@@ -275,9 +275,9 @@ const CartPage = () => {
                     <div className="total-price">
                       <h1 className="font-bold text-xl font-Quando ">
                         $
-                        {product.variant.price *
+                        {(product.variant.price *
                           (1 - product.product?.DiscountPercentage / 100) *
-                          product.quantity}
+                          product.quantity).toFixed(0)}
                       </h1>
                     </div>
                   </div>
@@ -337,7 +337,7 @@ const CartPage = () => {
                 <h1 className="mt-5 flex justify-between">
                   <span className="font-bold font-mono">Original Price</span>
                   <span className="font-bold font-mono">
-                    {OriginalPrice.toFixed(2)}
+                    {OriginalPrice.toFixed(0)}
                   </span>
                 </h1>
                 <h1 className="mt-5 flex justify-between">
@@ -357,7 +357,7 @@ const CartPage = () => {
                 <h1 className="mt-5 flex justify-between text-xl">
                   <span className="font-bold font-mono ">Total</span>
                   <span className="font-bold font-mono">
-                    ${totalPrice.toFixed(2)}
+                    ${totalPrice.toFixed(0)}
                   </span>
                 </h1>
 

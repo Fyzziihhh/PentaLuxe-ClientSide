@@ -41,7 +41,7 @@ const OrderDetailsPage : React.FC = () => {
             <div className="flex gap-2 flex-col ">
               <h1 className="font-Quando">{item.productName}</h1>
               <h1>Quantity : {item.quantity}</h1>
-              <h1>Price : ₹ {(item.price -(item.price*item?.discountPercentage/100)).toFixed(0)} for each</h1>
+              <h1>Price : ₹ {(item.price.toFixed(2))} for each</h1>
             </div>
           </div>
         ))}

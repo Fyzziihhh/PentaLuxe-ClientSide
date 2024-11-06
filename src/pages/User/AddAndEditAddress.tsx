@@ -4,6 +4,7 @@ import Input from "../../components/Input/Input";
 import api from "../../services/apiService";
 import { AppHttpStatusCodes } from "../../types/statusCode";
 import { toast } from "sonner";
+import { addressValidation } from "@/utils/AddressValidation";
 
 
 interface InputField {
@@ -47,6 +48,11 @@ const AddAndEditAddress = () => {
 
   const onAddressHandler = async (e: FormEvent, action: string) => {
     e.preventDefault();
+    const validationError = addressValidation(formState);
+    if (validationError) {
+      toast.error(validationError); 
+      return;
+    }
     try {
       let res;
 

@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
+import App from "@/App";
+import { WineOff } from "lucide-react";
 
 const api = axios.create({
   headers: {
@@ -8,20 +10,7 @@ const api = axios.create({
   },
 });
 
-// const refreshAccessToken = async () => {
-//   try {
-//     const refreshToken = localStorage.getItem("refreshToken");
-//     const response = await api.post("/api/user/refresh-token", {
-//       token: refreshToken,
-//     });
-//     const newAccessToken = response.data.accessToken;
-//     localStorage.setItem("accessToken", newAccessToken);
-//     return newAccessToken;
-//   } catch (error) {
-//     console.log("refreshToken Error", error);
-//     return null;
-//   }
-// };
+
 
 api.interceptors.request.use(
   (config) => {
@@ -38,29 +27,27 @@ api.interceptors.request.use(
   }
 );
 
-// const navigate=useNavigate()
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
 
-//     // Check for FORBIDDEN error
-//     if (error.response && error.response.status === AppHttpStatusCodes.FORBIDDEN && !originalRequest._retry) {
-//       originalRequest._retry = true;
+api.interceptors.response.use(
+  (response) => {
+    // Return the response as is for successful requests
+    return response;
+  },
+  (error) => {
+    // Check if the error response has a status of 403
+    if (error.response.status===AppHttpStatusCodes.UNAUTHORIZED ) {
+      // Redirect to the login page
+      console.log(error.response.data)
+      window.location.href = '/login'; // Adjust the path as needed
+    }
+    else if(error.response.status===AppHttpStatusCodes.FORBIDDEN){
+      window.location.href='/admin'
+    }
+    
+    // Reject the promise with the error to allow further handling if necessary
+    return Promise.reject(error);
+  }
+);
 
-//       // Redirect to login
-//       navigate('/login');
-
-//       // Uncomment this block if you implement token refreshing
-//       // const newToken = await refreshAccessToken();
-//       // if (newToken) {
-//       //   originalRequest.headers.authorization = `Bearer ${newToken}`;
-//       //   return api(originalRequest);
-//       // }
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
 
 export default api;

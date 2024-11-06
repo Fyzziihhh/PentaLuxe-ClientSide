@@ -5,14 +5,14 @@ import { Link } from "react-router-dom";
 import api from "../../services/apiService";
 import { useNavigate } from "react-router-dom";
 import GoogleAuth from "../../components/GoogleAuthentication/GoogleAuth";
-import {toast}from 'sonner'
+import { toast } from "sonner";
 import Input from "@/components/Input/Input";
 
 interface Errors {
   usernameError?: string;
   passwordError?: string;
   emailError?: string;
-  phoneError?:string;
+  phoneError?: string;
 }
 
 interface InputField {
@@ -22,15 +22,13 @@ interface InputField {
   handler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-
-
 const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [phone,setPhone]=useState('')
+  const [phone, setPhone] = useState("");
   const [errors, setError] = useState<Errors>({});
   const Navigate = useNavigate();
 
@@ -53,13 +51,21 @@ const SignupPage = () => {
       toast.error(errors.passwordError);
     }
 
-    if (password !== confirmPassword) {
-      errors.passwordError = "Passwords don't match";
-      toast.error(errors.passwordError);
+    if (confirmPassword && password) {
+      if (password !== confirmPassword) {
+        errors.passwordError = "Passwords don't match";
+        toast.error(errors.passwordError);
+      }
     }
-    if(phone.length<10){
-      errors.phoneError="Phone Number Must have 10 digits";
-      toast.error(errors.phoneError)
+    if (phone) {
+     
+      if (phone.length < 10 ||phone.length>10) {
+        errors.phoneError = "Phone Number Must have 10 digits";
+        toast.error(errors.phoneError);
+      }
+    }else{
+      errors.phoneError = "Phone Number Required";
+      toast.error(errors.phoneError);
     }
 
     if (Object.keys(errors).length > 0) {
@@ -71,20 +77,17 @@ const SignupPage = () => {
         email,
         username,
         password,
-        phone
+        phone,
       });
-      
-      toast.success(response.data.message)
-  
+
+      toast.success(response.data.message);
+
       Navigate(`/otp-verify/${email}`);
     } catch (error: any) {
       if (error.response) {
-      
         toast.error(error.response.data.message);
-       
       } else {
-        toast.error('Network error or other issue');
-      
+        toast.error("Network error or other issue");
       }
     }
   };
@@ -121,14 +124,11 @@ const SignupPage = () => {
       handler: (e) => setPhone(e.target.value),
     },
   ];
-  
 
   return (
     <>
-  
       <div className="container w-full flex px-5 gap-3  mb-3">
-        <div 
-        
+        <div
           style={{
             backgroundImage:
               "URL('/assets/Woman_in_Gold_RVB_72dpi_desktop.webp')",
@@ -140,19 +140,18 @@ const SignupPage = () => {
         <div className="right-container w-3/5 bg-secondary flex flex-col items-center justify-start pt-2">
           <h1 className="font-Bowly text-4xl ">Register Page</h1>
           <div className="Logos flex items-center gap-3 mt-2">
-           <GoogleAuth text="SignUp with Google"/>
-           
+            <GoogleAuth text="SignUp with Google" />
           </div>
           <div className="flex flex-wrap justify-center gap-6 mt-7">
-          {inputFields.map((field, index) => (
-      <Input
-        key={index}
-        text={field.text}
-        type={field.type}
-        value={field.value}
-        inputHandler={field.handler}
-      />
-    ))}
+            {inputFields.map((field, index) => (
+              <Input
+                key={index}
+                text={field.text}
+                type={field.type}
+                value={field.value}
+                inputHandler={field.handler}
+              />
+            ))}
           </div>
           <Button text="Register" ButtonHandler={registerHandler} />
           <Link to="/login" className="text-blue-700 mt-2  hover:text-blue-900">

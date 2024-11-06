@@ -6,18 +6,23 @@ import Pagination from "@/components/Pagination";
 import { AlertTriangle } from "lucide-react";
 import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "@/types/statusCode";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 const AllProductsPage = () => {
-  const navigate=useNavigate()
+ 
   const [products, setProducts] = useState<IProduct[]>([]);
   const [sortedProducts, setSortedProducts] = useState<IProduct[]>([]);
   const [sortOption, setSortOption] = useState("az");
   const [gender, setGender] = useState("");
   const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
   const [filterActive, setFilterActive] = useState(false);
-
+  const location=useLocation()
+  // const searchedProducts=location.state.products
+  
+  
   useEffect(() => {
+    // console.log('searchedProduct',location.state?.products)
     const fetchProducts = async () => {
       try {
         const response = await api.get("/api/user/products");
@@ -27,10 +32,7 @@ const AllProductsPage = () => {
         setDisplayedProducts(products); // Initialize displayedProducts
       } catch (error) {
        if(error instanceof AxiosError){
-        alert(error.response?.status)
-      if(error.response?.status===AppHttpStatusCodes.FORBIDDEN){
-      navigate('/login')
-      }
+             toast.error(error.response?.data.message)
        }
       }
     };
@@ -99,6 +101,9 @@ const AllProductsPage = () => {
     const filteredProducts = filterProductsByGender(gender);
     const sorted = sortProducts(sortOption, filteredProducts);
     setSortedProducts(sorted);
+    // if(searchedProducts){
+    //   setSortedProducts(searchedProducts)
+    // }
   }, [products, sortOption, gender]);
 
   return (
@@ -174,3 +179,6 @@ const AllProductsPage = () => {
 };
 
 export default AllProductsPage;
+
+
+

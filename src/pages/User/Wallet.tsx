@@ -3,15 +3,32 @@ import { Link } from "react-router-dom";
 import api from "../../services/apiService";
 import { AppHttpStatusCodes } from "../../types/statusCode";
 import { Wallet, ArrowDownCircle, DollarSign } from "lucide-react";
+import { IOrder } from "@/types/orderTypes";
+
+interface ITransactions{
+  orderID:string,
+  type:string;
+  date:string;
+  method:string;
+  amount:number;
+}
 
 const WalletPage = () => {
   const [balance, setBalance] = useState(0);
-  const [amount, setAmount] = useState("");
+  const [transactions,setTransactions]=useState<ITransactions[]>([])
   const [loading, setLoading] = useState(false);
 
   // Fetch wallet balance and transactions
   const fetchWalletData = async () => {
+
     setLoading(true);
+    const res=await api.get('/api/user/wallet')
+    if(res.status===AppHttpStatusCodes.OK){
+      const data=res.data.data
+      console.log(data)
+         setTransactions(data.transactions)
+         setBalance(data.balance)
+    }
     // Fetch data logic (not implemented here)
     setLoading(false); // Make sure to set loading to false after fetching
   };
@@ -20,36 +37,7 @@ const WalletPage = () => {
     fetchWalletData();
   }, []); // Call the function when the component mounts
 
-  const demoTransactions = [
-    {
-      amount: 200,
-      type: "debit",
-      date: "2024-10-28T12:34:56Z",
-      method: "Online Payment",
-      orderId: "ORD56789",
-    },
-    {
-      amount: 150,
-      type: "debit",
-      date: "2024-10-27T09:15:30Z",
-      method: "Card",
-      orderId: "ORD67890",
-    },
-    {
-      amount: 100,
-      type: "debit",
-      date: "2024-10-26T14:45:10Z",
-      method: "Bank Transfer",
-      orderId: "ORD78901",
-    },
-    {
-      amount: 50,
-      type: "debit",
-      date: "2024-10-25T08:05:20Z",
-      method: "Wallet",
-      orderId: "ORD89012",
-    },
-  ];
+
 
   return (
     <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg">
@@ -59,7 +47,7 @@ const WalletPage = () => {
       <div className="mt-6">
         <h2 className="text-xl text-gray-300">
           <DollarSign className="inline mr-1" />
-          Balance: ₹{balance.toFixed(2)}
+          Balance: {balance||0}
         </h2>
       </div>
 
@@ -76,8 +64,8 @@ const WalletPage = () => {
             </tr>
           </thead>
           <tbody>
-            {demoTransactions.length > 0 ? (
-              demoTransactions.map((transaction, index) => (
+            {transactions?.length > 0 ? (
+              transactions.map((transaction, index) => (
                 <tr key={index} className={`border-b border-gray-700`}>
                   <td className="text-gray-400 py-2">
                     {new Date(transaction.date).toLocaleDateString()}
@@ -93,7 +81,7 @@ const WalletPage = () => {
                       transaction.type.slice(1)}
                   </td>
                   <td className="text-gray-400 py-2">{transaction.method}</td>
-                  <td className="text-gray-400 py-2">{transaction.orderId}</td>
+                  <td className="text-gray-400 py-2">{transaction.orderID}</td>
                   <td className="text-gray-400 py-2">₹{transaction.amount}</td>
                 </tr>
               ))

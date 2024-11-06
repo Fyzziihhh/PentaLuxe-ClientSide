@@ -71,7 +71,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               value={couponName}
               onChange={(e) => setCouponName(e.target.value)}
-              required
+              
             />
           </div>
         
@@ -82,7 +82,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               value={discountPercentage}
               onChange={(e) => setDiscountPercentage(e.target.value)}
-              required
+              
             />
           </div>
           <div className="mb-4">
@@ -92,7 +92,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               value={maxDiscountPrice}
               onChange={(e) => setMaxDiscountPrice(e.target.value)}
-              required
+              
             />
           </div>
           <div className="mb-4">
@@ -102,7 +102,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               value={minimumPurchasePrice}
               onChange={(e) =>setMinimumPurchasePrice (e.target.value)}
-              required
+              
             />
           </div>
           <div className="mb-4">
@@ -112,7 +112,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               value={expiryDate}
               onChange={(e) => setExpiryDate(e.target.value)}
-              required
+              
             />
           </div>
           <div className="flex justify-end">

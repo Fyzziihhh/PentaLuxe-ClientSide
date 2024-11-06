@@ -150,22 +150,7 @@ const AdminSideBar = () => {
           </li>
         </Link>
 
-        <Link to="/admin/banner">
-          <li className="flex gap-2 px-3 py-1 text-white items-center font-gilroy font-bold text-xl hover:bg-white rounded-md  hover:text-blue-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h12q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm0-2h12V4H6zm1-2h10l-3.45-4.5l-2.3 3l-1.55-2zm-1 2V4z"
-              />
-            </svg>
-            <p>Banner </p>
-          </li>
-        </Link>
+    
 
         <Link to="/admin/categories">
           <li className="flex gap-2 px-3 py-1 text-white items-center font-gilroy font-bold text-xl hover:bg-white rounded-md  hover:text-blue-500">

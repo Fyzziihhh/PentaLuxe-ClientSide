@@ -1,6 +1,6 @@
 import { IAddress } from "@/types/AddressTypes";
 import Input from "@/components/Input/Input";
-import { RootState, setCartProducts } from "@/store/slices/cartSlice";
+import {  setCartProducts } from "@/store/slices/cartSlice";
 // import { Cart } from "@/types/cartProductTypes";
 import Modal from "react-modal";
 import { Plus } from "lucide-react";
@@ -12,6 +12,7 @@ import api from "@/services/apiService";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { Cart } from "@/types/cartProductTypes";
+import { addressValidation } from "@/utils/AddressValidation";
 
 interface IOrderItem {
   productId: string;
@@ -75,7 +76,7 @@ const CheckOutPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [addressBtnToggle, setAddressBtnToggle] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [addressId, setAddressId] = useState("");
 
@@ -118,6 +119,12 @@ const CheckOutPage = () => {
   };
 
   const onAddressHandler = async (e: FormEvent, action: string = "Add") => {
+    const validationError = addressValidation(formState);
+  if (validationError) {
+    toast.error(validationError); // Show error message
+    return;
+  }
+    setAddressBtnToggle(true);
     e.preventDefault();
     try {
       let res;
@@ -183,6 +190,16 @@ const CheckOutPage = () => {
     }
   };
 
+  const handleWalletPaymentAndPlaceOrder = async (orderDetails: any) => {
+    const res = await api.post("/api/user/wallet-payment", {
+      orderDetails,
+      totalPrice,
+    });
+    if (res.status === AppHttpStatusCodes.CREATED) {
+      handleOrderSuccess(res.data.data);
+    }
+  };
+
   const handleEditAddress = (id: string) => {
     setIsEditMode(true);
 
@@ -201,6 +218,15 @@ const CheckOutPage = () => {
   };
 
   const handlePlaceOrder = async () => {
+    if (!selectedAddress) {
+      toast.error("Please select a shipping address before proceeding.");
+      return;
+    }
+    if (!selectedPaymentMethod) {
+      toast.error("Please select a payment method to continue.");
+      return;
+    }
+
     // if (isProcessing) return;
     // setIsProcessing(true);
 
@@ -232,6 +258,8 @@ const CheckOutPage = () => {
     try {
       if (selectedPaymentMethod === "Razorpay") {
         await handleRazorpayPayment(orderDetails);
+      } else if (selectedPaymentMethod === "Wallet") {
+        await handleWalletPaymentAndPlaceOrder(orderDetails);
       } else {
         await processOrderSubmission(orderDetails);
       }
@@ -274,11 +302,12 @@ const CheckOutPage = () => {
 
     const razorpay = new window.Razorpay(options);
     razorpay.on("payment.failed", async function (response) {
-        console.log("payment failed response",response)
-      const res = await api.post("/api/user/razorpay-payment-failure", {
+      console.log("payment failed response", response);
+          await api.post("/api/user/razorpay-payment-failure", {
         response,
         orderDetails,
       });
+      console.log('inside the failure of razorpay')
 
       // Notify user of payment failure
     });
@@ -407,6 +436,7 @@ const CheckOutPage = () => {
                 onClick={() => {
                   setIsEditMode(false);
                   setIsModalOpen(true);
+                  setAddressBtnToggle(false);
                 }}
                 className="flex items-center justify-center bg-yellow-600 p-3 rounded-md mt-6 text-lg font-bold text-gray-800 hover:bg-yellow-500 transition duration-300"
               >
@@ -475,6 +505,23 @@ const CheckOutPage = () => {
                   Online Payment
                 </p>
               </div>
+              <div className="payment-box text-center">
+                <div
+                  className={`w-24 h-20 border-2 rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                    selectedPaymentMethod === "Wallet"
+                      ? "border-blue-400 bg-blue-600/20"
+                      : "border-gray-600 bg-gray-700"
+                  }`}
+                  onClick={() => setSelectedPaymentMethod("Wallet")}
+                >
+                  <img
+                    className="w-full h-full object-cover rounded-md"
+                    src="https://img.freepik.com/premium-vector/wallet-logo_701361-392.jpg"
+                    alt="Online Payment"
+                  />
+                </div>
+                <p className="text-xs mt-2 font-medium text-gray-300">Wallet</p>
+              </div>
             </div>
             <button
               onClick={handlePlaceOrder}
@@ -514,11 +561,11 @@ const CheckOutPage = () => {
                     </span>
                     <span className="font-bold text-green-500">
                       INR{" "}
-                      {(product.variant.price -
+                      {((product.variant.price -
                         (product.variant.price *
                           product.product.DiscountPercentage) /
                           100) *
-                        product.quantity}
+                        product.quantity).toFixed(0)}
                     </span>
                   </h1>
                 </div>
@@ -528,14 +575,14 @@ const CheckOutPage = () => {
           <div className="bg-gray-700 h-[2px] mt-5"></div>
           <div className="mt-5 text-white">
             <p className="flex justify-between font-bold text-lg">
-              <span>Sub Total</span> <span>INR {totalPrice - 40}</span>
+              <span>Sub Total</span> <span>INR {(totalPrice - 40).toFixed(0)}</span>
             </p>
             <p className="flex justify-between font-bold text-lg">
               <span>Delivery Fee</span> <span>INR {40}</span>
             </p>
             <p className="flex justify-between font-bold text-xl mt-3">
               <span>Total</span>{" "}
-              <span className="text-red-500">INR {totalPrice}</span>
+              <span className="text-red-500">INR {totalPrice.toFixed(0)}</span>
             </p>
           </div>
         </div>
@@ -603,14 +650,20 @@ const CheckOutPage = () => {
             </div>
             <div className="buttons flex gap-3 mt-3 items-center ml-16">
               <button
+                disabled={addressBtnToggle}
                 onClick={(e) =>
                   onAddressHandler(e, isEditMode ? "Edit" : "Add")
                 }
                 type="button"
-                className="bg-blue-700 text-white h-8 px-10"
+                className={`${
+                  addressBtnToggle
+                    ? "bg-blue-200 cursor-not-allowed"
+                    : "bg-blue-700 hover:bg-blue-600 transition-colors duration-300"
+                } text-white h-10 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300`}
               >
                 {isEditMode ? "Edit" : "Create"}
               </button>
+
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
@@ -627,3 +680,10 @@ const CheckOutPage = () => {
 };
 
 export default CheckOutPage;
+
+
+
+
+
+
+

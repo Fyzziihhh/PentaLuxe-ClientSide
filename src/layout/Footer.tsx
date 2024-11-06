@@ -6,7 +6,7 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 const Footer = () => {
   return (
     <>
-      <div className="px-20 py-6 bg-secondary text-sm font-gilroy h-[34%]">
+      <div className="px-20 py-6 bg-secondary text-sm font-gilroy h-[34%] ">
         <div className="flex justify-between text-left  ">
           <ul>
             <li className="font-almendra text-lg">About PentaLuxe</li>

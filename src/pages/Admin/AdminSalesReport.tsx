@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import { IOrder } from "@/types/orderTypes";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
@@ -35,6 +36,55 @@ const AdminSalesReport = () => {
     }
   };
 
+  const downloadExcel = () => {
+    const title = "Sales Report";
+    const headers = [
+      "Order ID",
+      "Customer Name",
+      "Order Amount",
+      "Payment",
+      "Coupons",
+      "Order Date",
+      "Status",
+    ];
+  
+    // Prepare data similar to the PDF version
+    const data = (salesReportData ? salesReportData : orders).map((order) => [
+      order._id,
+      order.user.username?.toUpperCase(),
+      order.totalAmount,
+      order.paymentMethod.toUpperCase(),
+      order.couponDiscount > 0 ? order.couponDiscount : "No Coupon",
+      new Date(order.orderDate).toDateString(),
+      order.status,
+    ]);
+  
+    // Add headers as the first row in the data array
+    const worksheetData = [headers, ...data];
+  
+    // Create a new workbook and worksheet
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+  
+    // Define column widths
+    worksheet["!cols"] = [
+      { wch: 15 }, // Width for "Order ID" column
+      { wch: 20 }, // Width for "Customer Name" column
+      { wch: 15 }, // Width for "Order Amount" column
+      { wch: 18 }, // Width for "Payment" column
+      { wch: 15 }, // Width for "Coupons" column
+      { wch: 20 }, // Width for "Order Date" column
+      { wch: 15 }, // Width for "Status" column
+    ];
+  
+    // Append worksheet to workbook with the title "Sales Report"
+    XLSX.utils.book_append_sheet(workbook, worksheet, title);
+  
+    // Download the Excel file with a specified filename
+    XLSX.writeFile(workbook, "sales_report.xlsx");
+  };
+
+
   const downloadPDF = () => {
     const doc = new jsPDF();
     const title = "Sales Report";
@@ -52,7 +102,7 @@ const AdminSalesReport = () => {
 
     const data = (salesReportData ? salesReportData : orders).map((order) => [
       order._id,
-      order.user.username.toUpperCase(),
+      order.user.username?.toUpperCase(),
       order.totalAmount,
       order.paymentMethod.toUpperCase(),
       order.couponDiscount > 0 ? order.couponDiscount : "No Coupon",
@@ -100,7 +150,6 @@ const AdminSalesReport = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const totalOrderPrice =
@@ -313,7 +362,7 @@ const AdminSalesReport = () => {
         >
           Download PDF
         </button>
-        <button className="bg-gray-700 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 transition duration-200">
+        <button onClick={downloadExcel} className="bg-gray-700 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 transition duration-200">
           Download Excel
         </button>
       </div>

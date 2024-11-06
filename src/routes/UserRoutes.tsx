@@ -1,11 +1,7 @@
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import MainLayout from "../layout/MainLayout";
-import MinimalLayout from "../layout/MinimalLayout";
 import { ROUTES } from "../constants/routes";
-// import CartPage from "../pages/User/CartPage";
-import WishListPage from "../pages/User/WishListPage";
-import ChangePassword from "@/pages/User/ChangePassword";
+
 
 // import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
 
@@ -13,6 +9,8 @@ import ChangePassword from "@/pages/User/ChangePassword";
 // import Address from "../pages/User/Address";
 
 const HomePage = lazy(() => import("../pages/User/HomePage"));
+const MainLayout = lazy(() => import("../layout/MainLayout"));
+const MinimalLayout = lazy(() => import("../layout/MinimalLayout"));
 const AboutPage = lazy(() => import("../pages/User/AboutPage"));
 const AllProductsPage = lazy(() => import("../pages/User/AllProductsPage"));
 const ProductDetailPage = lazy(() => import("../pages/User/ProductDetailPage"));
@@ -30,6 +28,8 @@ const OrderSuccessPage = lazy(() => import("@/pages/User/OrderSuccessPage"));
 const CartPage = lazy(() => import("../pages/User/CartPage"));
 const OrderDetailsPage = lazy(() => import("@/pages/User/OrderDetailsPage"));
 const WalletPage = lazy(() => import("@/pages/User/Wallet"));
+const WishListPage = lazy(() => import("@/pages/User/WishListPage"));
+const ChangePassword = lazy(() => import("@/pages/User/ChangePassword"));
 
 const UserRoutes: React.FC = () => (
   <Routes>

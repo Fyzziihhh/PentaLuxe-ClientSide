@@ -58,7 +58,7 @@ const CancellationModal: React.FC<CancellationModalProps> = ({ isOpen, onClose, 
           <>
             <option value="Defective item">Defective item</option>
             <option value="Wrong item received">Wrong item received</option>
-            <option value="Sizing issue">Sizing issues</option>
+            <option value="Sizing issues">Sizing issues</option>
             <option value="Other">Other</option>
           </>
         )}

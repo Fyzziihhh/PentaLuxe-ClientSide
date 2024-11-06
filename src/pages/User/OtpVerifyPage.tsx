@@ -75,7 +75,7 @@ const OtpVerifyPage = () => {
 
   return (
     <>
-      <div className="otp-container   pr-24 ">
+      <div className="otp-container  flex justify-center items-center  ">
         <div className="w-2/5 h-[25.1rem]  bg-secondary mx-auto my-10 flex items-center justify-start flex-col pr-10 ">
           <MdOutlineMarkEmailUnread size={80} />
           <p className="font-gilroy">Please Check Your Email</p>

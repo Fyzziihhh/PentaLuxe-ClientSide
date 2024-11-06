@@ -40,7 +40,7 @@ const sideBarLinks = [
   {
     id: Math.random(),
     name: "Logout",
-    path: "/logout",
+    path: "/",
   },
 ];
 
@@ -80,6 +80,10 @@ const UserProfileLayout = () => {
            key={link.id}
            to={link.path}
            end={link.name!=='Address Book'}
+           onClick={()=>{
+            link.name==='Logout'&&localStorage.clear()
+            navigate('/')
+          }}
            className={({ isActive }) =>
              `rounded-md p-3 font-bold transition duration-300  ${
                isActive ? 'text-blue-600 bg-gray-200' : 'text-gray-500 hover:bg-gray-100'

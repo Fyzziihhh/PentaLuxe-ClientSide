@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
@@ -21,22 +21,15 @@ interface ProductVariant {
 
 import { IProduct } from "@/types/productTypes";
 import { Trash2, Volume } from "lucide-react";
-
-interface SizeInfo {
-  price: string;
-  stock: string;
+interface IQuantities {
+  volume: string;
+  price: string | number;
+  stock: string | number;
+  _id?: string;
 }
-
-interface IQuantities{
-  volume:string;
-  price:string|number;
-  stock:string|number
-  _id?:string;
-}
-
 
 const AdminEditProduct = () => {
-  const { id } = useParams()
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -47,17 +40,18 @@ const AdminEditProduct = () => {
   // Product details state
   const [productName, setProductName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [selectedGender, setSelectedGender] = useState<string|undefined>('')
+  const [selectedGender, setSelectedGender] = useState<string | undefined>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedScentType, setSelectedScentType] = useState<IProduct["ScentType"] | "">("");
+  const [selectedScentType, setSelectedScentType] = useState<
+    IProduct["ScentType"] | ""
+  >("");
   const [discountPercentage, setDiscountPercentage] = useState<number | "">("");
 
-  // Image handling state
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [croppedImages, setCroppedImages] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [showCropper, setShowCropper] = useState<boolean>(false);
+  const [newProductImages, setNewProductImages] = useState<string[]>([]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -67,15 +61,13 @@ const AdminEditProduct = () => {
   }, []);
 
   const getProductDetails = async (): Promise<void> => {
- 
     try {
-      if(id){
-
+      if (id) {
         const response = await api.get(`/api/admin/products/${id}`);
-        
+
         if (response.data.success) {
           const product: IProduct = response.data.product;
-          
+
           // Set basic product details
           setProductName(product.Name);
           setDescription(product.Description);
@@ -84,12 +76,9 @@ const AdminEditProduct = () => {
           setSelectedScentType(product.ScentType);
           setDiscountPercentage(product.DiscountPercentage);
           setExistingImages(product.Images);
-  
+
           // Set variants/quantities
-        setQuantities(product.Variants)
-      
-          
-         
+          setQuantities(product.Variants);
         }
       }
     } catch (error) {
@@ -110,77 +99,68 @@ const AdminEditProduct = () => {
       toast.error("Failed to fetch categories.");
     }
   };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const files = e.target.files;
-    if (files) {
-      const imageFiles = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setSelectedImages(imageFiles);
-      setCurrentImageIndex(0);
-      setShowCropper(true);
-    }
-  };
-
-  const handleCropComplete = (croppedImage: string): void => {
-    setCroppedImages((prevCroppedImages) => {
-      const updatedCroppedImages = [...prevCroppedImages];
-      if (currentImageIndex < updatedCroppedImages.length) {
-        updatedCroppedImages[currentImageIndex] = croppedImage;
-      } else {
-        updatedCroppedImages.push(croppedImage);
-      }
-      return updatedCroppedImages;
-    });
-
-    const nextImageIndex = currentImageIndex + 1;
-    if (nextImageIndex < selectedImages.length) {
-      setCurrentImageIndex(nextImageIndex);
-    } else {
-      setShowCropper(false);
-    }
-  };
-
   const handlePrice = (volume: string, newPrice: number) => {
-    setQuantities(prevQuantities =>
-      prevQuantities.map(quantity =>
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity) =>
         quantity.volume === volume ? { ...quantity, price: newPrice } : quantity
       )
     );
   };
-  
+
   const handleStockChange = (volume: string, newStock: number) => {
-    setQuantities(prevQuantities =>
-      prevQuantities.map(quantity =>
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity) =>
         quantity.volume === volume ? { ...quantity, stock: newStock } : quantity
       )
     );
   };
-  
 
   const handleAddSize = (): void => {
     alert("entered");
-    const existQuantitySize = quantities.filter(quantity => quantity.volume === newSize);
+    const existQuantitySize = quantities.filter(
+      (quantity) => quantity.volume === newSize
+    );
     console.log("existing", existQuantitySize);
-  
+
     if (newSize && existQuantitySize.length === 0) {
-      setQuantities(prev => [
+      setQuantities((prev) => [
         ...prev,
         {
           volume: newSize,
-          price: '',                   
-          stock: ''                     
-        }
+          price: "",
+          stock: "",
+        },
       ]);
-      console.log("quantities after update", [...quantities, { _id: Date.now().toString(), volume: newSize, price: 0, stock: 0 }]);
+      console.log("quantities after update", [
+        ...quantities,
+        { _id: Date.now().toString(), volume: newSize, price: 0, stock: 0 },
+      ]);
       setNewSize("");
     }
   };
-  
 
   const handleRemoveExistingImage = (index: number): void => {
-    setExistingImages(prev => prev.filter((_, i) => i !== index));
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleImageCropper = (CroppedImage: string) => {
+    console.log(CroppedImage);
+    setNewProductImages([CroppedImage]);
+    setShowCropper(false);
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if(!(existingImages.length>=5)){
+
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        const imageUrl = URL.createObjectURL(file);
+        setNewProductImages((prev) => [...prev, imageUrl]);
+        setShowCropper(true);
+      }
+    }else{
+      toast.error('only 5 Images can be addedd')
+    }
   };
 
   const validateForm = (): boolean => {
@@ -207,26 +187,26 @@ const AdminEditProduct = () => {
     return true;
   };
 
-  const handleRemoveQuantity=(quantityId:string)=>{
-    const updatedQuantities=quantities.filter(quantity=>quantity._id!==quantityId)
-    setQuantities(updatedQuantities)
-    
-  }
+  const handleRemoveQuantity = (quantityId: string) => {
+    const updatedQuantities = quantities.filter(
+      (quantity) => quantity._id !== quantityId
+    );
+    setQuantities(updatedQuantities);
+  };
 
   const updateProduct = async (): Promise<void> => {
     if (!validateForm()) return;
-    
+
     try {
       setLoading(true);
       const formData = new FormData();
 
-      if (croppedImages.length > 0) {
-        const files = await convertBlobUrlsToFiles(croppedImages);
-        files.forEach((file) => {
-          formData.append("files", file);
-        });
+      if (newProductImages.length > 0) {
+        let file = await convertBlobUrlsToFiles(newProductImages);
+        console.log(file);
+        if(file)  formData.append('file',file[0])
       }
-
+     
       formData.append("existingImages", JSON.stringify(existingImages));
       formData.append("Name", productName);
       formData.append("Description", description);
@@ -234,12 +214,10 @@ const AdminEditProduct = () => {
       formData.append("categoryName", selectedCategory);
       formData.append("ScentType", selectedScentType);
       formData.append("DiscountPercentage", String(discountPercentage));
-      formData.append("Quantities",JSON.stringify(quantities))
-      
-     
+      formData.append("Quantities", JSON.stringify(quantities));
 
       const response = await api.put(`/api/admin/products/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.data.success) {
@@ -257,7 +235,6 @@ const AdminEditProduct = () => {
 
   return (
     <div className="container mx-auto p-5 text-black">
-
       <h1 className="text-3xl font-bold mb-5">Edit Product</h1>
 
       <div className="grid grid-cols-2 gap-4">
@@ -266,7 +243,9 @@ const AdminEditProduct = () => {
           <label className="block mb-2 text-sm font-bold">Product Name</label>
           <input
             value={productName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setProductName(e.target.value)
+            }
             placeholder="Product Name"
             type="text"
             className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-500"
@@ -278,7 +257,9 @@ const AdminEditProduct = () => {
           <label className="block mb-2 text-sm font-bold">Description</label>
           <textarea
             value={description}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setDescription(e.target.value)
+            }
             placeholder="Description"
             className="w-full h-36 p-3 pl-10 text-sm text-gray-700 resize-none border-gray-400 border"
           />
@@ -286,30 +267,42 @@ const AdminEditProduct = () => {
 
         {/* Product Price And Stock Configuration */}
         <div className="col-span-2">
-          <h2 className="text-2xl font-bold mb-5">Product Price And Stock Configuration</h2>
+          <h2 className="text-2xl font-bold mb-5">
+            Product Price And Stock Configuration
+          </h2>
           <div className="price-container flex flex-col gap-2 font-gilroy font-bold text-xl">
-  {quantities.map(quantity => (
-    <div key={quantity._id} className="flex gap-2 items-center">
-      <span>{quantity.volume} :</span>
-      <input
-        type="number"
-        name={quantity.volume}
-        value={quantity.price}
-        onChange={(e) => handlePrice(quantity.volume!, parseFloat(e.target.value))}
-        className="ml-3 w-1/3 p-3 text-sm text-gray-700 border-2 outline-none transition rounded-md focus:ring ring-blue-600"
-        placeholder="Price"
-      />
-      <input
-        type="number"
-        value={quantity.stock}
-        onChange={(e) => handleStockChange(quantity.volume!, parseInt(e.target.value))}
-        className="ml-3 w-1/3 p-3 text-sm text-gray-700 border-2 outline-none transition rounded-md focus:ring ring-blue-600"
-        placeholder="Stock"
-      />
-      <Trash2 className="cursor-pointer text-red-800" onClick={() => handleRemoveQuantity(quantity._id!)} />
-    </div>
-  ))}
-</div>
+            {quantities.map((quantity) => (
+              <div key={quantity._id} className="flex gap-2 items-center">
+                <span>{quantity.volume} :</span>
+                <input
+                  type="number"
+                  name={quantity.volume}
+                  value={quantity.price}
+                  onChange={(e) =>
+                    handlePrice(quantity.volume!, parseFloat(e.target.value))
+                  }
+                  className="ml-3 w-1/3 p-3 text-sm text-gray-700 border-2 outline-none transition rounded-md focus:ring ring-blue-600"
+                  placeholder="Price"
+                />
+                <input
+                  type="number"
+                  value={quantity.stock}
+                  onChange={(e) =>
+                    handleStockChange(
+                      quantity.volume!,
+                      parseInt(e.target.value)
+                    )
+                  }
+                  className="ml-3 w-1/3 p-3 text-sm text-gray-700 border-2 outline-none transition rounded-md focus:ring ring-blue-600"
+                  placeholder="Stock"
+                />
+                <Trash2
+                  className="cursor-pointer text-red-800"
+                  onClick={() => handleRemoveQuantity(quantity._id!)}
+                />
+              </div>
+            ))}
+          </div>
 
           <div className="add-size-container flex gap-2 mt-4">
             <input
@@ -336,7 +329,9 @@ const AdminEditProduct = () => {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
           >
-            <option value="" disabled>Select Category</option>
+            <option value="" disabled>
+              Select Category
+            </option>
             {categories.map((category) => (
               <option key={category._id} value={category.categoryName}>
                 {category.categoryName}
@@ -353,7 +348,9 @@ const AdminEditProduct = () => {
             onChange={(e) => setSelectedGender(e.target.value)}
             className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
           >
-            <option value="" disabled>Select Gender</option>
+            <option value="" disabled>
+              Select Gender
+            </option>
             <option value="Men">Men</option>
             <option value="Women">Women</option>
             <option value="Unisex">Unisex</option>
@@ -366,10 +363,14 @@ const AdminEditProduct = () => {
             <label className="block mb-2 text-sm font-bold">Scent Type</label>
             <select
               value={selectedScentType}
-              onChange={(e) => setSelectedScentType(e.target.value as IProduct["ScentType"])}
+              onChange={(e) =>
+                setSelectedScentType(e.target.value as IProduct["ScentType"])
+              }
               className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
             >
-              <option value="" disabled>Select Scent Type</option>
+              <option value="" disabled>
+                Select Scent Type
+              </option>
               <option value="Woody">Woody</option>
               <option value="Fruity">Fruity</option>
               <option value="Floral">Floral</option>
@@ -379,10 +380,16 @@ const AdminEditProduct = () => {
           </div>
 
           <div className="w-1/2">
-            <label className="block mb-2 text-sm font-bold">Discount Percentage</label>
+            <label className="block mb-2 text-sm font-bold">
+              Discount Percentage
+            </label>
             <input
               value={discountPercentage}
-              onChange={(e) => setDiscountPercentage(e.target.value === "" ? "" : parseFloat(e.target.value))}
+              onChange={(e) =>
+                setDiscountPercentage(
+                  e.target.value === "" ? "" : parseFloat(e.target.value)
+                )
+              }
               type="number"
               placeholder="Discount Percentage"
               className="w-full p-3 pl-10 text-sm text-gray-700 border border-gray-400"
@@ -393,26 +400,65 @@ const AdminEditProduct = () => {
         {/* Existing Images */}
         <div className="col-span-2">
           <h2 className="text-2xl font-bold mb-5">Current Images</h2>
-          <div className="flex gap-6 flex-wrap">
+          <div className="flex gap-6 flex-wrap items-center">
             {existingImages.map((img, idx) => (
-              <div key={idx} className="relative w-44">
+              <div key={idx} className="relative w-44 border-2 p-2">
                 <img className="w-full" src={img} alt={`Product ${idx + 1}`} />
                 <button
                   onClick={() => handleRemoveExistingImage(idx)}
-                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
                 >
-                  ×
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             ))}
+            {newProductImages.map((img, idx) => (
+              <div key={idx} className="relative w-44 border-2 p-2">
+                <img className="w-full" src={img} alt={`Product ${idx + 1}`} />
+                <button
+                  onClick={() => handleRemoveExistingImage(idx)}
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+
+            <input
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              type="file"
+              className=" hidden"
+            />
+            <button
+              onClick={() =>existingImages.length>=5?toast.error('Maximun 5 images can we addedd'): fileInputRef.current?.click()}
+              className="flex flex-col justify-center items-center w-28 h-28 bg-slate-200 rounded-full shadow-lg hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 transition duration-200"
+            >
+              <img
+                className="h-[50%] mb-2"
+                src="https://cdn.iconscout.com/icon/premium/png-512-thumb/upload-image-5062268-4213843.png?f=webp&w=512"
+                alt="Upload Icon"
+              />
+              <span className="text-xs font-medium text-slate-700">
+                Upload Image
+              </span>
+            </button>
           </div>
-          </div>
-          </div>
-          <Button
+        </div>
+        {showCropper && (
+          <ImageCropper
+            imageSrc={newProductImages[0]}
+            onClose={() => setShowCropper(false)}
+            onCropComplete={handleImageCropper}
+          />
+        )}
+      </div>
+      <Button
         ButtonHandler={updateProduct}
-        text={loading?<PulseLoader color="#ffff" />:"Edit Product"}
+        text={loading ? <PulseLoader color="#ffff" /> : "Edit Product"}
         paddingVal={10}
       />
-          </div>
-  )}
-export default AdminEditProduct
+    </div>
+  );
+};
+export default AdminEditProduct;

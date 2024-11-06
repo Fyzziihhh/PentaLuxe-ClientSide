@@ -31,7 +31,7 @@ useEffect(()=>{
   getAllProudctByCategory();
 },[])
   return (
-    <div>
+    <div >
     <div className="heading text-center">
       <h1 className='text-4xl  text-center font-Quando mt-5'>Category Page</h1>
       <p className=''>Explore our exquisite collection of Attars, known for their rich, long-lasting fragrances crafted from natural ingredients.</p>
