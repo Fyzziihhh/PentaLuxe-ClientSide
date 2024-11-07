@@ -94,7 +94,7 @@ const CheckOutPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [formState, setFormState] = useState<Record<FormKeys, string>>({
+  const [formState, setFormState] = useState<any>({
     Name: "",
     Phone: "",
     Pincode: "",
@@ -112,7 +112,7 @@ const CheckOutPage = () => {
   const onInputHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
 
-    setFormState((prevState) => ({
+    setFormState((prevState:any) => ({
       ...prevState,
       [name as FormKeys]: value,
     }));
@@ -209,6 +209,7 @@ const CheckOutPage = () => {
     setAddressId(id);
 
     if (addressToEdit) {
+      console.log(addressToEdit)
       setFormState(addressToEdit);
       setAddressType(addressToEdit.addressType);
       setIsModalOpen(true);
