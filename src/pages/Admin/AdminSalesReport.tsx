@@ -310,14 +310,14 @@ const AdminSalesReport = () => {
                   </p>
                 </td>
               </tr>
-            ) : salesReportData?.length === 0 ? (
+            ) : salesReportData?.length === 0 || !salesReportData ? (
               <tr>
                 <td colSpan={7} className="text-center px-6 py-4 text-gray-600">
                   No Report Found On that Particular Date Range
                 </td>
               </tr>
             ) : (
-              (salesReportData!.map((order) => (
+              (!salesReportData?[]:salesReportData!.map((order) => (
                 <tr key={order._id} className="text-center">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
                     {order._id}
