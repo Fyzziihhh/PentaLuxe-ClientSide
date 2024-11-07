@@ -1,6 +1,6 @@
 import api from "@/services/apiService";
 import { AppHttpStatusCodes } from "@/types/statusCode";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import  { ChangeEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -12,7 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { toast } from "sonner";
+
 interface ITopSellingProduct {
   _id: {
     productName: string;

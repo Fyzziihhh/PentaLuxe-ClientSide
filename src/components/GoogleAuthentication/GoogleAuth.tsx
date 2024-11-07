@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, provider } from "./Config";
 import { signInWithPopup } from "firebase/auth";
 import api from "../../services/apiService";
-import { Toaster, toast } from "sonner";
+import {  toast } from "sonner";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 type GoogleAuthProps = {
   text: string;

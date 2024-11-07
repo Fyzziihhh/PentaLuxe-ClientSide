@@ -5,7 +5,6 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import api from "@/services/apiService";
-import { Axis3D } from "lucide-react";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 const AdminOfferPage: React.FC = () => {
   const [offerType, setOfferType] = useState("");

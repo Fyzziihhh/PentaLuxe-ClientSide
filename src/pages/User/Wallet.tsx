@@ -1,33 +1,32 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 import api from "../../services/apiService";
 import { AppHttpStatusCodes } from "../../types/statusCode";
-import { Wallet, ArrowDownCircle, DollarSign } from "lucide-react";
-import { IOrder } from "@/types/orderTypes";
+import { Wallet, DollarSign } from "lucide-react";
+import { HashLoader } from "react-spinners";
 
-interface ITransactions{
-  orderID:string,
-  type:string;
-  date:string;
-  method:string;
-  amount:number;
+interface ITransactions {
+  orderID: string;
+  type: string;
+  date: string;
+  method: string;
+  amount: number;
 }
 
 const WalletPage = () => {
   const [balance, setBalance] = useState(0);
-  const [transactions,setTransactions]=useState<ITransactions[]>([])
+  const [transactions, setTransactions] = useState<ITransactions[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch wallet balance and transactions
   const fetchWalletData = async () => {
-
     setLoading(true);
-    const res=await api.get('/api/user/wallet')
-    if(res.status===AppHttpStatusCodes.OK){
-      const data=res.data.data
-      console.log(data)
-         setTransactions(data.transactions)
-         setBalance(data.balance)
+    const res = await api.get("/api/user/wallet");
+    if (res.status === AppHttpStatusCodes.OK) {
+      const data = res.data.data;
+      console.log(data);
+      setTransactions(data.transactions);
+      setBalance(data.balance);
     }
     // Fetch data logic (not implemented here)
     setLoading(false); // Make sure to set loading to false after fetching
@@ -37,8 +36,6 @@ const WalletPage = () => {
     fetchWalletData();
   }, []); // Call the function when the component mounts
 
-
-
   return (
     <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-white text-center">
@@ -47,7 +44,7 @@ const WalletPage = () => {
       <div className="mt-6">
         <h2 className="text-xl text-gray-300">
           <DollarSign className="inline mr-1" />
-          Balance: {balance||0}
+          Balance: {balance || 0}
         </h2>
       </div>
 
@@ -64,7 +61,9 @@ const WalletPage = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions?.length > 0 ? (
+            {loading ? (
+              <HashLoader />
+            ) : transactions?.length > 0 ? (
               transactions.map((transaction, index) => (
                 <tr key={index} className={`border-b border-gray-700`}>
                   <td className="text-gray-400 py-2">

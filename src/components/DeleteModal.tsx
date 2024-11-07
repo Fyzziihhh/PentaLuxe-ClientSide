@@ -1,4 +1,4 @@
-import { title } from 'process';
+
 import React from 'react';
 import Modal from 'react-modal';
 interface IDeleteModalProps {

@@ -1,9 +1,6 @@
-import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
-import App from "@/App";
-import { WineOff } from "lucide-react";
-
 const api = axios.create({
   headers: {
     "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button/Button";
-import InputBox from "../../components/InputBox";
+
 import { Link } from "react-router-dom";
 import api from "../../services/apiService";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [errors, setError] = useState<Errors>({});
+  const [errors, setErrors] = useState<Errors>({});
   const Navigate = useNavigate();
 
   const registerHandler = async (
@@ -37,39 +37,42 @@ const SignupPage = () => {
   ) => {
     event.preventDefault();
 
-    const errors: Errors = {};
     if (username.trim() === "") {
-      errors.usernameError = "Username is required";
+     setErrors(prev=>({...prev,usernameError:"Username is required"}))
       toast.error(errors.usernameError);
+      return
     }
     if (email.trim() === "") {
-      errors.emailError = "Email is required";
+      setErrors(prev=>({...prev,emailError:"Email is Required"}))
       toast.error(errors.emailError);
+      return
     }
     if (password.trim() === "" && confirmPassword.trim() === "") {
-      errors.passwordError = "password is required";
+      setErrors(prev=>({...prev,passwordError:"Passwords are Required"}))
       toast.error(errors.passwordError);
+      return
     }
-
+    
     if (confirmPassword && password) {
       if (password !== confirmPassword) {
-        errors.passwordError = "Passwords don't match";
+        setErrors(prev=>({...prev,passwordError:"Passwords don't match"}))
+        
         toast.error(errors.passwordError);
+        return
       }
     }
     if (phone) {
-     
+      
       if (phone.length < 10 ||phone.length>10) {
         errors.phoneError = "Phone Number Must have 10 digits";
+        setErrors(prev=>({...prev,phoneError:"Phone Number Must have 10 digits"}))
         toast.error(errors.phoneError);
+        return
       }
     }else{
-      errors.phoneError = "Phone Number Required";
+      setErrors(prev=>({...prev,phoneError:"Phone Number Required"}))
       toast.error(errors.phoneError);
-    }
-
-    if (Object.keys(errors).length > 0) {
-      return setError(errors);
+      return
     }
 
     try {

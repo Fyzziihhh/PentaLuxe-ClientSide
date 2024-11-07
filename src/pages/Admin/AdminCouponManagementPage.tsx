@@ -5,9 +5,7 @@ import { AppHttpStatusCodes } from "@/types/statusCode";
 // import { AppHttpStatusCodes } from '@/types/statusCode';
 
 import { AxiosError } from "axios";
-import { spawn } from "child_process";
-import { Axis3D } from "lucide-react";
-import { totalmem } from "os";
+
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -120,16 +118,15 @@ const CouponManagement: React.FC = () => {
                     ${coupon.minimumPurchasePrice}
                   </td>
                   <td className="px-6 py-4 text-gray-600">
-                    {coupon.expiryDate
-                      ? new Date(coupon.expiryDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )
-                      :<span className="text-red-500">Coupon Exipired</span>}
+                    {coupon.expiryDate ? (
+                      new Date(coupon.expiryDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    ) : (
+                      <span className="text-red-500">Coupon Exipired</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <button

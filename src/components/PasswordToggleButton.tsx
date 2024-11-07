@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-
-const PasswordToggleButton = ({ onClick }) => {
+import  { useState } from "react";
+ interface IPasswordToggleProps{
+  onClick:(visible:boolean)=>void
+ }
+const PasswordToggleButton= ({ onClick }:IPasswordToggleProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const handleToggle = () => {

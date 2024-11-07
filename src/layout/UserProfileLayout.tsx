@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import { AppHttpStatusCodes } from "../types/statusCode";
 import { AxiosError } from "axios";
-import {  json, NavLink, Outlet, useNavigate } from "react-router-dom";
+import {   NavLink, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface IUser {

@@ -13,14 +13,10 @@ interface Category {
   categoryName: string;
 }
 
-interface ProductVariant {
-  size: string;
-  price: string;
-  stock: string;
-}
+
 
 import { IProduct } from "@/types/productTypes";
-import { Trash2, Volume } from "lucide-react";
+import { Trash2 } from "lucide-react";
 interface IQuantities {
   volume: string;
   price: string | number;

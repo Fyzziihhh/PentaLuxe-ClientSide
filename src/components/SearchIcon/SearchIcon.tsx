@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import styles from './SearchIcon.module.css'; // Import CSS module
 import api from '@/services/apiService';
 import { AppHttpStatusCodes } from '@/types/statusCode';

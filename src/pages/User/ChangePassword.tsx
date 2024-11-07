@@ -2,7 +2,7 @@ import PasswordToggleButton from "@/components/PasswordToggleButton";
 import api from "@/services/apiService";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import { AxiosError } from "axios";
-import React, { FormEvent, useRef, useState } from "react";
+import  { FormEvent, useRef, useState } from "react";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { IOrder } from "@/types/orderTypes";
 import { AppHttpStatusCodes } from "@/types/statusCode";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const AdminSalesReport = () => {
   const [loading, setLoading] = useState(false);
-  const [orders, setOrders] = useState<IOrder[]>([]);
+  
   const [totalOrderAmount, setTotalOrderAmount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [salesCount, setSalesCount] = useState(0);
@@ -49,7 +49,7 @@ const AdminSalesReport = () => {
     ];
   
     // Prepare data similar to the PDF version
-    const data = (salesReportData ? salesReportData : orders).map((order) => [
+    const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
       order.totalAmount,
@@ -100,7 +100,7 @@ const AdminSalesReport = () => {
       ],
     ];
 
-    const data = (salesReportData ? salesReportData : orders).map((order) => [
+    const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
       order.totalAmount,
@@ -317,7 +317,7 @@ const AdminSalesReport = () => {
                 </td>
               </tr>
             ) : (
-              (salesReportData ? salesReportData : orders).map((order) => (
+              (salesReportData!.map((order) => (
                 <tr key={order._id} className="text-center">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
                     {order._id}
@@ -344,7 +344,7 @@ const AdminSalesReport = () => {
                   </td>
                 </tr>
               ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>

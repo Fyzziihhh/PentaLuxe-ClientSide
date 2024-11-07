@@ -12,7 +12,6 @@ import { AlertTriangle } from "lucide-react";
 
 const AdminProductsPage = () => {
   const [isModalOpen, setModalIsOpen] = useState(false);
-  const [refresh, setRefresh] = useState(false);
   const [itemId, setItemId] = useState("");
   const navigate = useNavigate();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -96,7 +95,7 @@ const AdminProductsPage = () => {
 
   useEffect(() => {
     getProducts();
-  }, [refresh]);
+  }, []);
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 h-full w-full">

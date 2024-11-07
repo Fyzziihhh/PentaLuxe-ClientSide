@@ -5,8 +5,8 @@ import { IProduct } from "@/types/productTypes";
 import Pagination from "@/components/Pagination";
 import { AlertTriangle } from "lucide-react";
 import { AxiosError } from "axios";
-import { AppHttpStatusCodes } from "@/types/statusCode";
-import { useLocation } from "react-router-dom";
+// import { AppHttpStatusCodes } from "@/types/statusCode";
+// import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 
 const AllProductsPage = () => {
@@ -17,7 +17,7 @@ const AllProductsPage = () => {
   const [gender, setGender] = useState("");
   const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
   const [filterActive, setFilterActive] = useState(false);
-  const location=useLocation()
+  // const location=useLocation()
   // const searchedProducts=location.state.products
   
   
