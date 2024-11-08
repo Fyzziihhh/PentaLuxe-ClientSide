@@ -1,11 +1,14 @@
 
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
+const baseURL="https://pentaluxe.shop"
 const api = axios.create({
+  baseURL, 
   headers: {
     "Content-Type": "application/json",
   },
 });
+
 
 
 
