@@ -8,7 +8,7 @@ export default defineConfig({
     port:6776,
     proxy:{
     "/api":{
-      target:'http://pentaluxe.shop',
+      target:'https://pentaluxe.shop',
       changeOrigin:true
     }
     },
