@@ -24,6 +24,7 @@ const HomePage = () => {
   const getCategories = useCallback(async () => {
     try {
       const response = await api.get("/api/user/categories");
+      console.log(api.get)
       if (response.status===AppHttpStatusCodes.OK) {
         console.log("category",response)
         setCategories(response.data.categories);
