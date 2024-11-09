@@ -7,19 +7,18 @@ import AdminRoutes from "./routes/AdminRoutes";
 import UserRoutes from "./routes/UserRoutes";
 
 const App: React.FC = () => {
-  
   return (
     <Router>
-  <Toaster
+      <Toaster
         position="bottom-center"
         richColors
         closeButton
         expand
         toastOptions={{
           style: {
-            fontSize: '1rem', // Equivalent to text-lg
-            padding: '1rem',      // Equivalent to p-4
-            width: '24rem',       // Equivalent to w-96
+            fontSize: "1rem", // Equivalent to text-lg
+            padding: "1rem", // Equivalent to p-4
+            width: "24rem", // Equivalent to w-96
           },
         }}
       />
