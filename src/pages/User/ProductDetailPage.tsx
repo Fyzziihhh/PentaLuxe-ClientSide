@@ -79,9 +79,6 @@ const ProductDetailPage = () => {
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.response?.status === AppHttpStatusCodes.UNAUTHORIZED) {
-          navigate("/login");
-        }
         toast.error(error.response?.data.message);
       }
     }
@@ -225,7 +222,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        <div className="product-info-section w-1/2 -mt-10   h-full ml-10">
+        <div className="product-info-section w-1/2    h-full ml-10">
           <div className="proudct-details w-full h-full  ">
             <h1 className="bold text-4xl font-Quando">{product?.Name}</h1>
             <div className="rating flex gap-2 mt-2">
