@@ -41,7 +41,7 @@ const OrderDetailsPage : React.FC = () => {
             <div className="flex gap-2 flex-col ">
               <h1 className="font-Quando">{item.productName}</h1>
               <h1>Quantity : {item.quantity}</h1>
-              <h1>Price : ₹ {(item.price.toFixed(2))} for each</h1>
+              <h1>Price : ₹ {(item.price.toFixed(0))} for each</h1>
             </div>
           </div>
         ))}
@@ -55,7 +55,7 @@ const OrderDetailsPage : React.FC = () => {
         <p className="font-montserrat font-bold">Shipping: ₹ 40</p>
         <div className="h-[1px] w-[20%] bg-slate-500 mt-3"></div>
         <h1 className="font-montserrat font-bold text-xl mt-2">
-          Total : ₹ {order.totalAmount}
+          Total : ₹ {order.totalAmount.toFixed(0)}
         </h1>
       </div>
     </div>

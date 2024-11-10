@@ -322,7 +322,7 @@ const OrdersPage = () => {
                 </div>
               ))}
               <h1 className="font-montserrat font-bold">
-                Total : {order.totalAmount}
+                Total : {order.totalAmount.toFixed(0)}
               </h1>
               <button
                 onClick={() => viewOrderDetails(order)}

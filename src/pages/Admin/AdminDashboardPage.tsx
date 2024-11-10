@@ -124,7 +124,7 @@ const AdminDashboard = () => {
             className={`w-64 h-64 p-6 rounded-lg shadow-lg bg-gradient-to-r from-green-400 to-green-600  text-white hover:shadow-2xl transition-transform transform hover:scale-105 flex flex-col items-start justify-between`}
           >
             <h2 className="text-xl font-semibold">Total Sales</h2>
-            <p className="text-4xl font-bold">{totalSales}</p>
+            <p className="text-4xl font-bold">{totalSales.toFixed(2)}</p>
           </div>
           <div
             className={`w-64 h-64 p-6 rounded-lg shadow-lg bg-gradient-to-r from-blue-400 to-blue-600  text-white hover:shadow-2xl transition-transform transform hover:scale-105 flex flex-col items-start justify-between`}
