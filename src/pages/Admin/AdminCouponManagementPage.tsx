@@ -112,10 +112,10 @@ const CouponManagement: React.FC = () => {
                     {coupon.discountPercentage}%
                   </td>
                   <td className="px-6 py-4 text-green-600">
-                    ${coupon.maxDiscountPrice}
+                  ₹{coupon.maxDiscountPrice}
                   </td>
                   <td className="px-6 py-4 text-gray-600">
-                    ${coupon.minimumPurchasePrice}
+                  ₹{coupon.minimumPurchasePrice}
                   </td>
                   <td className="px-6 py-4 text-gray-600">
                     {coupon.expiryDate ? (
