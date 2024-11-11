@@ -281,7 +281,7 @@ const AdminOrderManagement: React.FC = () => {
       )}
       <Pagination
         items={orders}
-        itemsPerPage={3}
+        itemsPerPage={7}
         onPageChange={handlePagination}
       />
     </div>

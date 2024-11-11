@@ -354,7 +354,7 @@ const AdminSalesReport = () => {
           </tbody>
         </table>
       </div>
-     <Pagination itemsPerPage={5} items={salesReportData!} onPageChange={handlePagination}/>
+     <Pagination itemsPerPage={8} items={salesReportData!} onPageChange={handlePagination}/>
 
       {/* Report Download Options */}
       <div className="flex justify-end mb-6 items-center">

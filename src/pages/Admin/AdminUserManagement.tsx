@@ -126,7 +126,7 @@ const AdminUserManagement = () => {
             <tr key={user._id} className="border-b border-gray-200 hover:bg-gray-100">
               <td className="py-3 px-4">{user.username}</td>
               <td className="py-3 px-4">{user.email}</td>
-              <td className="py-3 px-4">{user.phone}</td>
+              <td className="py-3 px-4">{user.phone||"N/A"}</td>
               <td className="py-3 px-4">
                 {user.addresses?.length === 0 ? "No Addresses Found" : user.addresses?.[0]}
               </td>
