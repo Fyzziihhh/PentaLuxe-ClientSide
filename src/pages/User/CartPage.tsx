@@ -203,12 +203,12 @@ const CartPage = () => {
                       <h1 className="flex items-center gap-3">
                         {/* Display the original price */}
                         <p className="line-through text-gray-400">
-                          ${product.variant.price}
+                        ₹{product.variant.price}
                         </p>{" "}
                         {/* Original Price */}
                         {product.product?.DiscountPercentage && (
                           <p>
-                            $
+                           ₹
                             {(
                               product.variant.price *
                               (1 - product.product.DiscountPercentage / 100)
@@ -222,7 +222,7 @@ const CartPage = () => {
                           ) : product.variant.stock === 0 ? (
                             <span>Out of Stock</span>
                           ) : (
-                            <span className="text-red-700 font-bold">{`Only ${product.variant.stock} are left !!`}</span>
+                            <span className="text-red-700 font-bold">{`Only ₹{product.variant.stock} are left !!`}</span>
                           )}
                         </p>
                       </h1>
@@ -274,7 +274,7 @@ const CartPage = () => {
                     </div>
                     <div className="total-price">
                       <h1 className="font-bold text-xl font-Quando ">
-                        $
+                      ₹
                         {(product.variant.price *
                           (1 - product.product?.DiscountPercentage / 100) *
                           product.quantity).toFixed(0)}
@@ -342,7 +342,7 @@ const CartPage = () => {
                 </h1>
                 <h1 className="mt-5 flex justify-between">
                   <span className="font-bold font-mono">Delivery</span>
-                  <span className="font-bold font-mono">$40</span>
+                  <span className="font-bold font-mono">₹40</span>
                 </h1>
 
                 {discountRate !== 0 && (
@@ -357,7 +357,7 @@ const CartPage = () => {
                 <h1 className="mt-5 flex justify-between text-xl">
                   <span className="font-bold font-mono ">Total</span>
                   <span className="font-bold font-mono">
-                    ${totalPrice.toFixed(0)}
+                  ₹{totalPrice.toFixed(0)}
                   </span>
                 </h1>
 

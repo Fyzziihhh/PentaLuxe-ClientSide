@@ -137,9 +137,6 @@ const Header = () => {
                       Profile
                     </li>
                   </Link>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                    Settings
-                  </li>
                   <li
                     className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
                     onClick={logoutHandler}

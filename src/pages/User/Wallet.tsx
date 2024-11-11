@@ -44,7 +44,7 @@ const WalletPage = () => {
       <div className="mt-6">
         <h2 className="text-xl text-gray-300">
           <DollarSign className="inline mr-1" />
-          Balance: {balance || 0}
+          Balance: {balance.toFixed(0) || 0}
         </h2>
       </div>
 
@@ -81,7 +81,7 @@ const WalletPage = () => {
                   </td>
                   <td className="text-gray-400 py-2">{transaction.method}</td>
                   <td className="text-gray-400 py-2">{transaction.orderID}</td>
-                  <td className="text-gray-400 py-2">₹{transaction.amount}</td>
+                  <td className="text-gray-400 py-2">₹{transaction.amount.toFixed(0)}</td>
                 </tr>
               ))
             ) : (
