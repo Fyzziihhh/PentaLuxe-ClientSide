@@ -96,7 +96,8 @@ const CartPage = () => {
       const res = await api.get("/api/user/coupons");
       if (res.status === AppHttpStatusCodes.OK) {
         const { data: coupons } = res.data;
-        setCoupons(coupons);
+         const filteredCoupons=coupons.filter((coupon:any)=>coupon.expiryDate!==null)
+        setCoupons(filteredCoupons);
       }
     } catch (error) {}
   };
@@ -120,7 +121,6 @@ const CartPage = () => {
   const handleOnCouponChange = (couponRate: number, couponName: string) => {
     setSelectedRate(couponRate);
     setSelectedCoupon(couponName);
-  
   };
 
   useEffect(() => {
@@ -203,12 +203,12 @@ const CartPage = () => {
                       <h1 className="flex items-center gap-3">
                         {/* Display the original price */}
                         <p className="line-through text-gray-400">
-                        ₹{product.variant.price}
+                          ₹{product.variant.price}
                         </p>{" "}
                         {/* Original Price */}
                         {product.product?.DiscountPercentage && (
                           <p>
-                           ₹
+                            ₹
                             {(
                               product.variant.price *
                               (1 - product.product.DiscountPercentage / 100)
@@ -274,10 +274,12 @@ const CartPage = () => {
                     </div>
                     <div className="total-price">
                       <h1 className="font-bold text-xl font-Quando ">
-                      ₹
-                        {(product.variant.price *
+                        ₹
+                        {(
+                          product.variant.price *
                           (1 - product.product?.DiscountPercentage / 100) *
-                          product.quantity).toFixed(0)}
+                          product.quantity
+                        ).toFixed(0)}
                       </h1>
                     </div>
                   </div>
@@ -309,8 +311,6 @@ const CartPage = () => {
                       </option>
                       {availableCoupons.map((coupon) => (
                         <option
-                        
-                         
                           key={coupon._id}
                           value={coupon.discountPercentage}
                         >
@@ -357,7 +357,7 @@ const CartPage = () => {
                 <h1 className="mt-5 flex justify-between text-xl">
                   <span className="font-bold font-mono ">Total</span>
                   <span className="font-bold font-mono">
-                  ₹{totalPrice.toFixed(0)}
+                    ₹{totalPrice.toFixed(0)}
                   </span>
                 </h1>
 
@@ -370,7 +370,10 @@ const CartPage = () => {
 
                 <p className="flex mt-5 justify-center gap-3 font-montserrat font-bold">
                   Or{" "}
-                  <Link to='/products' className="flex text-green-700  underline gap-2 ">
+                  <Link
+                    to="/products"
+                    className="flex text-green-700  underline gap-2 "
+                  >
                     Continue Shopping <MoveRight />{" "}
                   </Link>{" "}
                 </p>

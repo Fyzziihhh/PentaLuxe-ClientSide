@@ -44,11 +44,6 @@ const CouponModal = ({
       toast.error("Expiry date should be greater than the current date.");
       return;
     }
-
-    if (!maxDiscountPrice || Number(maxDiscountPrice) <= 0) {
-      toast.error("Max discount price must be a positive value.");
-      return;
-    }
     if (
       !discountPercentage ||
       Number(discountPercentage) <= 0 ||
@@ -57,12 +52,17 @@ const CouponModal = ({
       toast.error("Discount percentage should be between 0 and 100.");
       return;
     }
+
+    if (!maxDiscountPrice || Number(maxDiscountPrice) <= 0) {
+      toast.error("Max discount price must be a positive value.");
+      return;
+    }
     if (!minimumPurchasePrice || Number(minimumPurchasePrice) <= 0) {
       toast.error("Minimum purchase price must be a positive value.");
       return;
     }
     const DataToSend = {
-      couponName,
+     couponName: couponName.toUpperCase(),
       expiryDate,
       maxDiscountPrice,
       discountPercentage,
