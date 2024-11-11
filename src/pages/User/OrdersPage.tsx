@@ -253,8 +253,8 @@ const OrdersPage = () => {
             )}
 
             {/*  Inovie button */}
-            {order.status === "Confirmed" ||
-              (order.status === "Delivered" && (
+            {(order.status === "Confirmed" ||
+              order.status === "Delivered" && (
                 <button
                   onClick={() => generateInvoicePDF(order)}
                   className="bg-green-800 text-white font-bold py-1 px-2 rounded-md hover:bg-green-700 transition duration-150 flex items-center absolute right-28"
