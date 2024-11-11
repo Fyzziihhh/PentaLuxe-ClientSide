@@ -454,10 +454,10 @@ const CheckOutPage = () => {
               security and encryption standards, ensuring a safe and protected
               transaction experience.
             </p>
-            {totalPrice <= 1000 && (
+            {totalPrice > 1000 && (
               <div className="bg-yellow-600/10 border border-yellow-400 text-yellow-300 text-center py-2 px-3 rounded-lg mb-4">
                 <p className="text-sm">
-                  Cash on Delivery is available only for orders over{" "}
+                  Cash on Delivery is available only for orders below{" "}
                   <span className="font-semibold">₹1000</span>.
                 </p>
               </div>
@@ -466,7 +466,7 @@ const CheckOutPage = () => {
               Available Payment Methods
             </h2>
             <div className="payment-boxes flex gap-4">
-              {totalPrice > 1000 && (
+              {totalPrice < 1000 && (
                 <div className="payment-box text-center">
                   <div
                     className={`w-24 h-20 border-2 rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
@@ -561,7 +561,7 @@ const CheckOutPage = () => {
                       Qty: <b>{product.quantity}</b>
                     </span>
                     <span className="font-bold text-green-500">
-                      INR{" "}
+                    ₹{" "}
                       {((product.variant.price -
                         (product.variant.price *
                           product.product.DiscountPercentage) /
@@ -576,14 +576,14 @@ const CheckOutPage = () => {
           <div className="bg-gray-700 h-[2px] mt-5"></div>
           <div className="mt-5 text-white">
             <p className="flex justify-between font-bold text-lg">
-              <span>Sub Total</span> <span>INR {(totalPrice - 40).toFixed(0)}</span>
+              <span>Sub Total</span> <span>₹ {(totalPrice - 40).toFixed(0)}</span>
             </p>
             <p className="flex justify-between font-bold text-lg">
-              <span>Delivery Fee</span> <span>INR {40}</span>
+              <span>Delivery Fee</span> <span>₹ {40}</span>
             </p>
             <p className="flex justify-between font-bold text-xl mt-3">
               <span>Total</span>{" "}
-              <span className="text-red-500">INR {totalPrice.toFixed(0)}</span>
+              <span className="text-red-500">₹ {totalPrice.toFixed(0)}</span>
             </p>
           </div>
         </div>
