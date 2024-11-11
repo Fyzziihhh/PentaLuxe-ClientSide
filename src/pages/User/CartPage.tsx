@@ -13,7 +13,7 @@ import {
   changeQuantity,
   removeProduct,
 } from "@/store/slices/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Cart } from "@/types/cartProductTypes";
 import { ICoupon } from "../Admin/AdminCouponManagementPage";
 
@@ -370,9 +370,9 @@ const CartPage = () => {
 
                 <p className="flex mt-5 justify-center gap-3 font-montserrat font-bold">
                   Or{" "}
-                  <span className="flex text-green-700  underline gap-2 ">
+                  <Link to='/products' className="flex text-green-700  underline gap-2 ">
                     Continue Shopping <MoveRight />{" "}
-                  </span>{" "}
+                  </Link>{" "}
                 </p>
               </div>
             </div>
