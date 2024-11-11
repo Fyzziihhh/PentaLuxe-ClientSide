@@ -326,7 +326,7 @@ const AdminSalesReport = () => {
                     {order.user?.username.toUpperCase()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
-                    {order.totalAmount}
+                    {order.totalAmount.toFixed(0)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
                     {order.paymentMethod.toUpperCase()}
