@@ -135,7 +135,7 @@ const AdminUserManagement = () => {
             <p>
               {user.addresses?.[0].Name}, {user.addresses?.[0].Locality},<br />
               {user.addresses?.[0].District}, {user.addresses?.[0].State.toUpperCase() || ""}
-              {user.addresses?.[0].District}, {user.addresses?.[0].Pincode || ""}
+              - {user.addresses?.[0].Pincode || ""}
             </p>
           )}
         </td>
