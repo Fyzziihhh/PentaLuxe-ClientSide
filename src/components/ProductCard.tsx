@@ -18,7 +18,7 @@ const ProductCard: React.FC<IProductCardProps> = ({ product }) => {
     try {
       const res = await api.post("/api/user/cart", {
         productId: product?._id,
-        volume: product.Variants[0].price,
+        volume: product.Variants[0].volume,
         stock: product.Variants?.[0].stock,
       });
       if (res.status === AppHttpStatusCodes.OK) {
