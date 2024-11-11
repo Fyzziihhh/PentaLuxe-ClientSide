@@ -5,12 +5,13 @@ import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import { toast } from "sonner";
+import { IAddress } from "@/types/AddressTypes";
 
 interface IUser {
   _id: string;
   username: string;
   email: string;
-  addresses?: string[];
+  addresses?: IAddress[];
   phone: number;
   status: string;
 }
@@ -128,7 +129,11 @@ const AdminUserManagement = () => {
               <td className="py-3 px-4">{user.email}</td>
               <td className="py-3 px-4">{user.phone||"N/A"}</td>
               <td className="py-3 px-4">
-                {user.addresses?.length === 0 ? "No Addresses Found" : user.addresses?.[0]}
+                {user.addresses?.length === 0 ? "No Addresses Found" : <p>
+                  {user.addresses?.[0].Name}
+                  {user.addresses?.[0].FlatNumberOrBuildingName}
+                  {user.addresses?.[0].Locality}
+                  {user.addresses?.[0].Landmark}</p>}
               </td>
               <td className="py-3 px-4">
                 <span
