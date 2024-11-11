@@ -349,7 +349,7 @@ const OrdersPage = () => {
           </div>
         ))}
       </div>
-      <Pagination items={orders} itemsPerPage={4} onPageChange={handlePagination}/>
+      <Pagination items={orders} itemsPerPage={3} onPageChange={handlePagination}/>
     </div>
   );
 };
