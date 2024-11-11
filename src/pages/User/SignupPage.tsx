@@ -8,12 +8,7 @@ import GoogleAuth from "../../components/GoogleAuthentication/GoogleAuth";
 import { toast } from "sonner";
 import Input from "@/components/Input/Input";
 
-interface Errors {
-  usernameError?: string;
-  passwordError?: string;
-  emailError?: string;
-  phoneError?: string;
-}
+
 
 interface InputField {
   text: string;
@@ -29,7 +24,7 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
+
   const Navigate = useNavigate();
 
   const registerHandler = async (
@@ -37,42 +32,39 @@ const SignupPage = () => {
   ) => {
     event.preventDefault();
 
-    if (username.trim() === "") {
-     setErrors(prev=>({...prev,usernameError:"Username is required"}))
-      toast.error(errors.usernameError);
-      return
+    const showError = (message: string) => {
+      toast.error(message);
+    };
+  
+   
+    if (!username.trim()) {
+      showError("Username is required");
+      return;
     }
-    if (email.trim() === "") {
-      setErrors(prev=>({...prev,emailError:"Email is Required"}))
-      toast.error(errors.emailError);
-      return
+  
+    if (!email.trim()) {
+      showError("Email is required");
+      return;
     }
-    if (password.trim() === "" && confirmPassword.trim() === "") {
-      setErrors(prev=>({...prev,passwordError:"Passwords are Required"}))
-      toast.error(errors.passwordError);
-      return
+  
+    if (!password.trim() || !confirmPassword.trim()) {
+      showError("Passwords are required");
+      return;
     }
-    
-    if (confirmPassword && password) {
-      if (password !== confirmPassword) {
-        setErrors(prev=>({...prev,passwordError:"Passwords don't match"}))
-        
-        toast.error(errors.passwordError);
-        return
-      }
+  
+    if (password !== confirmPassword) {
+      showError("Passwords don't match");
+      return;
     }
-    if (phone) {
-      
-      if (phone.length < 10 ||phone.length>10) {
-        errors.phoneError = "Phone Number Must have 10 digits";
-        setErrors(prev=>({...prev,phoneError:"Phone Number Must have 10 digits"}))
-        toast.error(errors.phoneError);
-        return
-      }
-    }else{
-      setErrors(prev=>({...prev,phoneError:"Phone Number Required"}))
-      toast.error(errors.phoneError);
-      return
+  
+    if (!phone) {
+      showError("Phone number is required");
+      return;
+    }
+  
+    if (phone.length !== 10) {
+      showError("Phone number must have exactly 10 digits");
+      return;
     }
 
     try {
