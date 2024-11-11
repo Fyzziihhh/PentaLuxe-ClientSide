@@ -133,8 +133,9 @@ const AdminUserManagement = () => {
             "No Addresses Found"
           ) : (
             <p>
-              {user.addresses?.[0].Name}, {user.addresses?.[0].FlatNumberOrBuildingName},<br />
-              {user.addresses?.[0].Locality}, {user.addresses?.[0].Landmark || ""}
+              {user.addresses?.[0].Name}, {user.addresses?.[0].Locality},<br />
+              {user.addresses?.[0].District}, {user.addresses?.[0].State.toUpperCase() || ""}
+              {user.addresses?.[0].District}, {user.addresses?.[0].Pincode || ""}
             </p>
           )}
         </td>
