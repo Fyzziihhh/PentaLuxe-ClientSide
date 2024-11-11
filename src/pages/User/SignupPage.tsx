@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import GoogleAuth from "../../components/GoogleAuthentication/GoogleAuth";
 import { toast } from "sonner";
 import Input from "@/components/Input/Input";
+import { constants } from "buffer";
+import { AppHttpStatusCodes } from "@/types/statusCode";
+import { PulseLoader } from "react-spinners";
 
 
 
@@ -18,6 +21,7 @@ interface InputField {
 }
 
 const SignupPage = () => {
+  const [isLoading,setIsLoading]=useState(false)
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -68,14 +72,19 @@ const SignupPage = () => {
     }
 
     try {
+      setIsLoading(true)
       let response = await api.post("/api/user/register", {
         email,
         username,
         password,
         phone,
       });
+  if(response.status===AppHttpStatusCodes.CREATED){
+    setIsLoading(false)
+    toast.success(response.data.message);
 
-      toast.success(response.data.message);
+
+  }
 
       Navigate(`/otp-verify/${email}`);
     } catch (error: any) {
@@ -148,7 +157,7 @@ const SignupPage = () => {
               />
             ))}
           </div>
-          <Button text="Register" ButtonHandler={registerHandler} />
+          <Button text={isLoading? <PulseLoader color="#ffff" />:"Register"} ButtonHandler={registerHandler} />
           <Link to="/login" className="text-blue-700 mt-2  hover:text-blue-900">
             Already have an Account ?
           </Link>
