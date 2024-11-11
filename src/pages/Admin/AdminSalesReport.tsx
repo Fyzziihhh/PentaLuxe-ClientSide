@@ -52,7 +52,7 @@ const AdminSalesReport = () => {
     const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
-      order.totalAmount,
+      order.totalAmount.toFixed(0),
       order.paymentMethod.toUpperCase(),
       order.couponDiscount > 0 ? order.couponDiscount : "No Coupon",
       new Date(order.orderDate).toDateString(),
@@ -103,7 +103,7 @@ const AdminSalesReport = () => {
     const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
-      order.totalAmount,
+      order.totalAmount.toFixed(0),
       order.paymentMethod.toUpperCase(),
       order.couponDiscount > 0 ? order.couponDiscount : "No Coupon",
       new Date(order.orderDate).toDateString(),
@@ -260,7 +260,7 @@ const AdminSalesReport = () => {
           <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
             <strong className="text-lg">Overall Order Amount:</strong>{" "}
             <span id="overall-order-amount" className="text-gray-700 font-bold">
-              ₹{totalOrderAmount}
+              ₹{totalOrderAmount.toFixed(0)}
             </span>
           </div>
           <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
