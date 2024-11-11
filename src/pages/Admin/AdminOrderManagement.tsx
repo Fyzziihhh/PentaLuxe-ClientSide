@@ -130,7 +130,7 @@ const AdminOrderManagement: React.FC = () => {
               </td>
               <td className="border border-gray-200 p-2 text-center font-bold">
                 {" "}
-                ₹{order.totalAmount}
+                ₹{order.totalAmount.toFixed(0)}
               </td>
               <td className="border border-gray-200 p-2">{order.orderDate}</td>
               <td className="border border-gray-200 p-2">

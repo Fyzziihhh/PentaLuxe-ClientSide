@@ -1,11 +1,39 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IProduct } from "@/types/productTypes";
+import api from "@/services/apiService";
+import { toast } from "sonner";
+import { addToCart } from "@/store/slices/cartSlice";
+import { useDispatch } from "react-redux";
+import { AppHttpStatusCodes } from "@/types/statusCode";
+import { AxiosError } from "axios";
 interface IProductCardProps {
   product: IProduct;
 }
 
 const ProductCard: React.FC<IProductCardProps> = ({ product }) => {
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
+  const AddToCart = async () => {
+    try {
+      const res = await api.post("/api/user/cart", {
+        productId: product?._id,
+        volume: product.Variants[0].price,
+        stock: product.Variants?.[0].stock,
+      });
+      if (res.status === AppHttpStatusCodes.OK) {
+        toast.success(res.data.message);
+        dispatch(addToCart(res.data.data));
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === AppHttpStatusCodes.UNAUTHORIZED) {
+          navigate("/login");
+        }
+        toast.error(error.response?.data.message);
+      }
+    }
+  };
   return (
     <>
       <div className="card-containaer h-[485px] bg-white   rounded-xl transition-transform transform overflow-hidden hover:scale-105">
@@ -67,7 +95,7 @@ const ProductCard: React.FC<IProductCardProps> = ({ product }) => {
           </h1>
         </div>
         <button
-          onClick={() => alert("helo")}
+          onClick={AddToCart}
           className="bg-black text-white w-[90%] h-10 mt-2 font-Lilita rounded-xl"
         >
           ADD TO CART
