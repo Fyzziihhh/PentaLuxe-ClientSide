@@ -132,24 +132,24 @@ const OrdersPage = () => {
     order.items.forEach((item) => {
       doc.text(item.productName, 20, currentY);
       doc.text(item.quantity.toString(), 150, currentY);
-      doc.text(`INR ${item.price.toFixed(2)}`, 180, currentY);
+      doc.text(`₹ ${item.price.toFixed(2)}`, 180, currentY);
       currentY += lineHeight; // Move down for the next item
     });
 
     doc.text("Delivery Fee", 20, currentY);
-    doc.text("INR 40", 150, currentY);
+    doc.text("₹ 40", 150, currentY);
 
     // Total Amount
     currentY += lineHeight; // Add space before total amount
-    doc.text("Total Amount: INR" + order.totalAmount, 20, currentY);
+    doc.text("Total Amount: ₹" + order.totalAmount, 20, currentY);
     if (order.couponCode) {
       currentY += lineHeight; // Move down
       doc.text(`Coupon Code: ${order.couponCode}`, 20, currentY);
       currentY += lineHeight; // Move down
-      doc.text(`Discount Applied: -$${order.couponDiscount}`, 20, currentY);
+      doc.text(`Discount Applied: -₹${order.couponDiscount}`, 20, currentY);
       currentY += lineHeight; // Move down
       doc.text(
-        "Final Amount: INR" + (order.totalAmount - order.couponDiscount),
+        "Final Amount: ₹" + (order.totalAmount - order.couponDiscount),
         20,
         currentY
       );
