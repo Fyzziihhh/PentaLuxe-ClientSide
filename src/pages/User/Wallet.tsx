@@ -33,7 +33,7 @@ const WalletPage = () => {
     // Fetch data logic (not implemented here)
     setLoading(false); // Make sure to set loading to false after fetching
   };
-  const handlePagination = (items: IOrder[]) => {
+  const handlePagination = (items: ITransactions[]) => {
     setDisplayTransactions(items);
   };
   useEffect(() => {
