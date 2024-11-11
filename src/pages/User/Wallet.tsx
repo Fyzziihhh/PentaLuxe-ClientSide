@@ -81,7 +81,12 @@ const WalletPage = () => {
                   </td>
                   <td className="text-gray-400 py-2">{transaction.method}</td>
                   <td className="text-gray-400 py-2">{transaction.orderID}</td>
-                  <td className="text-gray-400 py-2">₹{transaction.amount.toFixed(0)}</td>
+                  <td className="text-gray-400 py-2">
+                    ₹
+                    {transaction.amount != null
+                      ? transaction.amount.toFixed(0)
+                      : "N/A"}
+                  </td>
                 </tr>
               ))
             ) : (
