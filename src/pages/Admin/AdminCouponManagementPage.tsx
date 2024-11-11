@@ -1,4 +1,5 @@
 import CouponModal from "@/components/CouponModal";
+import Pagination from "@/components/Pagination";
 
 import api from "@/services/apiService";
 import { AppHttpStatusCodes } from "@/types/statusCode";
@@ -21,6 +22,8 @@ export interface ICoupon {
 const CouponManagement: React.FC = () => {
   const [modalStatus, setModalStatus] = useState(false);
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
+  const [displayCoupons, setDispalyCoupons] = useState<ICoupon[]>([]);
+
 
   // Function to remove a coupon
   const removeCoupon = async (id: string) => {
@@ -38,6 +41,7 @@ const CouponManagement: React.FC = () => {
       }
     }
   };
+
 
   const CreateCouponEntry = async (couponData: ICoupon) => {
     try {
@@ -61,6 +65,10 @@ const CouponManagement: React.FC = () => {
       setCoupons(res.data.data);
       console.log(res.data.data);
     }
+  };
+
+  const handlePagination = (items: ICoupon[]) => {
+    setDispalyCoupons(items);
   };
 
   useEffect(() => {
@@ -98,7 +106,7 @@ const CouponManagement: React.FC = () => {
           </thead>
           <tbody>
             {coupons.length > 0 ? (
-              coupons.map((coupon, index) => (
+              (displayCoupons.length>0?displayCoupons:coupons).map((coupon, index) => (
                 <tr
                   key={coupon._id}
                   className={`border-b ${
@@ -161,6 +169,7 @@ const CouponManagement: React.FC = () => {
             )}
           </tbody>
         </table>
+        <Pagination items={coupons} itemsPerPage={5} onPageChange={handlePagination}/>
       </div>
     </div>
   );
