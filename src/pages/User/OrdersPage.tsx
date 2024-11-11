@@ -9,11 +9,13 @@ import { IOrder } from "@/types/orderTypes";
 import CancellationModal from "@/components/CancellationAndReturnableModal";
 import { AlertTriangle, FileText, RefreshCcw, XCircle } from "lucide-react";
 import jsPDF from "jspdf";
+import Pagination from "@/components/Pagination";
 
 const OrdersPage = () => {
   const [item, setItem] = useState("");
   const navigate = useNavigate();
   const [orders, setOrders] = useState<IOrder[] | []>([]);
+  const [displayOrders, setDisplayOrders] = useState<IOrder[] | []>([]);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -159,6 +161,11 @@ const OrdersPage = () => {
     doc.save("invoice.pdf");
   };
 
+
+  const handlePagination = (items: IOrder[]) => {
+    setDisplayOrders(items);
+  };
+
   const retryPayment = async (
     orderId: string,
     totalPrice: number,
@@ -245,7 +252,7 @@ const OrdersPage = () => {
       />
       <h1 className="font-Quando text-3xl">My Orders</h1>
       <div className="orders mt-5">
-        {orders.map((order: IOrder) => (
+        {(displayOrders.length>0?displayOrders:orders).map((order: IOrder) => (
           <div className="order px-4 py-2 mt-2 bg-secondary relative ">
             {/*Retry Payment button*/}
             {order.status === "Payment Failed" && (
@@ -342,6 +349,7 @@ const OrdersPage = () => {
           </div>
         ))}
       </div>
+      <Pagination items={orders} itemsPerPage={4} onPageChange={handlePagination}/>
     </div>
   );
 };
