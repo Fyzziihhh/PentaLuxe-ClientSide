@@ -96,10 +96,12 @@ const CartPage = () => {
       const res = await api.get("/api/user/coupons");
       if (res.status === AppHttpStatusCodes.OK) {
         const { data: coupons } = res.data;
-         const filteredCoupons=coupons.filter((coupon:any)=>coupon.expiryDate!==null)
-        setCoupons(filteredCoupons);
+        //  const filteredCoupons=coupons.filter((coupon:any)=>coupon.expiryDate!==null)
+        setCoupons(coupons);
       }
-    } catch (error) {}
+    } catch (error) {
+
+    }
   };
 
   const toggleCouponDiscount = () => {
