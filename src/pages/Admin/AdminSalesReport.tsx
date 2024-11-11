@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const AdminSalesReport = () => {
   const [loading, setLoading] = useState(false);
-  const [displaySalesReportData,setDisplaySalesReportData]=useState<IOrder[] | null>(null);
+  const [displaySalesReportData,setDisplaySalesReportData]=useState<IOrder[] >([]);
   const [totalOrderAmount, setTotalOrderAmount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [salesCount, setSalesCount] = useState(0);
@@ -20,7 +20,7 @@ const AdminSalesReport = () => {
     startDate: "",
     endDate: "",
   });
-  const [salesReportData, setSalesReportData] = useState<IOrder[] | null>(null);
+  const [salesReportData, setSalesReportData] = useState<IOrder[]>([]);
 
 
   const handlePagination = (currentPageData: IOrder[]) => {
@@ -323,7 +323,7 @@ const AdminSalesReport = () => {
                 </td>
               </tr>
             ) : (
-              (!salesReportData?[]:(displaySalesReportData!?.length>0?displaySalesReportData!:salesReportData!).map((order) => (
+              ((displaySalesReportData.length>0?displaySalesReportData:salesReportData).map((order) => (
                 <tr key={order._id} className="text-center">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
                     {order._id}
