@@ -34,7 +34,7 @@ api.interceptors.response.use(
 
       if (status === AppHttpStatusCodes.UNAUTHORIZED) {
         console.log("Unauthorized Access:", data);
-        // window.location.href = "/login";
+        window.location.href = "/login";
       } else if (status === AppHttpStatusCodes.FORBIDDEN) {
         console.log("Forbidden Access:", data);
         window.location.href = "/admin";
