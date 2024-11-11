@@ -28,7 +28,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
          minimumPurchasePrice,
     };
 
-    handleCouponData(DataToSend);
+  handleCouponData(DataToSend);
 
     setCouponName('');
     setExpiryDate('');
@@ -36,7 +36,7 @@ const [minimumPurchasePrice,setMinimumPurchasePrice]=useState<number | string>('
     setDiscountPercentage('');
     setMinimumPurchasePrice('');
 
-    closeModal();
+
 };
 
 

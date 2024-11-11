@@ -44,7 +44,7 @@ const CouponManagement: React.FC = () => {
       const {
         data: { data: coupon },
       } = await api.post("/api/admin/coupon", { couponData });
-      console.log("coupon", coupon);
+      setModalStatus(false)
       if (coupon) {
         setCoupons((prev) => [...prev, coupon]);
       }
