@@ -20,6 +20,7 @@ import { ICoupon } from "../Admin/AdminCouponManagementPage";
 const CartPage = () => {
   const navigate = useNavigate();
   const [coupons, setCoupons] = useState<ICoupon[]>([]);
+  const [availableCoupons, setAvailableCoupons] = useState<ICoupon[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const dispatch = useDispatch();
   const products = useSelector((state: any) => state.cart.products) || [];
@@ -96,8 +97,8 @@ const CartPage = () => {
       const res = await api.get("/api/user/coupons");
       if (res.status === AppHttpStatusCodes.OK) {
         const { data: coupons } = res.data;
-        //  const filteredCoupons=coupons.filter((coupon:any)=>coupon.expiryDate!==null)
-        setCoupons(coupons);
+        const filteredCoupons=coupons.filter((coupon:any)=>coupon.expiryDate!==null)
+        setCoupons(filteredCoupons);
       }
     } catch (error) {
 
@@ -164,7 +165,6 @@ const CartPage = () => {
     setTotalPrice(finalPrice);
   }, [products, discountRate]);
 
-  const [availableCoupons, setAvailableCoupons] = useState<ICoupon[]>([]);
 
   useEffect(() => {
     const filteredCoupons = coupons.filter(
