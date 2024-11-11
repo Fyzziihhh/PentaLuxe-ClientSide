@@ -159,33 +159,39 @@ const OrdersPage = () => {
     doc.save("invoice.pdf");
   };
 
-  const retryPayment = async (orderId: string, totalPrice: number,orderItems:any) => {
-    for(let item of orderItems){
-     for(let variant of item.productId.Variants){
-     if(variant.stock<1){
-      toast.error(
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ marginRight: '10px' }}>
-            <AlertTriangle color="#FF4D4D" size={30} /> 
-          </div>
-          <div>
-            <strong>The variant "{variant.volume}"</strong> of <strong>{item.productId.Name}</strong> is currently out of stock. Please check back later.
-          </div>
-        </div>,
-        {
-          duration: 5000, // Duration before auto dismiss
-          style: {
-            backgroundColor: '#f44336', // Customize background color
-            color: '#fff', // Customize text color
-            borderRadius: '8px', // Rounded corners
-            padding: '10px', // Padding around the toast
-          },
-        }
-      );
+  const retryPayment = async (
+    orderId: string,
+    totalPrice: number,
+    orderItems: any
+  ) => {
+    for (let item of orderItems) {
+      for (let variant of item.productId.Variants) {
+        if (variant.stock < 1) {
+          toast.error(
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ marginRight: "10px" }}>
+                <AlertTriangle color="#FF4D4D" size={30} />
+              </div>
+              <div>
+                <strong>The variant "{variant.volume}"</strong> of{" "}
+                <strong>{item.productId.Name}</strong> is currently out of
+                stock. Please check back later.
+              </div>
+            </div>,
+            {
+              duration: 5000, // Duration before auto dismiss
+              style: {
+                backgroundColor: "#f44336", // Customize background color
+                color: "#fff", // Customize text color
+                borderRadius: "8px", // Rounded corners
+                padding: "10px", // Padding around the toast
+              },
+            }
+          );
 
-      return
-     }
-     }
+          return;
+        }
+      }
     }
 
     const {
@@ -203,7 +209,7 @@ const OrdersPage = () => {
       description: "Order Payment",
       order_id: order.id,
       handler: async function (response: any) {
-         await api.put("/api/user/order-retry-payment", {
+        await api.put("/api/user/order-retry-payment", {
           razorpay_payment_id: response.razorpay_payment_id,
           razorpay_order_id: response.razorpay_order_id,
           razorpay_signature: response.razorpay_signature,
@@ -244,7 +250,9 @@ const OrdersPage = () => {
             {/*Retry Payment button*/}
             {order.status === "Payment Failed" && (
               <button
-                onClick={() => retryPayment(order._id, order.totalAmount,order.items)}
+                onClick={() =>
+                  retryPayment(order._id, order.totalAmount, order.items)
+                }
                 className="bg-blue-600 text-white font-bold py-1 px-2 rounded-md hover:bg-blue-500 transition duration-150 flex items-center absolute right-5"
               >
                 <RefreshCcw className="h-4 w-4 mr-1" /> {/* Updated icon */}
@@ -253,15 +261,14 @@ const OrdersPage = () => {
             )}
 
             {/*  Inovie button */}
-            {(order.status === "Confirmed" ||
-              order.status === "Delivered" && (
-                <button
-                  onClick={() => generateInvoicePDF(order)}
-                  className="bg-green-800 text-white font-bold py-1 px-2 rounded-md hover:bg-green-700 transition duration-150 flex items-center absolute right-28"
-                >
-                  <FileText className="h-4 w-4 mr-1" /> Invoice
-                </button>
-              ))}
+            {(order.status === "Confirmed" || order.status === "Delivered") && (
+              <button
+                onClick={() => generateInvoicePDF(order)}
+                className="bg-green-800 text-white font-bold py-1 px-2 rounded-md hover:bg-green-700 transition duration-150 flex items-center absolute right-28"
+              >
+                <FileText className="h-4 w-4 mr-1" /> Invoice
+              </button>
+            )}
 
             {/*cancel and Return button  */}
             {(order.status === "Pending" ||
