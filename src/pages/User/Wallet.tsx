@@ -4,6 +4,7 @@ import api from "../../services/apiService";
 import { AppHttpStatusCodes } from "../../types/statusCode";
 import { Wallet, DollarSign } from "lucide-react";
 import { HashLoader } from "react-spinners";
+import Pagination from "@/components/Pagination";
 
 interface ITransactions {
   orderID: string;
@@ -16,6 +17,7 @@ interface ITransactions {
 const WalletPage = () => {
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<ITransactions[]>([]);
+  const [displayTransactions, setDisplayTransactions] = useState<ITransactions[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch wallet balance and transactions
@@ -31,7 +33,9 @@ const WalletPage = () => {
     // Fetch data logic (not implemented here)
     setLoading(false); // Make sure to set loading to false after fetching
   };
-
+  const handlePagination = (items: IOrder[]) => {
+    setDisplayTransactions(items);
+  };
   useEffect(() => {
     fetchWalletData();
   }, []); // Call the function when the component mounts
@@ -65,7 +69,7 @@ const WalletPage = () => {
             {loading ? (
               <HashLoader />
             ) : transactions?.length > 0 ? (
-              transactions.map((transaction, index) => (
+              (displayTransactions.length>0?displayTransactions:transactions).map((transaction, index) => (
                 <tr key={index} className={`border-b border-gray-700`}>
                   <td className="text-gray-400 py-2">
                     {new Date(transaction.date).toLocaleDateString()}
@@ -99,6 +103,7 @@ const WalletPage = () => {
             )}
           </tbody>
         </table>
+        <Pagination items={transactions} itemsPerPage={5} onPageChange={handlePagination}/>
       </div>
     </div>
   );
