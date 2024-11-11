@@ -44,7 +44,8 @@ const WalletPage = () => {
       <div className="mt-6">
         <h2 className="text-xl text-gray-300">
           <DollarSign className="inline mr-1" />
-          Balance: {balance.toFixed(0) || 0}
+          Balance: {balance != null ? balance.toFixed(0) : 0}
+
         </h2>
       </div>
 
