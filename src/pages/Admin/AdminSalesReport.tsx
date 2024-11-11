@@ -5,13 +5,13 @@ import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-
+import Pagination from "@/components/Pagination";
 import { PulseLoader } from "react-spinners";
 import { toast } from "sonner";
 
 const AdminSalesReport = () => {
   const [loading, setLoading] = useState(false);
-  
+  const [displaySalesReportData,setDisplaySalesReportData]=useState<IOrder[] | null>(null);
   const [totalOrderAmount, setTotalOrderAmount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [salesCount, setSalesCount] = useState(0);
@@ -21,6 +21,12 @@ const AdminSalesReport = () => {
     endDate: "",
   });
   const [salesReportData, setSalesReportData] = useState<IOrder[] | null>(null);
+
+
+  const handlePagination = (currentPageData: IOrder[]) => {
+    setDisplaySalesReportData(currentPageData)
+  }
+
 
   const getAllSalesReport = async () => {
     try {
@@ -317,7 +323,7 @@ const AdminSalesReport = () => {
                 </td>
               </tr>
             ) : (
-              (!salesReportData?[]:salesReportData!.map((order) => (
+              (!salesReportData?[]:(displaySalesReportData!?.length>0?displaySalesReportData!:salesReportData!).map((order) => (
                 <tr key={order._id} className="text-center">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
                     {order._id}
@@ -348,6 +354,7 @@ const AdminSalesReport = () => {
           </tbody>
         </table>
       </div>
+     <Pagination itemsPerPage={5} items={salesReportData!} onPageChange={handlePagination}/>
 
       {/* Report Download Options */}
       <div className="flex justify-end mb-6 items-center">
