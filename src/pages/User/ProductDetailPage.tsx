@@ -303,7 +303,7 @@ const ProductDetailPage = () => {
         <h1 className="text-center font-Quando text-4xl mt-5">
           Related Products
         </h1>
-        <div className="related-products flex flex-wrap justify-center ">
+        <div className="related-products flex flex-wrap justify-center mt-5 w-full ">
           {relatedProducts.map((product) => (
             <div>
               <ProductCard product={product} />
