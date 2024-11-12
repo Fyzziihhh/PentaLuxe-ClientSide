@@ -122,6 +122,7 @@ const ProductDetailPage = () => {
   }, [selectedVolume, product]);
 
   const fetchRelatedProducts = async (category: string) => {
+    alert(category)
     const res = await api.get(
       `/api/user/related-products?category=${category}`
     );
