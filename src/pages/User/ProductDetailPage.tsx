@@ -28,6 +28,7 @@ const ProductDetailPage = () => {
       if (response.data.success) {
         const { data: product } = response.data;
         setProduct(product);
+        fetchRelatedProducts(product.CategoryId.categoryName);
       }
     } catch (error) {
       if (error instanceof AxiosError)
@@ -139,9 +140,6 @@ const ProductDetailPage = () => {
   useEffect(() => {
     getProducts();
     checkProductInWishlist();
-    if (product) {
-      fetchRelatedProducts(product.CategoryId.categoryName);
-    }
   }, []);
 
   useEffect(() => {
