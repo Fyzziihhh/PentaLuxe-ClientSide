@@ -96,7 +96,7 @@ const ProductCard: React.FC<IProductCardProps> = ({ product }) => {
         </div>
         <button
           onClick={AddToCart}
-          className="bg-black text-white w-[90%] h-10 mt-2 font-Lilita rounded-xl"
+          className="bg-black mx-auto text-white w-[90%] h-10 mt-2 font-Lilita rounded-xl"
         >
           ADD TO CART
         </button>
