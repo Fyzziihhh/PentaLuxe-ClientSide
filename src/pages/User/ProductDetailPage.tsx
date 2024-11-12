@@ -122,11 +122,17 @@ const ProductDetailPage = () => {
   }, [selectedVolume, product]);
 
   const fetchRelatedProducts = async (category: string) => {
-    const res = await api.get(
-      `/api/user/related-products?category=${category}`
-    );
-    if (res.status === AppHttpStatusCodes.OK) {
-      setRelatedProducts(res.data.data);
+    try {
+      const res = await api.post('/api/user/related-products',{categoryName:category} );
+      if (res.status === AppHttpStatusCodes.OK) {
+        setRelatedProducts(res.data.data);
+      }
+      
+    } catch (error) {
+      if(error instanceof AxiosError){
+        toast.error(error.response?.data.message)
+
+      }
     }
   };
 
