@@ -8,13 +8,14 @@ import { IProduct } from "@/types/productTypes";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/slices/cartSlice";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import ProductCard from "@/components/ProductCard";
 const ProductDetailPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
   const [productPrice, setProductPrice] = useState<number | null>(null);
 
-  // const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [product, setProduct] = useState<IProduct | undefined>(undefined);
   const [selectedVolume, setSelectedVolume] = useState<string | null>(null);
@@ -41,7 +42,7 @@ const ProductDetailPage = () => {
     setProductPrice(price);
   };
 
-  // const getRelatedProducts = () => {};
+  
 
   // Set the first key as selected after product data is fetched
 
@@ -125,7 +126,7 @@ const ProductDetailPage = () => {
       `/api/user/related-products?category=${category}`
     );
     if (res.status === AppHttpStatusCodes.OK) {
-      // setRelatedProducts(res.data.data);
+      setRelatedProducts(res.data.data);
     }
   };
 
@@ -301,7 +302,11 @@ const ProductDetailPage = () => {
         <h1 className="text-center font-Quando text-4xl mt-5">
           Related Products
         </h1>
-        <div className="related-products"></div>
+        <div className="related-products flex flex-wrap">
+  {
+    relatedProducts.map(product=><ProductCard product={product}/>)
+  }
+        </div>
       </div>
     </div>
   );
