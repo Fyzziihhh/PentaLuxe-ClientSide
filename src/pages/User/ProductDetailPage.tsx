@@ -27,8 +27,8 @@ const ProductDetailPage = () => {
       const response = await api.get(`/api/user/products/${id}`);
       if (response.data.success) {
         const { data: product } = response.data;
-        setProduct(product);
         fetchRelatedProducts(product.CategoryId.categoryName);
+        setProduct(product);
       }
     } catch (error) {
       if (error instanceof AxiosError)
