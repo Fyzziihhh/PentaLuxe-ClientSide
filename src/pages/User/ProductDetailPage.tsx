@@ -305,9 +305,9 @@ const ProductDetailPage = () => {
         </h1>
         <div className="related-products flex justify-center gap-5 px-10 mb-10 mt-5 flex-wrap ">
           {relatedProducts.map((product) => (
-            <div>
+            
               <ProductCard product={product} />
-            </div>
+            
           ))}
         </div>
       </div>
