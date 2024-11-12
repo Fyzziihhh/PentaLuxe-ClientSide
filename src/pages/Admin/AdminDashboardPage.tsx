@@ -102,11 +102,6 @@ const AdminDashboard = () => {
       <header className="flex justify-between items-center px-6 py-4 bg-white shadow-md">
         <h1 className="text-3xl font-bold ">Admin Dashboard</h1>
         <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          />
           <span className="text-lg text-indigo-600 cursor-pointer hover:text-indigo-800">
             🔔
           </span>
@@ -124,7 +119,7 @@ const AdminDashboard = () => {
             className={`w-64 h-64 p-6 rounded-lg shadow-lg bg-gradient-to-r from-green-400 to-green-600  text-white hover:shadow-2xl transition-transform transform hover:scale-105 flex flex-col items-start justify-between`}
           >
             <h2 className="text-xl font-semibold">Total Sales</h2>
-            <p className="text-4xl font-bold">{totalSales.toFixed(2)}</p>
+            <p className="text-4xl font-bold">{totalSales}</p>
           </div>
           <div
             className={`w-64 h-64 p-6 rounded-lg shadow-lg bg-gradient-to-r from-blue-400 to-blue-600  text-white hover:shadow-2xl transition-transform transform hover:scale-105 flex flex-col items-start justify-between`}
