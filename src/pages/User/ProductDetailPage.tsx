@@ -43,8 +43,6 @@ const ProductDetailPage = () => {
     setProductPrice(price);
   };
 
-  
-
   // Set the first key as selected after product data is fetched
 
   const AddToCart = async () => {
@@ -124,15 +122,15 @@ const ProductDetailPage = () => {
 
   const fetchRelatedProducts = async (category: string) => {
     try {
-      const res = await api.post('/api/user/related-products',{categoryName:category} );
+      const res = await api.post("/api/user/related-products", {
+        categoryName: category,
+      });
       if (res.status === AppHttpStatusCodes.OK) {
         setRelatedProducts(res.data.data);
       }
-      
     } catch (error) {
-      if(error instanceof AxiosError){
-        toast.error(error.response?.data.message)
-
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
       }
     }
   };
@@ -298,7 +296,6 @@ const ProductDetailPage = () => {
                 alt=""
               />
             </button>
-
           </div>
         </div>
       </div>
@@ -306,10 +303,12 @@ const ProductDetailPage = () => {
         <h1 className="text-center font-Quando text-4xl mt-5">
           Related Products
         </h1>
-        <div className="related-products flex flex-wrap">
-  {
-    relatedProducts.map(product=><ProductCard product={product}/>)
-  }
+        <div className="related-products flex flex-wrap justify-center ">
+          {relatedProducts.map((product) => (
+            <div>
+              <ProductCard product={product} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
