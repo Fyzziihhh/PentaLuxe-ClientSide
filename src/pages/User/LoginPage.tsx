@@ -7,10 +7,14 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import Input from "@/components/Input/Input";
 import { AppHttpStatusCodes } from "@/types/statusCode";
+import { useDispatch } from "react-redux";
+import { LogIn } from "@/store/slices/userSlice";
+
 
 
 
 const LoginPage = () => {
+  const dispatch=useDispatch()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -24,7 +28,7 @@ const LoginPage = () => {
       const data = response.data.data;
       console.log("data",data)
       if (response.status===AppHttpStatusCodes.OK) {
-     
+          dispatch(LogIn())
         localStorage.setItem("accessToken", data.accessToken);
         toast.success(response.data.message);
         navigate("/");

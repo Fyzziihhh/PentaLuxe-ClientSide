@@ -4,6 +4,8 @@ import { AppHttpStatusCodes } from "../types/statusCode";
 import { AxiosError } from "axios";
 import {   NavLink, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { logOut } from "@/store/slices/userSlice";
 
 interface IUser {
   username: string;
@@ -45,6 +47,7 @@ const sideBarLinks = [
 ];
 
 const UserProfileLayout = () => {
+  const dispatch=useDispatch()
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser | null>(null);
   const getUserProfile = async () => {
@@ -81,7 +84,7 @@ const UserProfileLayout = () => {
            to={link.path}
            end={link.name!=='Address Book'}
            onClick={()=>{
-            link.name==='Logout'&&localStorage.clear()
+            link.name==='Logout'&&dispatch(logOut())
             navigate('/')
           }}
            className={({ isActive }) =>

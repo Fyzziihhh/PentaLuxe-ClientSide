@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css'; // Your custom styles
 import { Provider } from 'react-redux';
-import store from './store/store.ts';
+import store, { persistor } from './store/store.ts';
+import { PersistGate } from 'redux-persist/integration/react';
+
 
 
 
@@ -17,7 +19,10 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+
           <App />
+        </PersistGate>
       </Provider>
     </StrictMode>
   );

@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
-// import UserProtectedRoutes from "@/utils/UserProtectedRoutes";
+import UserProtectedRoutes from "@/utils/UserProtectedRoutes";
 
 
 // import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
@@ -43,7 +43,7 @@ const UserRoutes: React.FC = () => (
       </Route>
       <Route path={`${ROUTES.CATEGORIES}/:id`} element={<CategoryPage />} />
 
-      {/* <Route element={<UserProtectedRoutes/>}> */}
+      <Route element={<UserProtectedRoutes/>}>
       <Route  path={ROUTES.PROFILE} element={<UserProfileLayout />}>
         <Route index element={<Profile />} />
         <Route path={ROUTES.WALLET} element={<WalletPage/>}/>
@@ -59,7 +59,7 @@ const UserRoutes: React.FC = () => (
         </Route>
         <Route path="change-password" element={<ChangePassword/>}/>
       </Route>
-      {/* </Route> */}
+      </Route>
       <Route path={ROUTES.CART} element={<CartPage/>}/>
       <Route path={ROUTES.WISHLIST} element={<WishListPage/>}/>
       <Route path={ROUTES.CHECK_OUT} element={<CheckOutPage/>}/>

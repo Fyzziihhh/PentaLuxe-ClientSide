@@ -7,7 +7,13 @@ import { toast } from "sonner";
 
 import { IOrder } from "@/types/orderTypes";
 import CancellationModal from "@/components/CancellationAndReturnableModal";
-import { AlertTriangle, FileText, RefreshCcw, XCircle } from "lucide-react";
+import {
+  
+  AlertTriangle,
+  FileText,
+  RefreshCcw,
+  XCircle,
+} from "lucide-react";
 import jsPDF from "jspdf";
 import Pagination from "@/components/Pagination";
 
@@ -148,7 +154,11 @@ const OrdersPage = () => {
       currentY += lineHeight; // Move down
       doc.text(`Coupon Code: ${order.couponCode}`, 20, currentY);
       currentY += lineHeight; // Move down
-      doc.text(`Discount Applied: - \u20B9${order.couponDiscount}`, 20, currentY);
+      doc.text(
+        `Discount Applied: - \u20B9${order.couponDiscount}`,
+        20,
+        currentY
+      );
       currentY += lineHeight; // Move down
       doc.text(
         "Final Amount: \u20B9" + (order.totalAmount - order.couponDiscount),
@@ -160,7 +170,6 @@ const OrdersPage = () => {
     // Save the PDF
     doc.save("invoice.pdf");
   };
-
 
   const handlePagination = (items: IOrder[]) => {
     setDisplayOrders(items);
@@ -252,104 +261,122 @@ const OrdersPage = () => {
       />
       <h1 className="font-Quando text-3xl">My Orders</h1>
       <div className="orders mt-5">
-        {(displayOrders.length>0?displayOrders:orders).map((order: IOrder) => (
-          <div className="order px-4 py-2 mt-2 bg-secondary relative ">
-            {/*Retry Payment button*/}
-            {order.status === "Payment Failed" && (
-              <button
-                onClick={() =>
-                  retryPayment(order._id, order.totalAmount, order.items)
-                }
-                className="bg-blue-600 text-white font-bold py-1 px-2 rounded-md hover:bg-blue-500 transition duration-150 flex items-center absolute right-5"
-              >
-                <RefreshCcw className="h-4 w-4 mr-1" /> {/* Updated icon */}
-                Retry Payment
-              </button>
-            )}
+        {orders.length < 1 || displayOrders.length < 1 ? (
+         <div className="flex items-center p-5 bg-gradient-to-r from-purple-800 via-indigo-800 to-blue-800 text-white rounded-xl shadow-2xl max-w-lg mx-auto my-8">
+         <AlertTriangle className="w-10 h-10 mr-5 text-yellow-400" />
+         <p className="text-lg font-semibold">There is no order. Are you sure you like this?</p>
+       </div>
+        ) : (
+          (displayOrders.length > 0 ? displayOrders : orders).map(
+            (order: IOrder) => (
+              <div className="order px-4 py-2 mt-2 bg-secondary relative ">
+                {/*Retry Payment button*/}
+                {order.status === "Payment Failed" && (
+                  <button
+                    onClick={() =>
+                      retryPayment(order._id, order.totalAmount, order.items)
+                    }
+                    className="bg-blue-600 text-white font-bold py-1 px-2 rounded-md hover:bg-blue-500 transition duration-150 flex items-center absolute right-5"
+                  >
+                    <RefreshCcw className="h-4 w-4 mr-1" /> {/* Updated icon */}
+                    Retry Payment
+                  </button>
+                )}
 
-            {/*  Inovie button */}
-            {(order.status === "Confirmed" || order.status === "Delivered") && (
-              <button
-                onClick={() => generateInvoicePDF(order)}
-                className="bg-green-800 text-white font-bold py-1 px-2 rounded-md hover:bg-green-700 transition duration-150 flex items-center absolute right-28"
-              >
-                <FileText className="h-4 w-4 mr-1" /> Invoice
-              </button>
-            )}
+                {/*  Inovie button */}
+                {(order.status === "Confirmed" ||
+                  order.status === "Delivered") && (
+                  <button
+                    onClick={() => generateInvoicePDF(order)}
+                    className="bg-green-800 text-white font-bold py-1 px-2 rounded-md hover:bg-green-700 transition duration-150 flex items-center absolute right-28"
+                  >
+                    <FileText className="h-4 w-4 mr-1" /> Invoice
+                  </button>
+                )}
 
-            {/*cancel and Return button  */}
-            {(order.status === "Pending" ||
-              order.status === "Confirmed" ||
-              order.status === "Delivered") && (
-              <button
-                onClick={() =>
-                  openModal(
-                    order._id,
-                    order.status === "Pending" || order.status === "Confirmed"
-                      ? "cancel"
-                      : "return",
-                    order.paymentMethod
-                  )
-                }
-                className="bg-red-600 text-white font-bold py-1 px-2 rounded-md hover:bg-red-700 transition duration-150 flex items-center absolute right-2"
-              >
-                <XCircle className="h-4 w-4 mr-1" />{" "}
-                {order.status === "Pending" || order.status === "Confirmed"
-                  ? "Cancel"
-                  : order.status === "Delivered"
-                  ? "Return"
-                  : null}
-              </button>
-            )}
+                {/*cancel and Return button  */}
+                {(order.status === "Pending" ||
+                  order.status === "Confirmed" ||
+                  order.status === "Delivered") && (
+                  <button
+                    onClick={() =>
+                      openModal(
+                        order._id,
+                        order.status === "Pending" ||
+                          order.status === "Confirmed"
+                          ? "cancel"
+                          : "return",
+                        order.paymentMethod
+                      )
+                    }
+                    className="bg-red-600 text-white font-bold py-1 px-2 rounded-md hover:bg-red-700 transition duration-150 flex items-center absolute right-2"
+                  >
+                    <XCircle className="h-4 w-4 mr-1" />{" "}
+                    {order.status === "Pending" || order.status === "Confirmed"
+                      ? "Cancel"
+                      : order.status === "Delivered"
+                      ? "Return"
+                      : null}
+                  </button>
+                )}
 
-            <h1 className="font-Quando font-bold">Order {order._id}</h1>
-            <h1>
-              Date : {new Date(order.orderDate).toLocaleDateString("en-US")}
-            </h1>
-            <h1>
-              status :{" "}
-              <span
-                className={`${
-                  order.status === "Cancelled" || order.status === "Returned"
-                    ? "text-red-800"
-                    : "text-green-800"
-                }`}
-              >
-                {order.status}
-              </span>
-            </h1>
-            <div className="products flex flex-col gap-4">
-              {order.items.map((item) => (
-                <div key={item.productId} className="flex gap-5 mt-3">
-                  <img
-                    height={100}
-                    width={100}
-                    src={item.productImage}
-                    alt="100x10 placeholder image"
-                    className="rounded-md"
-                  />
-                  <div className="flex gap-2 flex-col ">
-                    <h1 className="font-Quando">{item.productName}</h1>
-                    <h1>Quantity : {item.quantity}</h1>
-                    <h1>Price : ₹ {item.price.toFixed(0)} for each</h1>
-                  </div>
+                <h1 className="font-Quando font-bold">Order {order._id}</h1>
+                <h1>
+                  Date : {new Date(order.orderDate).toLocaleDateString("en-US")}
+                </h1>
+                <h1>
+                  status :{" "}
+                  <span
+                    className={`${
+                      order.status === "Cancelled" ||
+                      order.status === "Returned"
+                        ? "text-red-800"
+                        : "text-green-800"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+                </h1>
+                <div className="products flex flex-col gap-4">
+                  {order.items.map((item) => (
+                    <div key={item.productId} className="flex gap-5 mt-3">
+                      <img
+                        height={100}
+                        width={100}
+                        src={item.productImage}
+                        alt="100x10 placeholder image"
+                        className="rounded-md"
+                      />
+                      <div className="flex gap-2 flex-col ">
+                        <h1 className="font-Quando">{item.productName}</h1>
+                        <h1>Quantity : {item.quantity}</h1>
+                        <h1>Price : ₹ {item.price.toFixed(0)} for each</h1>
+                      </div>
+                    </div>
+                  ))}
+                  <h1 className="font-montserrat font-bold">
+                    Total : {order.totalAmount.toFixed(0)}
+                  </h1>
+                  <button
+                    onClick={() => viewOrderDetails(order)}
+                    className="bg-green-700 w-[15%] p-2 rounded-xl text-white"
+                  >
+                    {" "}
+                    View Details
+                  </button>
                 </div>
-              ))}
-              <h1 className="font-montserrat font-bold">
-                Total : {order.totalAmount.toFixed(0)}
-              </h1>
-              <button
-                onClick={() => viewOrderDetails(order)}
-                className="bg-green-700 w-[15%] p-2 rounded-xl text-white"
-              >
-                {" "}
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
+              </div>
+            )
+          )
+        )}
       </div>
-      <Pagination items={orders} itemsPerPage={3} onPageChange={handlePagination}/>
+      {displayOrders.length > 0 && (
+        <Pagination
+          items={orders}
+          itemsPerPage={3}
+          onPageChange={handlePagination}
+        />
+      )}
     </div>
   );
 };

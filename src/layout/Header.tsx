@@ -16,9 +16,11 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
+import { logOut } from "@/store/slices/userSlice";
 
 
 const Header = () => {
+const user=useSelector((state:any)=>state.user.user)
   const navigate=useNavigate()
   const dispatch = useDispatch();
   const getCartProducts = async () => {
@@ -59,7 +61,7 @@ const Header = () => {
 
   const logoutHandler = async () => {
     localStorage.clear();
-    setAccessToken(null);
+   dispatch(logOut())
     dispatch(setCartProducts([]));
   };
 
@@ -114,7 +116,7 @@ const Header = () => {
       <img className="w-72 h-auto mr-36" src={ImgUrl} alt="Test Image" />
       <div className="nav-right flex items-center gap-10">
         <SearchIcon />
-        {accessToken ? (
+        { user? (
           <div
             className="user-profile relative inline-block"
             onClick={onProfileClick}

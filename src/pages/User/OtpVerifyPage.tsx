@@ -5,7 +5,11 @@ import Button from "../../components/Button/Button";
 import api from "../../services/apiService";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { useDispatch } from "react-redux";
+import { LogIn } from "@/store/slices/userSlice";
+
 const OtpVerifyPage = () => {
+  const dispatch=useDispatch()
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(120);
@@ -39,8 +43,9 @@ const OtpVerifyPage = () => {
         email: id,
       });
       if (response.data.success) {
+        dispatch(LogIn())
         localStorage.setItem("accessToken", response.data.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.data.refreshToken);
+       
         toast.success(response.data.message);
         navigate("/");
       }
