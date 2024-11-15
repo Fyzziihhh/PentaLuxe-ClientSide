@@ -6,12 +6,12 @@ import path from 'path'
 export default defineConfig({
   server:{
     port:6776,
-    proxy:{
-    "/api":{
-      target:'http://localhost:7000',
-      changeOrigin:true
-    }
-    },
+    // proxy:{
+    // "/api":{
+    //   // target:'http://localhost:7000',
+    //   changeOrigin:true
+    // }
+    // },
       },
       resolve: {
         alias: {

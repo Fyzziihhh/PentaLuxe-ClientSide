@@ -8,19 +8,24 @@ import { AxiosError } from "axios";
 import Input from "@/components/Input/Input";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 
+
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const LoginHandler = async () => {
+    if(email.trim()===''||password.trim()===''){
+      toast.error('Email & Password are required')
+      return
+    }
     try {
       const response = await api.post("/api/user/login", { email, password });
       const data = response.data.data;
       console.log("data",data)
       if (response.status===AppHttpStatusCodes.OK) {
-    
+     
         localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
         toast.success(response.data.message);
         navigate("/");
       }

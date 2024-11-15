@@ -9,12 +9,16 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
+             
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
+    const adminToken=localStorage.getItem('adminToken')
     if (token) {
       config.headers.authorization = `Bearer ${token}`;
+    }
+    if(adminToken){
+      config.headers['x-admin-authorization']=`Bearer ${adminToken}`
     }
     console.log(config);
     return config;

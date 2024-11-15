@@ -103,7 +103,7 @@ const WalletPage = () => {
             )}
           </tbody>
         </table>
-        <Pagination items={transactions} itemsPerPage={5} onPageChange={handlePagination}/>
+       {transactions.length>0&& <Pagination items={transactions} itemsPerPage={5} onPageChange={handlePagination}/>}
       </div>
     </div>
   );

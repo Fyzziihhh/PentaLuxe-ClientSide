@@ -1,24 +1,15 @@
 
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../services/apiService";
-import { adminLoggOut } from "../../utils/endpoints";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const AdminSideBar = () => {
   const navigate = useNavigate();
   const onAdminLoggOutHandler = async () => {
-    try {
-      const res = await api.post(adminLoggOut);
-      if (res.status === 200) {
-        toast.success(res.data.message || "something went wrong");
-        navigate("/admin");
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message);
-      }
-    }
+    localStorage.removeItem("adminToken")
+    toast.success("Admin LoggedOut Successfully")
+    setTimeout(()=>{
+ navigate('/admin')
+    },2000)
   };
 
   return (

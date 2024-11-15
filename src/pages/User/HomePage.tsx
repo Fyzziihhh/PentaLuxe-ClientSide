@@ -15,8 +15,6 @@ interface Categories {
   categoryImage: string;
 }
 
-
-
 const HomePage = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -24,9 +22,9 @@ const HomePage = () => {
   const getCategories = useCallback(async () => {
     try {
       const response = await api.get("/api/user/categories");
-      console.log(api.get)
-      if (response.status===AppHttpStatusCodes.OK) {
-        console.log("category",response)
+      console.log(api.get);
+      if (response.status === AppHttpStatusCodes.OK) {
+        console.log("category", response);
         setCategories(response.data.categories);
         console.log(response.data.categories);
       }
@@ -40,8 +38,8 @@ const HomePage = () => {
   const getProducts = useCallback(async () => {
     try {
       const response = await api.get(userProductListing);
-      console.log(response)
-      const products=response.data.data
+      console.log(response);
+      const products = response.data.data;
       if (response.data.success) {
         setProducts(products);
       }

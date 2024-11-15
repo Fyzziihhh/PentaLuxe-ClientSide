@@ -12,7 +12,7 @@ const Pagination = <T,>({
   onPageChange,
 }: PaginationProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const totalPages = Math.ceil(items&&items.length/ itemsPerPage);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;

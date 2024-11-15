@@ -6,6 +6,7 @@ import {  useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
   import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { AppHttpStatusCodes } from "@/types/statusCode";
   // interface AxiosError extends Error {
   //   response?: {
   //     data: {
@@ -20,8 +21,8 @@ const AdminLoginPage = () => {
   const AdminLoginHandler = async () => {
     try {
       const response = await api.post(adminLogin, { email, password });
-      if (response.data.success) {
-        // localStorage.setItem("adminToken", response.data.adminToken);
+      if (response.status===AppHttpStatusCodes.OK) {
+        localStorage.setItem("adminToken", response.data.token);
         toast.success("admin LoggedIn SuccessFully");
         navigate("/admin/dashboard");
       }
