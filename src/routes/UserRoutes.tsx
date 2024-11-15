@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
-import UserProtectedRoutes from "@/utils/UserProtectedRoutes";
+// import UserProtectedRoutes from "@/utils/UserProtectedRoutes";
 
 
 // import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
