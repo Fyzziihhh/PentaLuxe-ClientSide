@@ -105,22 +105,31 @@ const AdminSalesReport = () => {
         "Status",
       ],
     ];
-
+  
     const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
       order.totalAmount.toFixed(0),
       order.paymentMethod.toUpperCase(),
-      order.couponDiscount > 0 ? order.couponDiscount : "No Coupon",
+      order.couponDiscount > 0 ? order.couponDiscount.toFixed(0) : "No Coupon",
       new Date(order.orderDate).toDateString(),
       order.status,
     ]);
+  
 
     doc.text(title, 14, 20);
+  
+    // Add overall stats above the table
+    doc.setFontSize(10);
+    doc.text(`Overall Discount: ${totalDiscount.toFixed(2)}`, 14, 30);
+    doc.text(`Overall Sales Count: ${salesCount}`, 14, 35);
+    doc.text(`Overall Order Amount: ${totalOrderAmount.toFixed(0)}`, 14, 40);
+  
+    // Add the table below the stats
     autoTable(doc, {
       head: headers,
       body: data,
-      startY: 30,
+      startY: 50, // Adjust starting Y to leave space for stats
       theme: "grid", // Basic grid style
       styles: {
         cellPadding: 3, // Padding for cells
@@ -134,9 +143,11 @@ const AdminSalesReport = () => {
         halign: "center", // Center align header text
       },
     });
-
+  
+    // Save the PDF
     doc.save("sales_report.pdf");
   };
+  
 
   const generateSalesReport = async () => {
     setLoading(true);
@@ -272,7 +283,7 @@ const AdminSalesReport = () => {
           <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
             <strong className="text-lg">Overall Discounts:</strong>{" "}
             <span id="overall-discount" className="text-gray-700 font-bold">
-              ₹{totalDiscount}
+              ₹{totalDiscount.toFixed(2)}
             </span>
           </div>
         </div>
@@ -339,7 +350,7 @@ const AdminSalesReport = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
                     {order.couponDiscount > 0
-                      ? order.couponDiscount
+                      ? order.couponDiscount.toFixed(2)
                       : "No Coupon"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">

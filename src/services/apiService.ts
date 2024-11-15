@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
-const baseURL = "https://pentaluxe.shop";
-// const baseURL = "http://localhost:7000";
+// const baseURL = "https://pentaluxe.shop";
+const baseURL = "http://localhost:7000";
 const api = axios.create({
   baseURL,
 
