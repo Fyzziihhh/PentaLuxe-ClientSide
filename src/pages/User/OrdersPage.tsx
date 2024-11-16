@@ -140,7 +140,7 @@ const OrdersPage = () => {
     order.items.forEach((item) => {
       doc.text(item.productName, 20, currentY);
       doc.text(item.quantity.toString(), 150, currentY);
-      doc.text(`\u20B9 ${item.price.toFixed(2)}`, 180, currentY);
+      doc.text(`${item.price.toFixed(2)}Rs`, 180, currentY);
       currentY += lineHeight; // Move down for the next item
     });
 
@@ -149,19 +149,19 @@ const OrdersPage = () => {
 
     // Total Amount
     currentY += lineHeight; // Add space before total amount
-    doc.text("Total Amount: \u20B9" + order.totalAmount, 20, currentY);
+    doc.text(`Total Amount:  + ${order.totalAmount}Rs`, 20, currentY);
     if (order.couponCode) {
       currentY += lineHeight; // Move down
-      doc.text(`Coupon Code: ${order.couponCode}`, 20, currentY);
+      doc.text(`Coupon Code: ${order.couponCode}Rs`, 20, currentY);
       currentY += lineHeight; // Move down
       doc.text(
-        `Discount Applied: - \u20B9${order.couponDiscount}`,
+        `Discount Applied: - ${order.couponDiscount}Rs`,
         20,
         currentY
       );
       currentY += lineHeight; // Move down
       doc.text(
-        "Final Amount: \u20B9" + (order.totalAmount - order.couponDiscount),
+       ` Final Amount: + ${(order.totalAmount - order.couponDiscount)}Rs`,
         20,
         currentY
       );
