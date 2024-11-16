@@ -96,7 +96,7 @@ const AdminOrderManagement: React.FC = () => {
   return (
     <div className="text-gray-700 container mx-auto h-full p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-4xl font-bold mb-4">Order Management</h1>
-     
+
       <table className="min-w-full border-collapse border border-gray-200">
         <thead>
           <tr className="bg-blue-600 text-white">
@@ -128,11 +128,14 @@ const AdminOrderManagement: React.FC = () => {
                 {" "}
                 ₹{order.totalAmount.toFixed(0)}
               </td>
-              <td className="border border-gray-200 p-2"> {new Date(order.orderDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}</td>
+              <td className="border border-gray-200 p-2">
+                {" "}
+                {new Date(order.orderDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </td>
               <td className="border border-gray-200 p-2">
                 {order.paymentMethod}
               </td>
@@ -141,7 +144,8 @@ const AdminOrderManagement: React.FC = () => {
                   disabled={
                     order.status === "Delivered" ||
                     order.status === "Returned" ||
-                    order.status === "Cancelled"
+                    order.status === "Cancelled"||
+                    order.status==="Payment Failed"
                   }
                   value={order.status}
                   onChange={(e) =>
@@ -160,16 +164,15 @@ const AdminOrderManagement: React.FC = () => {
                       </>
                     </>
                   ) : (
-                  
-                      <>
-                        <option value="Pending">Pending</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Returned">Returned</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Shipped">Shipped</option>
-                      </>
-                   
+                    <>
+                      <option value="Pending">Pending</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Returned">Returned</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Payment Failed">Payment Failed</option>
+                    </>
                   )}
                 </select>
               </td>
@@ -187,9 +190,9 @@ const AdminOrderManagement: React.FC = () => {
       </table>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-8 shadow-lg max-w-lg w-full transition-transform transform-gpu scale-95 hover:scale-100">
-            <h2 className="text-3xl font-bold mb-6 text-blue-600 text-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-screen">
+          <div className="bg-white rounded-lg p-6 shadow-2xl max-w-2xl w-full">
+            <h2 className="text-4xl font-bold mb-4 text-blue-600 text-center">
               Order Details
             </h2>
             {selectedOrder && (
@@ -238,27 +241,23 @@ const AdminOrderManagement: React.FC = () => {
                   </p>
                 </div>
 
-                <h3 className="font-bold mt-4 text-lg">Products:</h3>
-                <ul className="list-disc list-inside">
+                <h3 className="font-bold mt-6 text-xl">Products:</h3>
+                <ul className="list-disc list-inside  flex gap-2 mt-3 flex-wrap ">
                   {selectedOrder.items.map((item) => (
                     <li
                       key={item.productId}
-                      className="flex items-center mb-4 bg-gray-100 p-3 rounded-lg shadow"
+                      className="flex items-center bg-gray-100 p-2 w-[45%] rounded-md shadow-sm"
                     >
                       <img
                         src={item.productImage}
                         alt={item.productName}
-                        className="h-20 w-20 object-cover rounded mr-4 shadow-sm"
+                        className="h-16 w-16 object-cover rounded mr-4"
                       />
-                      <div>
-                        <span className="font-semibold text-lg">
-                          {item.productName}
-                        </span>
-                        <p className="text-sm text-gray-600">
-                          Quantity: {item.quantity}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Price: $
+                      <div className="text-sm">
+                        <span className="font-medium">{item.productName}</span>
+                        <p className="text-gray-500">Qty: {item.quantity}</p>
+                        <p className="text-gray-500">
+                          ₹
                           {(
                             item.price -
                             (item.price * item.discountPercentage) / 100
@@ -272,7 +271,7 @@ const AdminOrderManagement: React.FC = () => {
             )}
             <button
               onClick={handleCloseModal}
-              className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-6 w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               Close
             </button>
