@@ -71,7 +71,7 @@ const ChangePassword = () => {
                 className={`w-full p-3 border rounded bg-gray-700 text-white focus:outline-none transition ${
                   hasError ? "border-red-500 focus:ring focus:ring-red-500" : "border-gray-600 focus:ring focus:ring-blue-500"
                 }`}
-                required
+                
               />
                {
               currentPassword.length>0&&  <div className="absolute right-1 top-3">
@@ -88,7 +88,7 @@ const ChangePassword = () => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring focus:ring-blue-500"
-                required
+                
               />
               {
               newPassword.length>0&&  <div className="absolute right-1 top-3">
@@ -110,7 +110,7 @@ const ChangePassword = () => {
                     ? "border-red-500 focus:ring focus:ring-red-500"
                     : "border-gray-600 focus:ring focus:ring-blue-500"
                 }`}
-                required
+              
               />
             {
               confirmPassword.length>0&&  <div className="absolute right-1 top-3">

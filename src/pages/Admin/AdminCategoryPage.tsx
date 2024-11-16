@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import api from "../../services/apiService";
 import { AxiosError } from "axios";
@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 import DeleteModal from "../../components/DeleteModal";
 import { FaPlus, FaEdit, FaTrash, FaUpload } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
+import { AppHttpStatusCodes } from "@/types/statusCode";
+import { PropagateLoader } from "react-spinners";
 
- export interface ICategories {
+export interface ICategories {
   _id: string;
   categoryName: string;
   categoryImage: string;
@@ -18,21 +20,32 @@ const AdminCategoryPage = () => {
   const [paginatedCategories, setPaginatedCategories] = useState<ICategories[]>(
     []
   );
-
+  const [loading,setLoading]=useState(false)
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(false);
   const [isModal, setIsModal] = useState(false);
-  const isModalOpen = () => setIsModal(true);
+  const isModalOpen = () => {
+    setIsEdit(false)
+    setIsModal(true)
+  };
+
   const isModelClose = () => {
     setCategoryName("");
     setCategoryImage(null);
     setIsModal(false);
   };
+  const [selectedId,setSelectedId]=useState('')
   const [categoryName, setCategoryName] = useState("");
   const [categoryImage, setCategoryImage] = useState<File | null>(null);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [itemId, setItemId] = useState("");
+  const [selectedCategoryImage, setSelectedCategoryImage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+
   const onCategoryAdd = async () => {
     if (!categoryImage || categoryName.trim() === "") {
       toast.error("All fields are required");
@@ -43,7 +56,7 @@ const AdminCategoryPage = () => {
       const formData = new FormData();
       formData.append("categoryImage", categoryImage);
       formData.append("categoryName", categoryName);
-
+  setLoading(true)
       const response = await api.post(adminCategory, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -55,12 +68,50 @@ const AdminCategoryPage = () => {
         setCategoryName("");
         setCategoryImage(null);
         setIsModal(false);
+        
       }
     } catch (error) {
       console.error("Error uploading category:", error);
       if (error instanceof AxiosError)
         toast.error(error.response?.data.message || "Something Went Wrong");
+    } finally{
+      setLoading(false)
     }
+  };
+
+
+  const onCategoryEdit = async () => {
+    if (categoryName.trim() === "") {
+      toast.error("Category Name is Required ");
+      return;
+    }
+    let formData = new FormData();
+    formData.append("categoryName", categoryName);
+    formData.append("categoryId", selectedId);
+    categoryImage
+      ? formData.append("categoryImage", categoryImage)
+      : formData.append("ExistingImage", selectedCategoryImage);
+   try{
+    setLoading(true)
+    const res = await api.put("/api/admin/categories", formData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }});
+    if (res.status === AppHttpStatusCodes.OK) {
+       const updatedCategory=res.data.data
+       console.log("updated Category",updatedCategory)
+       setCategories(categories.map(category=>category._id===updatedCategory._id?{...updatedCategory} : category))
+      toast.success(res.data.message)
+      setCategoryName("");
+        setCategoryImage(null)
+      setIsModal(false)
+      
+    }
+   }catch(error){
+    if(error instanceof AxiosError) toast.error(error.response?.data.message)
+   } finally{
+    setLoading(false)
+  }
   };
   const onHandleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event?.target.files) {
@@ -75,6 +126,13 @@ const AdminCategoryPage = () => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+  
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files![0];
+    setCategoryImage(file);
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedCategoryImage(imageUrl);
+  };
 
   const onDeleteCategory = async (_id: string) => {
     try {
@@ -88,6 +146,7 @@ const AdminCategoryPage = () => {
       if (error instanceof AxiosError)
         toast.error(error.response?.data.message || "Something Went Wrong");
     }
+   
   };
 
   const getCategories = async () => {
@@ -106,12 +165,15 @@ const AdminCategoryPage = () => {
     }
   };
 
-  const onEditCategory = (id: string) => {
+  const OpenEditCategoryModal = (id: string) => {
+    setSelectedId(id)
+    setIsEdit(true);
     const category = categories.find((category) => id === category._id);
     if (category) {
       setCategoryName(category.categoryName);
+      setSelectedCategoryImage(category.categoryImage);
+      
       setIsModal(true);
-      // setCategoryImage(category.categoryImage)
     }
   };
 
@@ -153,7 +215,7 @@ const AdminCategoryPage = () => {
       <Modal
         isOpen={isModal}
         onRequestClose={isModelClose}
-        contentLabel="Add New Category"
+        contentLabel={`${isEdit ? "Edit Category" : "Add New Category"}`}
         className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative text-gray-700"
         overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center"
       >
@@ -165,7 +227,7 @@ const AdminCategoryPage = () => {
         </button>
 
         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-5">
-          Create New Category
+          {isEdit ? "Edit Category" : "Add new Category"}
         </h2>
 
         <div className="space-y-5">
@@ -182,23 +244,62 @@ const AdminCategoryPage = () => {
           </div>
 
           {/* Category Image Input */}
-          <div className="flex items-center border-b border-gray-300 py-2">
-            <FaUpload className="h-5 w-5 text-gray-400 mr-3" />
-            <input
-              type="file"
-              name="categoryImage"
-              onChange={onHandleFile}
-              className="w-full text-gray-600 focus:outline-none"
-            />
+          <div className="flex justify-evenly items-center border-b border-gray-300 py-2">
+            {isEdit ? (
+              <>
+                <input
+                  name="categoryImage"
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  type="file"
+                  className=" hidden"
+                />
+                <img
+               
+                  className="w-32 h-36 object-cover rounded-md"
+                  src={selectedCategoryImage}
+                  alt=""
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex flex-col justify-center items-center w-28 h-28 bg-slate-200 rounded-full shadow-lg hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 transition duration-200"
+                >
+                  <img
+                    className="h-[50%] mb-2"
+                    src="https://cdn.iconscout.com/icon/premium/png-512-thumb/upload-image-5062268-4213843.png?f=webp&w=512"
+                    alt="Upload Icon"
+                  />
+                  <span className="text-xs font-medium text-slate-700">
+                    Upload Image
+                  </span>
+                </button>
+              </>
+            ) : (
+              <>
+                <FaUpload className="h-5 w-5 text-gray-400 mr-3" />
+                <input
+                  type="file"
+                  name="categoryImage"
+                  onChange={onHandleFile}
+                  className="w-full text-gray-600 focus:outline-none"
+                />
+              </>
+            )}
           </div>
 
           {/* Submit Button */}
           <button
-            onClick={onCategoryAdd}
+            onClick={isEdit ? onCategoryEdit : onCategoryAdd}
             className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center justify-center gap-2"
           >
+            {loading?<PropagateLoader color="white" size={10}  className="py-3"/>:
+            <>
             <FaUpload className="h-5 w-5" />
-            Upload
+           { isEdit ? "Edit Category" : "Add Category"}
+            </>
+              
+            
+            }
           </button>
         </div>
       </Modal>
@@ -227,7 +328,7 @@ const AdminCategoryPage = () => {
                 <td className="p-4 text-center flex justify-center space-x-3">
                   {/* Edit Button */}
                   <button
-                    onClick={() => onEditCategory(category._id)}
+                    onClick={() => OpenEditCategoryModal(category._id)}
                     className="bg-yellow-500 text-white py-2 px-4 rounded-lg shadow hover:bg-yellow-600 transition flex items-center gap-2"
                   >
                     <FaEdit className="h-5 w-5" />

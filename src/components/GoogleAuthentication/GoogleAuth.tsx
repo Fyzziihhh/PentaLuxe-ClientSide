@@ -5,12 +5,15 @@ import { signInWithPopup } from "firebase/auth";
 import api from "../../services/apiService";
 import {  toast } from "sonner";
 import { AppHttpStatusCodes } from "@/types/statusCode";
+import { useDispatch } from "react-redux";
+import { LogIn } from "@/store/slices/userSlice";
+
 type GoogleAuthProps = {
   text: string;
 };
 const GoogleAuth: React.FC<GoogleAuthProps> = ({ text }) => {
   const navigate = useNavigate();
-
+ const dispatch=useDispatch()
   const handleSignIn = () => {
     signInWithPopup(auth, provider).then(async (data) => {
       if (data.user) {
@@ -20,9 +23,12 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ text }) => {
             email: data.user.email,
           });
           if (response.status===AppHttpStatusCodes.OK) {
+           
             const data=response.data.data
+            console.log("inside the GoogleAuth")
+            dispatch(LogIn())
             localStorage.setItem("accessToken",data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
+         
        
             const promise = () =>
               new Promise((resolve) =>

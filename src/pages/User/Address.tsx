@@ -112,12 +112,12 @@ const Address = () => {
               <span className="text-sm text-gray-400">INDIA - {address.Pincode}</span>
               <p className="mt-5 font-bold">Phone: {address.Phone}</p>
             </div>
-            <div className="flex justify-between items-center mt-5">
+            <div className="flex justify-end item-center mt-5">
               <div className="flex gap-3">
                 <Link to={`/profile/address-book/${address._id}`} className="text-blue-400 hover:underline">Edit</Link>
                 <button className="text-red-400 hover:underline" onClick={() => isModalOpen(address._id)}>Delete</button>
               </div>
-              <span className="font-bold text-white">Address Selected</span>
+            
             </div>
           </div>
         ))}
