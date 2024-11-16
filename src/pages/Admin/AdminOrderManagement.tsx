@@ -128,7 +128,11 @@ const AdminOrderManagement: React.FC = () => {
                 {" "}
                 ₹{order.totalAmount.toFixed(0)}
               </td>
-              <td className="border border-gray-200 p-2">{order.orderDate}</td>
+              <td className="border border-gray-200 p-2"> {new Date(order.orderDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}</td>
               <td className="border border-gray-200 p-2">
                 {order.paymentMethod}
               </td>

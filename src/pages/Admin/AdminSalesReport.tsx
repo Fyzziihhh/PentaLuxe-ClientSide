@@ -11,7 +11,9 @@ import { toast } from "sonner";
 
 const AdminSalesReport = () => {
   const [loading, setLoading] = useState(false);
-  const [displaySalesReportData,setDisplaySalesReportData]=useState<IOrder[] >([]);
+  const [displaySalesReportData, setDisplaySalesReportData] = useState<
+    IOrder[]
+  >([]);
   const [totalOrderAmount, setTotalOrderAmount] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [salesCount, setSalesCount] = useState(0);
@@ -22,11 +24,9 @@ const AdminSalesReport = () => {
   });
   const [salesReportData, setSalesReportData] = useState<IOrder[]>([]);
 
-
   const handlePagination = (currentPageData: IOrder[]) => {
-    setDisplaySalesReportData(currentPageData)
-  }
-
+    setDisplaySalesReportData(currentPageData);
+  };
 
   const getAllSalesReport = async () => {
     try {
@@ -53,7 +53,7 @@ const AdminSalesReport = () => {
       "Order Date",
       "Status",
     ];
-  
+
     // Prepare data similar to the PDF version
     const data = salesReportData!.map((order) => [
       order._id,
@@ -64,14 +64,14 @@ const AdminSalesReport = () => {
       new Date(order.orderDate).toDateString(),
       order.status,
     ]);
-  
+
     // Add headers as the first row in the data array
     const worksheetData = [headers, ...data];
-  
+
     // Create a new workbook and worksheet
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-  
+
     // Define column widths
     worksheet["!cols"] = [
       { wch: 15 }, // Width for "Order ID" column
@@ -82,14 +82,13 @@ const AdminSalesReport = () => {
       { wch: 20 }, // Width for "Order Date" column
       { wch: 15 }, // Width for "Status" column
     ];
-  
+
     // Append worksheet to workbook with the title "Sales Report"
     XLSX.utils.book_append_sheet(workbook, worksheet, title);
-  
+
     // Download the Excel file with a specified filename
     XLSX.writeFile(workbook, "sales_report.xlsx");
   };
-
 
   const downloadPDF = () => {
     const doc = new jsPDF();
@@ -105,7 +104,7 @@ const AdminSalesReport = () => {
         "Status",
       ],
     ];
-  
+
     const data = salesReportData!.map((order) => [
       order._id,
       order.user.username?.toUpperCase(),
@@ -115,16 +114,15 @@ const AdminSalesReport = () => {
       new Date(order.orderDate).toDateString(),
       order.status,
     ]);
-  
 
     doc.text(title, 14, 20);
-  
+
     // Add overall stats above the table
     doc.setFontSize(10);
     doc.text(`Overall Discount: ${totalDiscount.toFixed(2)}`, 14, 30);
     doc.text(`Overall Sales Count: ${salesCount}`, 14, 35);
     doc.text(`Overall Order Amount: ${totalOrderAmount.toFixed(0)}`, 14, 40);
-  
+
     // Add the table below the stats
     autoTable(doc, {
       head: headers,
@@ -143,14 +141,28 @@ const AdminSalesReport = () => {
         halign: "center", // Center align header text
       },
     });
-  
+
     // Save the PDF
     doc.save("sales_report.pdf");
   };
-  
 
   const generateSalesReport = async () => {
+    const currentDate = new Date();
+    if (dateRange === "custom") {
+      if(!customDates.startDate || !customDates.endDate){
+         toast.error('Date Fields are required')
+         return
+      }
+      if (
+        new Date(customDates.startDate) > currentDate ||
+        new Date(customDates.endDate) > currentDate
+      ) {
+        toast.error("Start date or end date cannot be in the future.");
+        return;
+      }
+    }
     setLoading(true);
+
     const payload = {
       dateRange,
       startDate: customDates.startDate,
@@ -334,7 +346,10 @@ const AdminSalesReport = () => {
                 </td>
               </tr>
             ) : (
-              ((displaySalesReportData.length>0?displaySalesReportData:salesReportData).map((order) => (
+              (displaySalesReportData.length > 0
+                ? displaySalesReportData
+                : salesReportData
+              ).map((order) => (
                 <tr key={order._id} className="text-center">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center font-bold">
                     {order._id}
@@ -361,11 +376,15 @@ const AdminSalesReport = () => {
                   </td>
                 </tr>
               ))
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-     <Pagination itemsPerPage={8} items={salesReportData!} onPageChange={handlePagination}/>
+      <Pagination
+        itemsPerPage={5}
+        items={salesReportData!}
+        onPageChange={handlePagination}
+      />
 
       {/* Report Download Options */}
       <div className="flex justify-end mb-6 items-center">
@@ -380,7 +399,10 @@ const AdminSalesReport = () => {
         >
           Download PDF
         </button>
-        <button onClick={downloadExcel} className="bg-gray-700 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 transition duration-200">
+        <button
+          onClick={downloadExcel}
+          className="bg-gray-700 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 transition duration-200"
+        >
           Download Excel
         </button>
       </div>

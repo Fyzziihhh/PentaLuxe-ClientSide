@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/apiService";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import Input from "@/components/Input/Input";
 import { AppHttpStatusCodes } from "@/types/statusCode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LogIn } from "@/store/slices/userSlice";
 
 
@@ -18,6 +18,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+   const user=useSelector((state:any)=>state.user.user)
+
+
   const LoginHandler = async () => {
     if(email.trim()===''||password.trim()===''){
       toast.error('Email & Password are required')
@@ -45,6 +48,13 @@ const LoginPage = () => {
   const emailHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
+
+  useEffect(()=>{
+    
+ if(user){
+  navigate('/')
+ } 
+  },[])
   return (
     <>
       <div className="container w-full flex px-10 gap-3 h-[470px] mb-3 ">

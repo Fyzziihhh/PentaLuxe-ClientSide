@@ -18,7 +18,7 @@ const App: React.FC = () => {
           style: {
             fontSize: "1rem", // Equivalent to text-lg
             padding: "1rem", // Equivalent to p-4
-            width: "24rem", // Equivalent to w-96
+            width: "27rem", // Equivalent to w-96
           },
         }}
       />
