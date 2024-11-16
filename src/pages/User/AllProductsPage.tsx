@@ -171,7 +171,7 @@ const AllProductsPage = () => {
       )}
       <Pagination
         items={sortedProducts}
-        itemsPerPage={6}
+        itemsPerPage={3}
         onPageChange={handlePagination}
       />
     </div>
