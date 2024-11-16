@@ -9,11 +9,11 @@ const SearchIcon = () => {
   const navigate=useNavigate()
   const onSearchHandler=async()=>{
   if(SearchInput.length>0){
-    alert('hel')
     const res=await api.post('/api/user/search-products-by-category',{text:SearchInput})
     if(res.status===AppHttpStatusCodes.OK){
+      console.log("searchedProducts",res.data)
       setSerachInput('')
-      navigate('/products',{state:{products:res.data.data}})
+      navigate('/products',{state:{products:res.data.searchedProducts}})
     }
   }
   }

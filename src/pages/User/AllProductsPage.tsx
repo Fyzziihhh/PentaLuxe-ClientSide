@@ -8,6 +8,7 @@ import { AxiosError } from "axios";
 // import { AppHttpStatusCodes } from "@/types/statusCode";
 // import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 
 const AllProductsPage = () => {
  
@@ -17,28 +18,36 @@ const AllProductsPage = () => {
   const [gender, setGender] = useState("");
   const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
   const [filterActive, setFilterActive] = useState(false);
-  // const location=useLocation()
-  // const searchedProducts=location.state.products
-  
+  const location=useLocation()
+  const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
   
   useEffect(() => {
-    // console.log('searchedProduct',location.state?.products)
     const fetchProducts = async () => {
       try {
         const response = await api.get("/api/user/products");
         const { data: products } = response.data;
         setProducts(products);
-        setSortedProducts(products);
-        setDisplayedProducts(products); // Initialize displayedProducts
+        if (!searchedProducts || searchedProducts.length === 0) {
+          setSortedProducts(products);
+          setDisplayedProducts(products); // Initialize displayedProducts with all products
+        }
       } catch (error) {
-       if(error instanceof AxiosError){
-             toast.error(error.response?.data.message)
-       }
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message);
+        }
       }
     };
-
-    fetchProducts();
-  }, []);
+  
+    // Check if `searchedProducts` is available from the location state
+    if (location.state?.products && location.state.products.length > 0) {
+      setSearchedProducts(location.state.products);
+      setSortedProducts(location.state.products); // Display searched products
+      setDisplayedProducts(location.state.products);
+    } else {
+      fetchProducts();
+    }
+  }, [location.state?.products]);
+  
 
   const filterProductsByGender = (gender: string) => {
     if (!gender) return products;
@@ -101,9 +110,6 @@ const AllProductsPage = () => {
     const filteredProducts = filterProductsByGender(gender);
     const sorted = sortProducts(sortOption, filteredProducts);
     setSortedProducts(sorted);
-    // if(searchedProducts){
-    //   setSortedProducts(searchedProducts)
-    // }
   }, [products, sortOption, gender]);
 
   return (
