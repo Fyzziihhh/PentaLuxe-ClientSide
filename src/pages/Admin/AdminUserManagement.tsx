@@ -68,6 +68,42 @@ const AdminUserManagement = () => {
     }
   };
 
+  const openConfirmModal=(userId:string)=>{
+    toast.custom(
+      (id) => (
+        <div
+          className="flex flex-col items-center p-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-lg rounded-lg border border-gray-300 transition-transform transform hover:scale-105"
+          onClick={() => toast.dismiss(id)}
+        >
+          <p className="text-2xl font-bold">Confirm Action</p>
+          <p className="text-sm mt-2 opacity-90">
+            Are you sure you want to change the status?
+          </p>
+          <div className="flex space-x-4 mt-4">
+            <button
+              className="px-5 py-2 bg-blue-600 rounded-full hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+              onClick={() => {
+                toggleBlock(userId) ; 
+                toast.dismiss(id);
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className="px-5 py-2 bg-gray-800 rounded-full text-white hover:bg-gray-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+              onClick={() => toast.dismiss(id)} // Dismiss toast on No
+            >
+              No
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 5000,
+      }
+    );
+  }
+
   const onSearchUser = async () => {
     if (input.length === 0) {
       setSearchedUsers(users);
@@ -159,7 +195,7 @@ const AdminUserManagement = () => {
               </td>
               <td className="py-3 px-4">
                 <button
-                  onClick={() => toggleBlock(user._id)}
+                  onClick={() => openConfirmModal(user._id)}
                   className={`${
                     user.status === "ACTIVE" ? "bg-red-500" : "bg-green-500"
                   } text-white py-2 px-4 rounded`}
