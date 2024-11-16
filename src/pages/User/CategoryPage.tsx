@@ -4,11 +4,13 @@ import api from '../../services/apiService'
 import ProductCard from '../../components/ProductCard';
 import { IProduct } from '@/types/productTypes';
 import { AppHttpStatusCodes } from '@/types/statusCode';
+import Pagination from '@/components/Pagination';
 
   
 const CategoryPage = () => {
 
     const [products,setProducts]=useState<IProduct[]>([])
+    const [displayProducts,setDisplayProducts]=useState<IProduct[]>([])
   const {id}=useParams()
   
 const getAllProudctByCategory=async()=>{
@@ -27,6 +29,10 @@ const getAllProudctByCategory=async()=>{
 
 }
 
+const handlePagination=(paginatedProducts:IProduct[])=>{
+     setDisplayProducts(paginatedProducts)  
+}
+
 useEffect(()=>{
   getAllProudctByCategory();
 },[])
@@ -40,10 +46,12 @@ useEffect(()=>{
    
   <div className='flex justify-center gap-10 px-10 mb-10 mt-5 text-center mx-auto'>
 
-      {products.map((product) => (
+      {(displayProducts.length>0?displayProducts:products).map((product) => (
          <ProductCard key={product._id} product={product}/>
       ))}
   </div>
+
+  <Pagination items={products} itemsPerPage={1} onPageChange={handlePagination}/>
 
 
   </div>
