@@ -156,6 +156,7 @@ const CartPage = () => {
           calculatedDiscount,
           Number(maxDiscountPrice)
         );
+          
         setDiscountAmount(finalDiscount);
         finalPrice -= finalDiscount;
       }
@@ -172,7 +173,17 @@ const CartPage = () => {
     );
 
     setAvailableCoupons(filteredCoupons);
+  
   }, [OriginalPrice, coupons]);
+  useEffect(()=>{
+   if(availableCoupons.length===0){
+    setSelectedCoupon('')
+  setDiscountRate(0)
+    setSelectedRate(0)
+    setDiscountAmount(0)
+    setToggleButton(false)
+   }
+  },[availableCoupons])
 
   return (
     <div className="w-full ">
@@ -347,14 +358,14 @@ const CartPage = () => {
                   <span className="font-bold font-mono">₹40</span>
                 </h1>
 
-                {discountRate !== 0 && (
+                {discountRate !== 0 &&availableCoupons.length>0 ?(
                   <h1 className="mt-5 flex justify-between">
                     <span className="font-bold font-mono">Coupon</span>
                     <span className="font-extrabold font-mono text-green-800">
                       - {discountAmount.toFixed(2)}
                     </span>
                   </h1>
-                )}
+                ):<></>}
                 <div className="w-full bg-gray-500 mt-5 h-[1px]"></div>
                 <h1 className="mt-5 flex justify-between text-xl">
                   <span className="font-bold font-mono ">Total</span>

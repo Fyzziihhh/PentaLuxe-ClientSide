@@ -1,35 +1,38 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/apiService";
 import ProductCard from "../../components/ProductCard";
 import { IProduct } from "@/types/productTypes";
 import Pagination from "@/components/Pagination";
 import { AlertTriangle } from "lucide-react";
 import { AxiosError } from "axios";
-// import { AppHttpStatusCodes } from "@/types/statusCode";
-// import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { useLocation } from "react-router-dom";
+
+import {useSelector } from "react-redux";
+// Adjust based on your store setup
 
 const AllProductsPage = () => {
- 
+
+  const searchedProducts = useSelector(
+    (state:{search:{searchedProducts:IProduct[]}}) => state.search?.searchedProducts || []
+  );
+
   const [products, setProducts] = useState<IProduct[]>([]);
   const [sortedProducts, setSortedProducts] = useState<IProduct[]>([]);
   const [sortOption, setSortOption] = useState("az");
   const [gender, setGender] = useState("");
   const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
   const [filterActive, setFilterActive] = useState(false);
-  const location=useLocation()
-  const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
-  
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await api.get("/api/user/products");
         const { data: products } = response.data;
         setProducts(products);
+  
         if (!searchedProducts || searchedProducts.length === 0) {
           setSortedProducts(products);
-          setDisplayedProducts(products); // Initialize displayedProducts with all products
+          setDisplayedProducts(products);
         }
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -38,15 +41,14 @@ const AllProductsPage = () => {
       }
     };
   
-    // Check if `searchedProducts` is available from the location state
-    if (location.state?.products && location.state.products.length > 0) {
-      setSearchedProducts(location.state.products);
-      setSortedProducts(location.state.products); // Display searched products
-      setDisplayedProducts(location.state.products);
-    } else {
+    // Only fetch products if there are no searchedProducts
+    if (searchedProducts.length > 0) {
+      setSortedProducts(searchedProducts);
+      setDisplayedProducts(searchedProducts);
+    } else if (products.length === 0) {
       fetchProducts();
     }
-  }, [location.state?.products]);
+  }, [searchedProducts]);
   
 
   const filterProductsByGender = (gender: string) => {
@@ -56,7 +58,6 @@ const AllProductsPage = () => {
 
   const sortProducts = (option: string, filteredProducts: IProduct[]) => {
     const sorted = [...filteredProducts];
-
     switch (option) {
       case "priceLowHigh":
         sorted.sort((a, b) => {
@@ -81,16 +82,15 @@ const AllProductsPage = () => {
       default:
         break;
     }
-
     return sorted;
   };
 
-  const handleSortChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value);
     setFilterActive(true);
   };
 
-  const handleGender = (event: ChangeEvent<HTMLSelectElement>) => {
+  const handleGender = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setGender(event.target.value);
     setFilterActive(true);
   };
@@ -106,12 +106,11 @@ const AllProductsPage = () => {
   };
 
   useEffect(() => {
-    if(!gender&& sortOption==='az') setFilterActive(false)
+    if (!gender && sortOption === "az") setFilterActive(false);
     const filteredProducts = filterProductsByGender(gender);
     const sorted = sortProducts(sortOption, filteredProducts);
     setSortedProducts(sorted);
   }, [products, sortOption, gender]);
-
   return (
     <div className="pb-2">
       <div className="heading text-center">
