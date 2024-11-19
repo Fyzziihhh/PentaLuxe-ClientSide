@@ -576,8 +576,15 @@ const CheckOutPage = () => {
           <div className="bg-gray-700 h-[2px] mt-5"></div>
           <div className="mt-5 text-white">
             <p className="flex justify-between font-bold text-lg">
-              <span>Sub Total</span> <span>₹ {(totalPrice - 40).toFixed(0)}</span>
+              <span>Sub Total</span> <span>₹ {(totalPrice - (40 + (couponDiscount || 0))).toFixed(0)}
+              </span>
             </p>
+
+          {
+            couponDiscount!==0&&  <p className="flex justify-between font-bold text-lg">
+            <span>Coupon</span> <span>₹ {couponDiscount&&couponDiscount.toFixed(0)}</span>
+          </p>
+          }
             <p className="flex justify-between font-bold text-lg">
               <span>Delivery Fee</span> <span>₹ {40}</span>
             </p>

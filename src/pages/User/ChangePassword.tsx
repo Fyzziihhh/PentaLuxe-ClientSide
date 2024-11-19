@@ -2,9 +2,29 @@ import PasswordToggleButton from "@/components/PasswordToggleButton";
 import api from "@/services/apiService";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import { AxiosError } from "axios";
-import  { FormEvent, useRef, useState } from "react";
+import  { FormEvent, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+interface IUser {
+ isPassword:boolean
+}
 
 const ChangePassword = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+  const navigate=useNavigate()
+  const getUserProfile = async () => {
+    try {
+      const res = await api.get("/api/user/profile");
+      if (res.status === AppHttpStatusCodes.OK) setUser(res.data.data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === AppHttpStatusCodes.NOT_FOUND)
+          toast.error(error.response?.data.message);
+        if (error.response?.status === AppHttpStatusCodes.UNAUTHORIZED)
+          navigate("/login");
+      }
+    }
+  };
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,13 +34,13 @@ const ChangePassword = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [hasError, setHasError] = useState(false);
-
+  
   const currentPasswordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
       setSuccess("");
@@ -50,7 +70,10 @@ const ChangePassword = () => {
       }
     }
   };
-
+  
+  useEffect(()=>{
+    getUserProfile()
+  },[])
   return (
     <div className="flex items-center justify-center min-h-full bg-gray-900 py-9 -mt-">
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
@@ -60,7 +83,7 @@ const ChangePassword = () => {
         {error && <p className="text-red-500 text-center">{error}</p>}
         {success && <p className="text-green-400 text-center">{success}</p>}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+         {user?.isPassword&& <div className="mb-4">
             <label className="block text-gray-300 mb-1">Current Password</label>
             <div className="flex w-full relative">
               <input
@@ -79,7 +102,7 @@ const ChangePassword = () => {
             </div>
             }
             </div>
-          </div>
+          </div>}
           <div className="mb-4">
             <label className="block text-gray-300 mb-1">New Password</label>
             <div className="flex w-full relative">

@@ -235,7 +235,7 @@ const CartPage = () => {
                           ) : product.variant.stock === 0 ? (
                             <span>Out of Stock</span>
                           ) : (
-                            <span className="text-red-700 font-bold">{`Only ₹${product.variant.stock} are left !!`}</span>
+                            <span className="text-red-700 font-bold">{`Only ${product.variant.stock} are left !!`}</span>
                           )}
                         </p>
                       </h1>
