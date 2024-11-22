@@ -8,13 +8,14 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import {useSelector } from "react-redux";
+
 // Adjust based on your store setup
 
 const AllProductsPage = () => {
-
-  const searchedProducts = useSelector(
-    (state:{search:{searchedProducts:IProduct[]}}) => state.search?.searchedProducts || []
-  );
+const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
+  // const searchedProducts = useSelector(
+  //   (state:{search:{searchedProducts:IProduct[]}}) => state.search?.searchedProducts || []
+  // );
 
   const [products, setProducts] = useState<IProduct[]>([]);
   const [sortedProducts, setSortedProducts] = useState<IProduct[]>([]);
@@ -22,6 +23,7 @@ const AllProductsPage = () => {
   const [gender, setGender] = useState("");
   const [displayedProducts, setDisplayedProducts] = useState<IProduct[]>([]);
   const [filterActive, setFilterActive] = useState(false);
+  const [input,setInput]=useState('')
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -111,6 +113,23 @@ const AllProductsPage = () => {
     const sorted = sortProducts(sortOption, filteredProducts);
     setSortedProducts(sorted);
   }, [products, sortOption, gender]);
+
+
+  const onSearchHandler = async () => {
+    if (input.length > 0) {
+      const res = await api.post("/api/user/search-products-by-category", {
+        text: input,
+      });
+      if (res.status === 200) {
+        console.log(res.data)
+        setSearchedProducts(res.data.searchedProducts)
+        setInput("");
+    
+      }
+    }
+  };
+
+
   return (
     <div className="pb-2">
       <div className="heading text-center">
@@ -161,6 +180,34 @@ const AllProductsPage = () => {
             </button>
           </div>
         )}
+       
+       <div className="relative w-[20%] max-w-md mt-5">  
+      <input
+      value={input}
+       onChange={(e)=>{
+        console.log(e.target.value)
+        setInput(e.target.value)}}
+        type="search"
+        placeholder="Search Products..."
+        className="block w-full px-12 py-2 text-base text-gray-700 bg-white border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+      />
+      <svg onClick={onSearchHandler}
+        className="absolute w-5 h-5 text-gray-400 top-1/2 left-4 transform -translate-y-1/2"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M10 14l6 6m2-6a8 8 0 11-16 0 8 8 0 0116 0z"
+        />
+      </svg>
+    </div>
+    <button className="bg-red-900 p-2 rounded-lg mt-5">clear </button>
+
       </div>
       <div className="flex justify-center gap-10 px-10 pb-10 mt-5 text-center mx-auto">
         {displayedProducts.map((product) => (

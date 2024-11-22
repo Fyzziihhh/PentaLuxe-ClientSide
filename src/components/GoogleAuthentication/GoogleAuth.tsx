@@ -18,6 +18,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ text }) => {
     signInWithPopup(auth, provider).then(async (data) => {
       if (data.user) {
         try {
+        
           const response = await api.post("/api/user/google-auth", {
             username: data.user.displayName,
             email: data.user.email,

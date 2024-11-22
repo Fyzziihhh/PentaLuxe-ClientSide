@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 
 import { Link } from "react-router-dom";
@@ -10,6 +10,7 @@ import Input from "@/components/Input/Input";
 
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import { PulseLoader } from "react-spinners";
+import { useSelector } from "react-redux";
 
 
 
@@ -26,6 +27,7 @@ const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate=useNavigate()
 
   const [phone, setPhone] = useState("");
 
@@ -128,6 +130,12 @@ const SignupPage = () => {
       handler: (e) => setPhone(e.target.value),
     },
   ];
+  const user=useSelector((state:any)=>state.user.user)
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },[])
 
   return (
     <>

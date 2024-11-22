@@ -599,12 +599,12 @@ const CheckOutPage = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
-        className="bg-none"
+        className="bg-none h-screen w-screen"
       >
         <h1 className="text-center text-black text-2xl font-Bowly">
           Add new address
         </h1>
-        <div className="w-[90%] md:w-[50%] lg:w-[35%] bg-white mx-auto rounded-lg">
+        <div className="w-[90%] md:w-[50%] lg:w-[35%] bg-slate-50 mx-auto rounded-lg h-[85%] overflow-auto">
           <form className="flex flex-col gap-2  py-4 text-black">
             <div className="flex flex-wrap mt-2 gap-1 justify-center">
               {inputsArray.map((input) => (

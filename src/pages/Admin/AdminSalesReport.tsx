@@ -156,8 +156,13 @@ const AdminSalesReport = () => {
       if (
         new Date(customDates.startDate) > currentDate ||
         new Date(customDates.endDate) > currentDate
+
       ) {
         toast.error("Start date or end date cannot be in the future.");
+        return;
+      }
+      if(  new Date(customDates.startDate) >new Date(customDates.endDate)){
+        toast.error("End date should be greater than the start date");
         return;
       }
     }

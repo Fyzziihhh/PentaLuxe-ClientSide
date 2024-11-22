@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import SearchIcon from "../components/SearchIcon/SearchIcon";
+// import SearchIcon from "../components/SearchIcon/SearchIcon";
 import { FaUserAlt } from "react-icons/fa";
 
 import { FaCartShopping } from "react-icons/fa6";
@@ -17,6 +17,7 @@ import { AxiosError } from "axios";
 import { AppHttpStatusCodes } from "@/types/statusCode";
 import api from "@/services/apiService";
 import { logOut } from "@/store/slices/userSlice";
+
 
 
 const Header = () => {
@@ -115,7 +116,7 @@ const user=useSelector((state:any)=>state.user.user)
       </ul>
       <img className="w-72 h-auto mr-36" src={ImgUrl} alt="Test Image" />
       <div className="nav-right flex items-center gap-10">
-        <SearchIcon />
+       
         { user? (
           <div
             className="user-profile relative inline-block"

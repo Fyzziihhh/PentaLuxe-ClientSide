@@ -40,7 +40,9 @@ const ChangePassword = () => {
   
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+    if(user?.isPassword&&currentPassword.trim()===''){
+       setError("Current Password is required")
+    }
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
       setSuccess("");

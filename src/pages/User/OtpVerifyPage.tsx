@@ -5,7 +5,7 @@ import Button from "../../components/Button/Button";
 import api from "../../services/apiService";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LogIn } from "@/store/slices/userSlice";
 
 const OtpVerifyPage = () => {
@@ -71,12 +71,18 @@ const OtpVerifyPage = () => {
       setOtp(newOtp);
     }
   }
-
+  const user=useSelector((state:any)=>state.user.user)
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },[])
   useEffect(() => {
     if (seconds === 0) return;
     const interval = setInterval(() => setSeconds((prev) => prev - 1), 1000);
     return () => clearInterval(interval);
   }, [seconds]);
+
 
   return (
     <>

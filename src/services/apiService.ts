@@ -1,7 +1,11 @@
 import axios from "axios";
 import { AppHttpStatusCodes } from "../types/statusCode";
+import { toast } from "sonner";
+import store from "@/store/store";
+import { logOut } from "@/store/slices/userSlice";
 const baseURL = "https://pentaluxe.shop";
 // const baseURL = "http://localhost:7000";
+const dispatch=store.dispatch
 const api = axios.create({
   baseURL,
 
@@ -38,10 +42,22 @@ api.interceptors.response.use(
 
       if (status === AppHttpStatusCodes.UNAUTHORIZED) {
         console.log("Unauthorized Access:", data);
-        window.location.href = "/login";
+        toast.error(data.message)
+        dispatch(logOut())
+        setTimeout(() => {
+          if (window.location.pathname !== "/login") {
+             
+              window.location.href = "/login";
+          }
+      }, 1500);
+      
       } else if (status === AppHttpStatusCodes.FORBIDDEN) {
         console.log("Forbidden Access:", data);
-        window.location.href = "/admin";
+        toast.error(data.message)
+        setTimeout(()=>{
+          window.location.href = "/admin";
+        },1500)
+      
       } else {
         console.error("Error Response:", data);
       }
