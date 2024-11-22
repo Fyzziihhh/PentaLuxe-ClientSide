@@ -7,7 +7,6 @@ import { AlertTriangle } from "lucide-react";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
-import {useSelector } from "react-redux";
 
 // Adjust based on your store setup
 
