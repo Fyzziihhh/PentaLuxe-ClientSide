@@ -3,8 +3,8 @@ import { AppHttpStatusCodes } from "../types/statusCode";
 import { toast } from "sonner";
 import store from "@/store/store";
 import { logOut } from "@/store/slices/userSlice";
-const baseURL = "https://pentaluxe.shop";
-// const baseURL = "http://localhost:7000";
+// const baseURL = "https://pentaluxe.shop";
+const baseURL = "http://localhost:7000";
 const dispatch=store.dispatch
 const api = axios.create({
   baseURL,
@@ -49,7 +49,7 @@ api.interceptors.response.use(
              
               window.location.href = "/login";
           }
-      }, 1500);
+      }, 1000);
       
       } else if (status === AppHttpStatusCodes.FORBIDDEN) {
         console.log("Forbidden Access:", data);

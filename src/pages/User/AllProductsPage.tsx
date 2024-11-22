@@ -7,9 +7,6 @@ import { AlertTriangle } from "lucide-react";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
-
-// Adjust based on your store setup
-
 const AllProductsPage = () => {
 const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
   // const searchedProducts = useSelector(
@@ -107,27 +104,47 @@ const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
   };
 
   useEffect(() => {
-    if (!gender && sortOption === "az") setFilterActive(false);
     const filteredProducts = filterProductsByGender(gender);
     const sorted = sortProducts(sortOption, filteredProducts);
     setSortedProducts(sorted);
+    setDisplayedProducts(sorted);
   }, [products, sortOption, gender]);
+  
 
 
   const onSearchHandler = async () => {
-    if (input.length > 0) {
-      const res = await api.post("/api/user/search-products-by-category", {
-        text: input,
-      });
-      if (res.status === 200) {
-        console.log(res.data)
-        setSearchedProducts(res.data.searchedProducts)
-        setInput("");
-    
+   
+    try {
+      if (input.trim().length > 0) {
+        const res = await api.post("/api/user/search-products-by-category", {
+          text: input,
+        });
+        if (res.status === 200) {
+          console.log(res.data)
+          setSearchedProducts(res.data.searchedProducts)
+          setInput("");
+      
+        }
+      }
+    } catch (error) {
+      if(error instanceof  AxiosError){
+        toast.error(error.response?.data.message)
       }
     }
   };
 
+  const clearSearchedProducts = () => {
+    setInput(""); 
+    setSearchedProducts([]); 
+    setGender(""); 
+    setSortOption("az"); 
+    setFilterActive(false); 
+    const sorted = sortProducts("az", products);
+    setSortedProducts(sorted);
+    setDisplayedProducts(sorted); 
+  };
+  
+  
 
   return (
     <div className="pb-2">
@@ -205,7 +222,7 @@ const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
         />
       </svg>
     </div>
-    <button className="bg-red-900 p-2 rounded-lg mt-5">clear </button>
+    <button onClick={clearSearchedProducts} className="bg-red-900 p-2 rounded-lg mt-5">clear </button>
 
       </div>
       <div className="flex justify-center gap-10 px-10 pb-10 mt-5 text-center mx-auto">
