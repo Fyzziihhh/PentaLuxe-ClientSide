@@ -85,6 +85,7 @@ const UserProfileLayout = () => {
            end={link.name!=='Address Book'}
            onClick={()=>{
             link.name==='Logout'&&dispatch(logOut())
+             localStorage.removeItem('accessToken')
             navigate('/')
           }}
            className={({ isActive }) =>
