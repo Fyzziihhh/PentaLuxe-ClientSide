@@ -63,6 +63,7 @@ const user=useSelector((state:any)=>state.user.user)
   const logoutHandler = async () => {
     localStorage.clear();
    dispatch(logOut())
+    localStorage.removeItem('accessToken')
     dispatch(setCartProducts([]));
   };
 
