@@ -190,8 +190,8 @@ const AdminOrderManagement: React.FC = () => {
       </table>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center w-screen">
-          <div className="bg-white rounded-lg p-6 shadow-2xl max-w-2xl w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start  w-screen">
+          <div className="bg-white rounded-lg p-6 shadow-2xl max-w-2xl w-full mt-5">
             <h2 className="text-4xl font-bold mb-4 text-blue-600 text-center">
               Order Details
             </h2>
