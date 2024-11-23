@@ -55,7 +55,10 @@ api.interceptors.response.use(
         console.log("Forbidden Access:", data);
         toast.error(data.message)
         setTimeout(()=>{
-          window.location.href = "/admin";
+          if (window.location.pathname !== "/admin"){
+
+            window.location.href = "/admin";
+          }
         },1500)
       
       } else {
