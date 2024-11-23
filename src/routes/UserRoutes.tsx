@@ -2,6 +2,9 @@ import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ROUTES } from "../constants/routes";
 import UserProtectedRoutes from "@/utils/UserProtectedRoutes";
+import ForgotPasswordEmail from "@/pages/User/ForgotPasswordEmail";
+import ForgotOtpPage from "@/pages/User/ForgotOtpPage";
+import ResetPassword from "@/pages/User/ResetPassword";
 
 
 // import OrderSuccessPage from "@/pages/User/OrderSuccessPage";
@@ -70,6 +73,11 @@ const UserRoutes: React.FC = () => (
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.REGISTER} element={<SignupPage />} />
       <Route path={`${ROUTES.OTP_VERIFY}/:id`} element={<OtpVerifyPage />} />
+      <Route path={ROUTES.FORGOT_PASSSWORD}>
+        <Route path="email" element={<ForgotPasswordEmail/>}/>
+        <Route path="otp" element={<ForgotOtpPage/>}/>
+      </Route>
+      <Route path="/reset-password" element={<ResetPassword/>}/>
     </Route>
   </Routes>
 );

@@ -97,7 +97,7 @@ const LoginPage = () => {
               inputHandler={passwordHandler}
             />
           </div>
-          <Link className="text-blue-700 ml-80 hover:text-blue-900 " to="#">
+          <Link className="text-blue-700 ml-80 hover:text-blue-900 " to="/forgot-password/email">
             Forgot your password?
           </Link>
           <Button text="Login" ButtonHandler={LoginHandler} />

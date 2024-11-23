@@ -222,8 +222,8 @@ const [searchedProducts,setSearchedProducts]=useState<IProduct[]>([])
         />
       </svg>
     </div>
-    <button onClick={clearSearchedProducts} className="bg-red-900 p-2 rounded-lg mt-5">clear </button>
-
+   {searchedProducts.length>0&& <button onClick={clearSearchedProducts} className="bg-red-900 p-2 rounded-lg mt-5">clear </button>
+  }
       </div>
       <div className="flex justify-center gap-10 px-10 pb-10 mt-5 text-center mx-auto">
         {displayedProducts.map((product) => (

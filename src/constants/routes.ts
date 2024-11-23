@@ -11,7 +11,8 @@ export const ROUTES = {
   WISHLIST: "/wishlist",
   CHECK_OUT: "/checkout",
   ORDERS:"orders",
-  WALLET:"wallet"
+  WALLET:"wallet",
+  FORGOT_PASSSWORD:'forgot-password'
   
 } as const;
 
