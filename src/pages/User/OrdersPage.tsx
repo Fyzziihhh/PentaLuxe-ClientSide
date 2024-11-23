@@ -149,19 +149,19 @@ const OrdersPage = () => {
 
     // Total Amount
     currentY += lineHeight; // Add space before total amount
-    doc.text(`Total Amount:  ${order.totalAmount} Rs`, 20, currentY);
+    doc.text(`Total Amount:  ${order.totalAmount.toFixed(0)} Rs`, 20, currentY);
     if (order.couponCode) {
       currentY += lineHeight; // Move down
       doc.text(`Coupon Code: ${order.couponCode} Rs`, 20, currentY);
       currentY += lineHeight; // Move down
       doc.text(
-        `Discount Applied: - ${order.couponDiscount} Rs`,
+        `Discount Applied: - ${order.couponDiscount.toFixed(0)} Rs`,
         20,
         currentY
       );
       currentY += lineHeight; // Move down
       doc.text(
-       ` Final Amount: + ${(order.totalAmount - order.couponDiscount)} Rs`,
+       ` Final Amount: + ${(order.totalAmount - order.couponDiscount).toFixed(0)} Rs`,
         20,
         currentY
       );
