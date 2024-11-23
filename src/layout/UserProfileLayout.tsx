@@ -83,10 +83,12 @@ const UserProfileLayout = () => {
            key={link.id}
            to={link.path}
            end={link.name!=='Address Book'}
-           onClick={()=>{
-            link.name==='Logout'&&dispatch(logOut())
-             localStorage.removeItem('accessToken')
-            navigate('/')
+           onClick={() => {
+            if (link.name === 'Logout') {
+              dispatch(logOut());
+              localStorage.removeItem('accessToken'); // Specify the correct item name to remove
+            }
+            navigate('/');
           }}
            className={({ isActive }) =>
              `rounded-md p-3 font-bold transition duration-300  ${
