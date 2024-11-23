@@ -152,7 +152,7 @@ const OrdersPage = () => {
     doc.text(`Total Amount:  ${order.totalAmount.toFixed(0)} Rs`, 20, currentY);
     if (order.couponCode) {
       currentY += lineHeight; // Move down
-      doc.text(`Coupon Code: ${order.couponCode} Rs`, 20, currentY);
+      doc.text(`Coupon Code: ${order.couponCode} `, 20, currentY);
       currentY += lineHeight; // Move down
       doc.text(
         `Discount Applied: - ${order.couponDiscount.toFixed(0)} Rs`,
@@ -161,7 +161,7 @@ const OrdersPage = () => {
       );
       currentY += lineHeight; // Move down
       doc.text(
-       ` Final Amount: + ${(order.totalAmount - order.couponDiscount).toFixed(0)} Rs`,
+       ` Final Amount:  ${(order.totalAmount - order.couponDiscount).toFixed(0)} Rs`,
         20,
         currentY
       );
